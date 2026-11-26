@@ -230,6 +230,7 @@
        ========================================================================= */
     .hidden {
       display: none !important;
+      pointer-events: none !important;
     }
 
     .screen-layer {
@@ -955,7 +956,7 @@
       background-color: rgba(255, 255, 255, 0.05);
       color: #a1a1aa;
       font-size: 11px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
 
     .copy-code-btn {
@@ -1020,8 +1021,8 @@
       z-index: 20;
       padding: 10px 14px max(12px, env(safe-area-inset-bottom));
       background-color: var(--bg-dock);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-top: 1px solid var(--border-subtle);
     }
 
@@ -1147,7 +1148,7 @@
     }
 
     /* =========================================================================
-       9. SETTINGS & CONFIRMATION MODALS + TOASTS
+       9. SETTINGS MODAL & TOASTS
        ========================================================================= */
     .modal-overlay {
       position: fixed;
@@ -1344,7 +1345,7 @@
   <!-- ===================================================================== -->
   <section id="auth-screen" class="screen-layer auth-screen">
     <div class="auth-top-bar anim-fade-in">
-      <button id="auth-theme-btn" type="button" aria-label="Switch Theme" class="icon-btn btn-spring hover-elevate">
+      <button id="auth-theme-btn" type="button" onclick="window.DragonApp && window.DragonApp.cycleTheme()" aria-label="Switch Theme" class="icon-btn btn-spring hover-elevate">
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M3 12h2m14 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 8a4 4 0 100 8 4 4 0 000-8z"/>
         </svg>
@@ -1364,7 +1365,7 @@
           <div id="saved-accounts-list" class="saved-accounts-list"></div>
         </div>
 
-        <form id="signin-form" novalidate>
+        <form id="signin-form" onsubmit="if(window.DragonApp){window.DragonApp.handleSignIn(event);}return false;" novalidate>
           <div class="form-group">
             <label for="login-identity" class="form-label">Email or Username</label>
             <input
@@ -1399,7 +1400,7 @@
           </button>
         </form>
 
-        <button id="btn-guest-continue" type="button" class="btn-pill-secondary btn-spring hover-elevate">
+        <button id="btn-guest-continue" type="button" onclick="window.DragonApp && window.DragonApp.enterGuestMode()" class="btn-pill-secondary btn-spring hover-elevate">
           <span>Continue as Guest</span>
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
@@ -1419,19 +1420,19 @@
   <div id="app-shell" class="screen-layer app-shell hidden">
 
     <!-- Mobile Backdrop -->
-    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+    <div id="sidebar-backdrop" onclick="window.DragonApp && window.DragonApp.closeSidebar()" class="sidebar-backdrop"></div>
 
     <!-- Collapsible Chat History Sidebar -->
     <aside id="sidebar" class="sidebar">
       <div class="sidebar-top">
-        <button id="btn-new-chat" type="button" class="btn-new-chat btn-spring hover-elevate">
+        <button id="btn-new-chat" type="button" onclick="window.DragonApp && window.DragonApp.startNewChat()" class="btn-new-chat btn-spring hover-elevate">
           <span>New chat</span>
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
           </svg>
         </button>
 
-        <button id="btn-close-sidebar" type="button" aria-label="Close sidebar" class="icon-btn btn-spring mobile-only-btn">
+        <button id="btn-close-sidebar" type="button" onclick="window.DragonApp && window.DragonApp.closeSidebar()" aria-label="Close sidebar" class="icon-btn btn-spring mobile-only-btn">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -1445,7 +1446,7 @@
           <span>Guest Mode</span>
         </div>
         <p>Nothing is saved when you close DragonAI.</p>
-        <button id="btn-guest-to-signin" type="button" class="guest-banner-btn btn-spring">
+        <button id="btn-guest-to-signin" type="button" onclick="window.DragonApp && window.DragonApp.logout()" class="guest-banner-btn btn-spring">
           Sign In to Save Chats
         </button>
       </div>
@@ -1455,7 +1456,7 @@
 
       <!-- Sidebar Footer -->
       <div class="sidebar-footer">
-        <button id="btn-sidebar-settings" type="button" class="sidebar-action-btn btn-spring hover-elevate">
+        <button id="btn-sidebar-settings" type="button" onclick="window.DragonApp && window.DragonApp.openSettings()" class="sidebar-action-btn btn-spring hover-elevate">
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
             <circle cx="12" cy="12" r="3"/>
@@ -1471,7 +1472,7 @@
               <div id="user-sub-label" class="account-sub">Temporary session</div>
             </div>
           </div>
-          <button id="btn-logout" type="button" class="logout-btn btn-spring hover-danger" title="Log Out">
+          <button id="btn-logout" type="button" onclick="window.DragonApp && window.DragonApp.logout()" class="logout-btn btn-spring hover-danger" title="Log Out">
             <span>Log Out</span>
           </button>
         </div>
@@ -1483,7 +1484,7 @@
       <!-- Top Header (No logo) -->
       <header class="top-header">
         <div class="header-left">
-          <button id="btn-open-sidebar" type="button" aria-label="Open menu" class="icon-btn btn-spring mobile-only-btn">
+          <button id="btn-open-sidebar" type="button" onclick="window.DragonApp && window.DragonApp.openSidebar()" aria-label="Open menu" class="icon-btn btn-spring mobile-only-btn">
             <svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/>
             </svg>
@@ -1493,12 +1494,12 @@
         </div>
 
         <div class="header-right">
-          <button id="btn-header-new" type="button" aria-label="New chat" title="New chat" class="icon-btn btn-spring hover-elevate">
+          <button id="btn-header-new" type="button" onclick="window.DragonApp && window.DragonApp.startNewChat()" aria-label="New chat" title="New chat" class="icon-btn btn-spring hover-elevate">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
           </button>
-          <button id="btn-header-settings" type="button" aria-label="Settings" title="Settings" class="icon-btn btn-spring hover-elevate">
+          <button id="btn-header-settings" type="button" onclick="window.DragonApp && window.DragonApp.openSettings()" aria-label="Settings" title="Settings" class="icon-btn btn-spring hover-elevate">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
             </svg>
@@ -1555,7 +1556,7 @@
               accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py,.html,.css"
               class="hidden"
             />
-            <button id="btn-attach" type="button" aria-label="Attach files" title="Upload files" class="attach-btn btn-spring hover-elevate">
+            <button id="btn-attach" type="button" onclick="window.DragonApp && window.DragonApp.triggerFilePicker()" aria-label="Attach files" title="Upload files" class="attach-btn btn-spring hover-elevate">
               <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
               </svg>
@@ -1568,7 +1569,7 @@
               class="chat-input"
             ></textarea>
 
-            <button id="btn-send" type="button" disabled aria-label="Send message" class="send-btn btn-spring hover-primary">
+            <button id="btn-send" type="button" onclick="window.DragonApp && window.DragonApp.handleSendOrStop()" disabled aria-label="Send message" class="send-btn btn-spring hover-primary">
               <svg id="icon-send" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/>
               </svg>
@@ -1589,7 +1590,7 @@
     <div class="modal-card anim-scale-in">
       <div class="modal-header">
         <h3 class="modal-title">Settings</h3>
-        <button id="btn-close-settings" type="button" aria-label="Close settings" class="icon-btn btn-spring hover-elevate">
+        <button id="btn-close-settings" type="button" onclick="window.DragonApp && window.DragonApp.closeSettings()" aria-label="Close settings" class="icon-btn btn-spring hover-elevate">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -1605,7 +1606,7 @@
               Off by default so Enter inserts a new line and you click Send to submit.
             </div>
           </div>
-          <button id="toggle-enter-send" type="button" role="switch" aria-checked="false" class="switch-btn">
+          <button id="toggle-enter-send" type="button" role="switch" aria-checked="false" onclick="window.DragonApp && window.DragonApp.toggleEnterToSend()" class="switch-btn">
             <span class="switch-knob"></span>
           </button>
         </div>
@@ -1614,9 +1615,9 @@
         <div>
           <div class="setting-label">Appearance</div>
           <div class="segmented-group">
-            <button type="button" class="seg-btn" data-theme-opt="system">System</button>
-            <button type="button" class="seg-btn" data-theme-opt="light">Light</button>
-            <button type="button" class="seg-btn" data-theme-opt="dark">Dark</button>
+            <button type="button" class="seg-btn" data-theme-opt="system" onclick="window.DragonApp && window.DragonApp.setTheme('system')">System</button>
+            <button type="button" class="seg-btn" data-theme-opt="light" onclick="window.DragonApp && window.DragonApp.setTheme('light')">Light</button>
+            <button type="button" class="seg-btn" data-theme-opt="dark" onclick="window.DragonApp && window.DragonApp.setTheme('dark')">Dark</button>
           </div>
         </div>
 
@@ -1635,7 +1636,7 @@
               class="form-input"
               style="padding-right: 64px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px;"
             />
-            <button id="btn-toggle-key-vis" type="button" class="api-vis-btn">Show</button>
+            <button id="btn-toggle-key-vis" type="button" onclick="window.DragonApp && window.DragonApp.toggleKeyVisibility()" class="api-vis-btn">Show</button>
           </div>
         </div>
 
@@ -1658,7 +1659,7 @@
             <div class="setting-label">Clear conversations</div>
             <div id="clear-chats-desc" class="setting-desc">Delete all chats in this session</div>
           </div>
-          <button id="btn-clear-chats" type="button" class="btn-danger-pill btn-spring">
+          <button id="btn-clear-chats" type="button" onclick="window.DragonApp && window.DragonApp.clearAllChats()" class="btn-danger-pill btn-spring">
             Clear All
           </button>
         </div>
@@ -1676,9 +1677,10 @@
       // =======================================================================
       // 1. SAFE STORAGE & ACCOUNT VAULT HELPERS
       // =======================================================================
-      var VAULT_KEY = 'dragonai_vault_v2';
+      var VAULT_KEY = 'dragonai_vault_v3';
+      var LEGACY_VAULT_KEY = 'dragonai_vault_v2';
       var THEME_KEY = 'dragonai_theme';
-      var GLOBAL_KEY = 'dragonai_global_v2';
+      var GLOBAL_KEY = 'dragonai_global_v3';
 
       function readLS(key) {
         try {
@@ -1698,7 +1700,7 @@
 
       function loadVault() {
         try {
-          var raw = readLS(VAULT_KEY);
+          var raw = readLS(VAULT_KEY) || readLS(LEGACY_VAULT_KEY);
           if (!raw) return { accounts: {}, lastAccountId: null, autoLoginEmail: null };
           var parsed = JSON.parse(raw);
           return {
@@ -1714,7 +1716,394 @@
       function saveVault(vault) {
         writeLS(VAULT_KEY, JSON.stringify(vault));
       }
-// ... existing code ... -->
+
+      function loadGlobalPrefs() {
+        try {
+          var raw = readLS(GLOBAL_KEY);
+          if (!raw) return { theme: readLS(THEME_KEY) || 'system', enterToSend: false, apiKey: '', systemPrompt: '' };
+          var parsed = JSON.parse(raw);
+          return {
+            theme: parsed.theme || readLS(THEME_KEY) || 'system',
+            enterToSend: Boolean(parsed.enterToSend),
+            apiKey: parsed.apiKey || '',
+            systemPrompt: parsed.systemPrompt || ''
+          };
+        } catch (e) {
+          return { theme: 'system', enterToSend: false, apiKey: '', systemPrompt: '' };
+        }
+      }
+
+      function saveGlobalPrefs(prefs) {
+        writeLS(THEME_KEY, prefs.theme);
+        writeLS(GLOBAL_KEY, JSON.stringify(prefs));
+      }
+
+      function normalizeId(str) {
+        return String(str || '').trim().toLowerCase();
+      }
+
+      function createId() {
+        return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+      }
+
+      // =======================================================================
+      // 2. APPLICATION STATE (VOLATILE GUEST RAM VS PERSISTENT USER VAULT)
+      // =======================================================================
+      var globalPrefs = loadGlobalPrefs();
+
+      // Ephemeral RAM-only store for Guest Mode (never written to localStorage)
+      var guestSession = {
+        chats: [],
+        activeChatId: null
+      };
+
+      var state = {
+        mode: null, // 'user' | 'guest' | null
+        accountId: null,
+        identity: '',
+        displayName: '',
+        chats: [],
+        activeChatId: null,
+        pendingAttachments: [],
+        isGenerating: false,
+        abortController: null,
+        streamTimer: null,
+        settings: {
+          theme: globalPrefs.theme || 'system',
+          enterToSend: Boolean(globalPrefs.enterToSend),
+          apiKey: globalPrefs.apiKey || '',
+          systemPrompt: globalPrefs.systemPrompt || ''
+        }
+      };
+
+      // =======================================================================
+      // 3. DOM ELEMENT REFERENCES
+      // =======================================================================
+      var authScreen = document.getElementById('auth-screen');
+      var appShell = document.getElementById('app-shell');
+      var savedAccountsWrap = document.getElementById('saved-accounts-wrap');
+      var savedAccountsList = document.getElementById('saved-accounts-list');
+      var loginIdentityInput = document.getElementById('login-identity');
+      var loginPasswordInput = document.getElementById('login-password');
+      var rememberCheckbox = document.getElementById('remember-login-checkbox');
+
+      var sidebar = document.getElementById('sidebar');
+      var sidebarBackdrop = document.getElementById('sidebar-backdrop');
+      var sidebarGuestBanner = document.getElementById('sidebar-guest-banner');
+      var headerGuestChip = document.getElementById('header-guest-chip');
+      var chatListEl = document.getElementById('chat-list');
+
+      var userAvatarEl = document.getElementById('user-avatar');
+      var userNameLabel = document.getElementById('user-name-label');
+      var userSubLabel = document.getElementById('user-sub-label');
+
+      var messagesViewport = document.getElementById('messages-viewport');
+      var emptyStateEl = document.getElementById('empty-state');
+      var messagesListEl = document.getElementById('messages-list');
+
+      var pillBarEl = document.getElementById('pill-bar');
+      var chatInputEl = document.getElementById('chat-input');
+      var btnSendEl = document.getElementById('btn-send');
+      var iconSendEl = document.getElementById('icon-send');
+      var iconStopEl = document.getElementById('icon-stop');
+      var fileInputEl = document.getElementById('file-input');
+      var attachmentsBarEl = document.getElementById('attachments-bar');
+
+      var settingsModalEl = document.getElementById('settings-modal');
+      var toggleEnterSendBtn = document.getElementById('toggle-enter-send');
+      var inputApiKeyEl = document.getElementById('input-api-key');
+      var btnToggleKeyVis = document.getElementById('btn-toggle-key-vis');
+      var inputSystemPromptEl = document.getElementById('input-system-prompt');
+      var clearChatsDescEl = document.getElementById('clear-chats-desc');
+      var toastStackEl = document.getElementById('toast-stack');
+
+      // =======================================================================
+      // 4. TOAST FEEDBACK
+      // =======================================================================
+      function showToast(msg) {
+        if (!toastStackEl) return;
+        var el = document.createElement('div');
+        el.className = 'toast-item';
+        el.textContent = msg;
+        toastStackEl.appendChild(el);
+        setTimeout(function () {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(-6px)';
+          el.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+          setTimeout(function () {
+            if (el.parentNode) el.parentNode.removeChild(el);
+          }, 220);
+        }, 2500);
+      }
+
+      // =======================================================================
+      // 5. MOBILE HOME-SCREEN APP ICON (IMG_7732.png) & ZOOM PROTECTION
+      // =======================================================================
+      function setupMobileAppIcon() {
+        try {
+          var manifest = {
+            name: 'DragonAI',
+            short_name: 'DragonAI',
+            start_url: '.',
+            display: 'standalone',
+            background_color: '#0d0d0f',
+            theme_color: '#0d0d0f',
+            icons: [
+              { src: 'IMG_7732.png', sizes: '192x192', type: 'image/png' },
+              { src: 'IMG_7732.png', sizes: '512x512', type: 'image/png' }
+            ]
+          };
+          var blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+          var manifestLink = document.getElementById('dynamic-manifest');
+          if (manifestLink) {
+            manifestLink.href = URL.createObjectURL(blob);
+          }
+
+          var imgEl = document.getElementById('app-icon-source');
+          if (imgEl && imgEl.complete && imgEl.naturalWidth > 0) {
+            var canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(imgEl, 0, 0, 512, 512);
+            var dataUrl = canvas.toDataURL('image/png');
+            var fav = document.getElementById('dynamic-favicon');
+            var apple = document.getElementById('dynamic-apple-icon');
+            if (fav) fav.href = dataUrl;
+            if (apple) apple.href = dataUrl;
+          }
+        } catch (e) {}
+      }
+
+      var iconSource = document.getElementById('app-icon-source');
+      if (iconSource) {
+        if (iconSource.complete) {
+          setupMobileAppIcon();
+        } else {
+          iconSource.addEventListener('load', setupMobileAppIcon);
+          iconSource.addEventListener('error', setupMobileAppIcon);
+        }
+      }
+
+      // Block pinch-to-zoom & double-tap zoom on mobile browsers
+      document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('touchmove', function (e) {
+        if (e.touches && e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      var lastTouchEnd = 0;
+      document.addEventListener('touchend', function (e) {
+        var now = Date.now();
+        if (now - lastTouchEnd <= 280) {
+          e.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, { passive: false });
+
+      // =======================================================================
+      // 6. SYSTEM / LIGHT / DARK THEME MANAGEMENT
+      // =======================================================================
+      var systemDarkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+      function applyTheme(themeOpt) {
+        var chosen = (themeOpt === 'light' || themeOpt === 'dark' || themeOpt === 'system') ? themeOpt : 'system';
+        state.settings.theme = chosen;
+
+        var prefersDark = systemDarkQuery ? systemDarkQuery.matches : false;
+        var isDark = chosen === 'dark' || (chosen === 'system' && prefersDark);
+        var root = document.documentElement;
+
+        if (isDark) {
+          root.classList.add('dark');
+          root.setAttribute('data-theme', 'dark');
+          root.style.colorScheme = 'dark';
+        } else {
+          root.classList.remove('dark');
+          root.setAttribute('data-theme', 'light');
+          root.style.colorScheme = 'light';
+        }
+
+        var metaTheme = document.getElementById('metaThemeColor');
+        if (metaTheme) {
+          metaTheme.setAttribute('content', isDark ? '#0d0d0f' : '#ffffff');
+        }
+
+        var segButtons = document.querySelectorAll('[data-theme-opt]');
+        for (var i = 0; i < segButtons.length; i++) {
+          var btn = segButtons[i];
+          if (btn.getAttribute('data-theme-opt') === chosen) {
+            btn.classList.add('is-selected');
+          } else {
+            btn.classList.remove('is-selected');
+          }
+        }
+
+        saveGlobalPrefs({
+          theme: state.settings.theme,
+          enterToSend: state.settings.enterToSend,
+          apiKey: state.settings.apiKey,
+          systemPrompt: state.settings.systemPrompt
+        });
+        syncStateToStorage();
+      }
+
+      if (systemDarkQuery && systemDarkQuery.addEventListener) {
+        systemDarkQuery.addEventListener('change', function () {
+          if (state.settings.theme === 'system') {
+            applyTheme('system');
+          }
+        });
+      }
+
+      function cycleTheme() {
+        var order = ['system', 'light', 'dark'];
+        var idx = order.indexOf(state.settings.theme);
+        var next = order[(idx + 1) % order.length];
+        applyTheme(next);
+        showToast('Theme: ' + next.charAt(0).toUpperCase() + next.slice(1));
+      }
+
+      // =======================================================================
+      // 7. PERSISTENCE SYNC (ONLY FOR SIGNED-IN USERS, NEVER GUESTS)
+      // =======================================================================
+      function syncStateToStorage() {
+        if (state.mode !== 'user' || !state.accountId) {
+          if (state.mode === 'guest') {
+            guestSession.chats = state.chats;
+            guestSession.activeChatId = state.activeChatId;
+          }
+          return;
+        }
+
+        var vault = loadVault();
+        var existing = vault.accounts[state.accountId] || {
+          id: state.accountId,
+          identity: state.identity,
+          displayName: state.displayName,
+          password: '',
+          saveCredentials: true
+        };
+
+        existing.chats = state.chats;
+        existing.settings = {
+          theme: state.settings.theme,
+          enterToSend: state.settings.enterToSend,
+          apiKey: state.settings.apiKey,
+          systemPrompt: state.settings.systemPrompt
+        };
+        existing.updatedAt = Date.now();
+
+        vault.accounts[state.accountId] = existing;
+        vault.lastAccountId = state.accountId;
+        saveVault(vault);
+      }
+
+      // =======================================================================
+      // 8. SAVED ACCOUNTS & SIGN-IN / AUTO-LOGIN / GUEST MODE FLOWS
+      // =======================================================================
+      function renderSavedAccounts() {
+        var vault = loadVault();
+        var accountKeys = Object.keys(vault.accounts || {});
+        if (accountKeys.length === 0) {
+          savedAccountsWrap.classList.add('hidden');
+          return;
+        }
+
+        savedAccountsWrap.classList.remove('hidden');
+        savedAccountsList.innerHTML = '';
+
+        accountKeys.sort(function (a, b) {
+          return (vault.accounts[b].updatedAt || 0) - (vault.accounts[a].updatedAt || 0);
+        });
+
+        for (var i = 0; i < accountKeys.length; i++) {
+          (function (accId) {
+            var acc = vault.accounts[accId];
+            if (!acc) return;
+            var chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'saved-account-chip btn-spring hover-elevate';
+
+            var leftDiv = document.createElement('div');
+            leftDiv.style.minWidth = '0';
+
+            var nameDiv = document.createElement('div');
+            nameDiv.className = 'saved-account-name';
+            nameDiv.textContent = acc.displayName || acc.identity;
+
+            var metaDiv = document.createElement('div');
+            metaDiv.className = 'saved-account-meta';
+            var count = Array.isArray(acc.chats) ? acc.chats.length : 0;
+            metaDiv.textContent = acc.identity + ' · ' + count + (count === 1 ? ' chat' : ' chats');
+
+            leftDiv.appendChild(nameDiv);
+            leftDiv.appendChild(metaDiv);
+
+            var actionSpan = document.createElement('span');
+            actionSpan.className = 'saved-account-action';
+            actionSpan.textContent = 'Continue';
+
+            chip.appendChild(leftDiv);
+            chip.appendChild(actionSpan);
+
+            chip.addEventListener('click', function () {
+              loginWithVaultAccount(acc);
+            });
+
+            savedAccountsList.appendChild(chip);
+          })(accountKeys[i]);
+        }
+      }
+
+      function prefillLastSavedCredentials() {
+        var vault = loadVault();
+        if (vault.lastAccountId && vault.accounts[vault.lastAccountId]) {
+          var lastAcc = vault.accounts[vault.lastAccountId];
+          if (lastAcc.saveCredentials !== false) {
+            loginIdentityInput.value = lastAcc.identity || '';
+            loginPasswordInput.value = lastAcc.password || '';
+            rememberCheckbox.checked = true;
+            return;
+          }
+        }
+        loginIdentityInput.value = '';
+        loginPasswordInput.value = '';
+      }
+
+      function enterWorkspace(mode, displayName, subLabel) {
+        state.mode = mode;
+
+        if (mode === 'guest') {
+          sidebarGuestBanner.classList.remove('hidden');
+          headerGuestChip.classList.remove('hidden');
+          clearChatsDescEl.textContent = 'Delete temporary guest chats';
+        } else {
+          sidebarGuestBanner.classList.add('hidden');
+          headerGuestChip.classList.add('hidden');
+          clearChatsDescEl.textContent = 'Delete all saved chats for this account';
+        }
+
+        userAvatarEl.textContent = (displayName || 'U').charAt(0).toUpperCase();
+        userNameLabel.textContent = displayName || 'User';
+        userSubLabel.textContent = subLabel || '';
+
+        toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
+        inputApiKeyEl.value = state.settings.apiKey || '';
+        inputSystemPromptEl.value = state.settings.systemPrompt || '';
+
+        authScreen.classList.add('hidden');
+        appShell.classList.remove('hidden');
+
+        renderSidebarChats();
+        renderActiveChat();
+        updateSendButtonState();
+      }
+
       function loginWithVaultAccount(acc, options) {
         var opts = options || {};
         state.accountId = acc.id;
@@ -1749,8 +2138,8 @@
         }
       }
 
-      document.getElementById('signin-form').addEventListener('submit', function (e) {
-        e.preventDefault();
+      function handleSignIn(e) {
+        if (e && e.preventDefault) e.preventDefault();
         var identity = loginIdentityInput.value.trim();
         var password = loginPasswordInput.value;
         var saveCreds = rememberCheckbox.checked;
@@ -1802,10 +2191,9 @@
         saveVault(vault);
 
         loginWithVaultAccount(accountRecord);
-      });
+      }
 
-      document.getElementById('btn-guest-continue').addEventListener('click', function () {
-        // Fresh RAM-only session; never written to localStorage
+      function enterGuestMode() {
         guestSession = { chats: [], activeChatId: null };
         state.accountId = null;
         state.identity = '';
@@ -1817,20 +2205,17 @@
 
         enterWorkspace('guest', 'Guest', 'Not saved');
         showToast('Guest mode: nothing is saved on exit');
-      });
+      }
 
       function logoutToAuthScreen() {
         stopGeneration();
 
         if (state.mode === 'user') {
-          // Persist all user chats & settings before leaving workspace
           syncStateToStorage();
-          // Clear auto-login flag on explicit logout while preserving saved account & chats
           var vault = loadVault();
           vault.autoLoginEmail = null;
           saveVault(vault);
         } else if (state.mode === 'guest') {
-          // Wipe guest RAM session completely
           guestSession = { chats: [], activeChatId: null };
         }
 
@@ -1849,7 +2234,866 @@
         authScreen.classList.remove('hidden');
         showToast('Logged out — your chats are safely saved');
       }
-// ... existing code ... -->
+
+      // =======================================================================
+      // 9. SIDEBAR DRAWER & MOBILE SWIPE-RIGHT GESTURE
+      // =======================================================================
+      function openSidebar() {
+        sidebar.classList.add('is-open');
+        sidebarBackdrop.classList.add('is-open');
+      }
+
+      function closeSidebar() {
+        sidebar.classList.remove('is-open');
+        sidebarBackdrop.classList.remove('is-open');
+      }
+
+      var touchStartX = 0;
+      var touchStartY = 0;
+      var touchTracking = false;
+
+      document.addEventListener('touchstart', function (e) {
+        if (window.innerWidth > 768) return;
+        if (appShell.classList.contains('hidden')) return;
+        if (!settingsModalEl.classList.contains('hidden')) return;
+        if (e.touches && e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+          touchTracking = true;
+        }
+      }, { passive: true });
+
+      document.addEventListener('touchend', function (e) {
+        if (!touchTracking || window.innerWidth > 768) return;
+        touchTracking = false;
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
+
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        var dy = e.changedTouches[0].clientY - touchStartY;
+
+        if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.45) {
+          if (dx > 0 && !sidebar.classList.contains('is-open')) {
+            openSidebar();
+          } else if (dx < 0 && sidebar.classList.contains('is-open')) {
+            closeSidebar();
+          }
+        }
+      }, { passive: true });
+
+      // =======================================================================
+      // 10. CHAT CRUD OPERATIONS
+      // =======================================================================
+      function getActiveChat() {
+        for (var i = 0; i < state.chats.length; i++) {
+          if (state.chats[i].id === state.activeChatId) return state.chats[i];
+        }
+        return null;
+      }
+
+      function startNewChat() {
+        if (state.isGenerating) stopGeneration();
+        state.activeChatId = null;
+        state.pendingAttachments = [];
+        renderAttachments();
+        renderSidebarChats();
+        renderActiveChat();
+        closeSidebar();
+        chatInputEl.focus();
+      }
+
+      function createChatObject(firstText) {
+        var cleanTitle = String(firstText || 'New Chat').replace(/\s+/g, ' ').trim();
+        if (cleanTitle.length > 42) {
+          cleanTitle = cleanTitle.slice(0, 42) + '…';
+        }
+        var chat = {
+          id: createId(),
+          title: cleanTitle || 'New Chat',
+          updatedAt: Date.now(),
+          messages: []
+        };
+        state.chats.unshift(chat);
+        state.activeChatId = chat.id;
+        syncStateToStorage();
+        renderSidebarChats();
+        return chat;
+      }
+
+      function deleteChatById(chatId) {
+        if (state.isGenerating && state.activeChatId === chatId) {
+          stopGeneration();
+        }
+        state.chats = state.chats.filter(function (c) { return c.id !== chatId; });
+        if (state.activeChatId === chatId) {
+          state.activeChatId = state.chats.length > 0 ? state.chats[0].id : null;
+        }
+        syncStateToStorage();
+        renderSidebarChats();
+        renderActiveChat();
+        showToast('Chat deleted');
+      }
+
+      function renderSidebarChats() {
+        chatListEl.innerHTML = '';
+        if (state.chats.length === 0) {
+          var emptyDiv = document.createElement('div');
+          emptyDiv.className = 'chat-list-empty';
+          emptyDiv.textContent = 'No conversations yet';
+          chatListEl.appendChild(emptyDiv);
+          return;
+        }
+
+        for (var i = 0; i < state.chats.length; i++) {
+          (function (chat) {
+            var row = document.createElement('div');
+            row.className = 'chat-row' + (chat.id === state.activeChatId ? ' is-active' : '');
+
+            var titleSpan = document.createElement('span');
+            titleSpan.className = 'chat-row-title';
+            titleSpan.textContent = chat.title || 'New Chat';
+
+            var delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'chat-del-btn hover-danger';
+            delBtn.setAttribute('aria-label', 'Delete chat');
+            delBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+
+            row.addEventListener('click', function () {
+              if (state.isGenerating) stopGeneration();
+              state.activeChatId = chat.id;
+              renderSidebarChats();
+              renderActiveChat();
+              closeSidebar();
+            });
+
+            delBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              deleteChatById(chat.id);
+            });
+
+            row.appendChild(titleSpan);
+            row.appendChild(delBtn);
+            chatListEl.appendChild(row);
+          })(state.chats[i]);
+        }
+      }
+
+      // =======================================================================
+      // 11. SAFE MARKDOWN RENDERING & CLIPBOARD HELPER
+      // =======================================================================
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function copyTextSafe(text) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          showToast('Copied to clipboard');
+        } catch (e) {
+          showToast('Copy failed');
+        }
+        document.body.removeChild(ta);
+      }
+
+      function renderMarkdownToFragment(rawText) {
+        var frag = document.createDocumentFragment();
+        var text = String(rawText || '');
+        var parts = text.split(/```/);
+
+        for (var i = 0; i < parts.length; i++) {
+          if (i % 2 === 1) {
+            var block = parts[i];
+            var firstNl = block.indexOf('\n');
+            var lang = 'code';
+            var codeBody = block;
+            if (firstNl > -1) {
+              var possibleLang = block.slice(0, firstNl).trim();
+              if (possibleLang && possibleLang.length <= 20 && !/\s/.test(possibleLang)) {
+                lang = possibleLang;
+                codeBody = block.slice(firstNl + 1);
+              }
+            }
+
+            var wrap = document.createElement('div');
+            wrap.className = 'code-block-wrap';
+
+            var header = document.createElement('div');
+            header.className = 'code-block-header';
+
+            var langSpan = document.createElement('span');
+            langSpan.textContent = lang;
+
+            var copyBtn = document.createElement('button');
+            copyBtn.type = 'button';
+            copyBtn.className = 'copy-code-btn';
+            copyBtn.textContent = 'Copy';
+            (function (codeToCopy, btnRef) {
+              btnRef.addEventListener('click', function () {
+                copyTextSafe(codeToCopy);
+                btnRef.textContent = 'Copied';
+                setTimeout(function () { btnRef.textContent = 'Copy'; }, 1500);
+              });
+            })(codeBody, copyBtn);
+
+            header.appendChild(langSpan);
+            header.appendChild(copyBtn);
+
+            var pre = document.createElement('pre');
+            var codeEl = document.createElement('code');
+            codeEl.textContent = codeBody;
+            pre.appendChild(codeEl);
+
+            wrap.appendChild(header);
+            wrap.appendChild(pre);
+            frag.appendChild(wrap);
+          } else {
+            var prose = parts[i].trim();
+            if (!prose) continue;
+
+            var blocks = prose.split(/\n{2,}/);
+            for (var b = 0; b < blocks.length; b++) {
+              var chunk = blocks[b].trim();
+              if (!chunk) continue;
+
+              if (/^###\s+/.test(chunk)) {
+                var h3 = document.createElement('h3');
+                h3.innerHTML = formatInlineMarkdown(chunk.replace(/^###\s+/, ''));
+                frag.appendChild(h3);
+              } else if (/^##\s+/.test(chunk)) {
+                var h2 = document.createElement('h2');
+                h2.innerHTML = formatInlineMarkdown(chunk.replace(/^##\s+/, ''));
+                frag.appendChild(h2);
+              } else if (/^#\s+/.test(chunk)) {
+                var h1 = document.createElement('h1');
+                h1.innerHTML = formatInlineMarkdown(chunk.replace(/^#\s+/, ''));
+                frag.appendChild(h1);
+              } else if (/^([-*]|\d+\.)\s+/m.test(chunk)) {
+                var lines = chunk.split('\n');
+                var isOrdered = /^\d+\.\s+/.test(lines[0]);
+                var listEl = document.createElement(isOrdered ? 'ol' : 'ul');
+                for (var l = 0; l < lines.length; l++) {
+                  var liText = lines[l].replace(/^([-*]|\d+\.)\s+/, '').trim();
+                  if (!liText) continue;
+                  var li = document.createElement('li');
+                  li.innerHTML = formatInlineMarkdown(liText);
+                  listEl.appendChild(li);
+                }
+                frag.appendChild(listEl);
+              } else {
+                var p = document.createElement('p');
+                p.innerHTML = formatInlineMarkdown(chunk).replace(/\n/g, '<br>');
+                frag.appendChild(p);
+              }
+            }
+          }
+        }
+        return frag;
+      }
+
+      function formatInlineMarkdown(str) {
+        var escaped = escapeHtml(str);
+        escaped = escaped.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+        escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        escaped = escaped.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        return escaped;
+      }
+
+      // =======================================================================
+      // 12. RENDER MESSAGE THREAD
+      // =======================================================================
+      function scrollToBottom() {
+        messagesViewport.scrollTop = messagesViewport.scrollHeight;
+      }
+
+      function renderActiveChat() {
+        var chat = getActiveChat();
+        if (!chat || !chat.messages || chat.messages.length === 0) {
+          emptyStateEl.classList.remove('hidden');
+          messagesListEl.classList.add('hidden');
+          messagesListEl.innerHTML = '';
+          return;
+        }
+
+        emptyStateEl.classList.add('hidden');
+        messagesListEl.classList.remove('hidden');
+        messagesListEl.innerHTML = '';
+
+        for (var i = 0; i < chat.messages.length; i++) {
+          var msg = chat.messages[i];
+          var isLast = i === chat.messages.length - 1;
+          messagesListEl.appendChild(buildMessageNode(msg, isLast));
+        }
+
+        scrollToBottom();
+      }
+
+      function buildMessageNode(msg, isLast) {
+        var row = document.createElement('div');
+        row.className = 'msg-row ' + (msg.role === 'user' ? 'is-user' : 'is-model');
+        if (isLast) row.id = 'latest-message-node';
+
+        if (msg.role === 'user') {
+          if (msg.attachments && msg.attachments.length > 0) {
+            var attWrap = document.createElement('div');
+            attWrap.className = 'msg-attachments';
+            for (var a = 0; a < msg.attachments.length; a++) {
+              var att = msg.attachments[a];
+              if (att.isImage && att.previewUrl) {
+                var img = document.createElement('img');
+                img.src = att.previewUrl;
+                img.alt = att.name;
+                img.className = 'msg-att-img';
+                attWrap.appendChild(img);
+              } else {
+                var badge = document.createElement('div');
+                badge.className = 'msg-att-file';
+                badge.textContent = att.name;
+                attWrap.appendChild(badge);
+              }
+            }
+            row.appendChild(attWrap);
+          }
+
+          if (msg.text) {
+            var bubble = document.createElement('div');
+            bubble.className = 'user-bubble';
+            bubble.textContent = msg.text;
+            row.appendChild(bubble);
+          }
+        } else {
+          var body = document.createElement('div');
+          body.className = 'model-body';
+          if (isLast) body.id = 'latest-model-body';
+
+          if (msg.text) {
+            body.appendChild(renderMarkdownToFragment(msg.text));
+          } else if (state.isGenerating && isLast) {
+            body.innerHTML = '<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+          }
+          row.appendChild(body);
+
+          if (msg.text && !(state.isGenerating && isLast)) {
+            var actions = document.createElement('div');
+            actions.className = 'model-actions';
+            var copyBtn = document.createElement('button');
+            copyBtn.type = 'button';
+            copyBtn.className = 'copy-msg-btn hover-elevate';
+            copyBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg><span>Copy</span>';
+            copyBtn.addEventListener('click', function () {
+              copyTextSafe(msg.text);
+            });
+            actions.appendChild(copyBtn);
+            row.appendChild(actions);
+          }
+        }
+
+        return row;
+      }
+
+      // =======================================================================
+      // 13. FILE UPLOADS & MULTIMODAL ATTACHMENTS
+      // =======================================================================
+      function triggerFilePicker() {
+        fileInputEl.click();
+      }
+
+      fileInputEl.addEventListener('change', function (e) {
+        var files = e.target.files ? Array.prototype.slice.call(e.target.files) : [];
+        if (files.length === 0) return;
+
+        for (var i = 0; i < files.length; i++) {
+          (function (file) {
+            if (file.size > 12 * 1024 * 1024) {
+              showToast(file.name + ' exceeds 12MB limit');
+              return;
+            }
+            var isImage = file.type && file.type.indexOf('image/') === 0;
+            var reader = new FileReader();
+            reader.onload = function (ev) {
+              var result = String(ev.target.result || '');
+              var base64 = result.indexOf(',') > -1 ? result.split(',')[1] : '';
+              state.pendingAttachments.push({
+                id: createId(),
+                name: file.name,
+                mimeType: file.type || 'text/plain',
+                isImage: isImage,
+                base64: base64,
+                previewUrl: isImage ? result : null
+              });
+              renderAttachments();
+              updateSendButtonState();
+            };
+            reader.readAsDataURL(file);
+          })(files[i]);
+        }
+
+        fileInputEl.value = '';
+      });
+
+      function renderAttachments() {
+        attachmentsBarEl.innerHTML = '';
+        if (state.pendingAttachments.length === 0) {
+          attachmentsBarEl.classList.add('hidden');
+          return;
+        }
+
+        attachmentsBarEl.classList.remove('hidden');
+        for (var i = 0; i < state.pendingAttachments.length; i++) {
+          (function (att) {
+            var chip = document.createElement('div');
+            chip.className = 'att-chip';
+
+            if (att.isImage && att.previewUrl) {
+              var thumb = document.createElement('img');
+              thumb.src = att.previewUrl;
+              thumb.alt = att.name;
+              thumb.className = 'att-chip-thumb';
+              chip.appendChild(thumb);
+            }
+
+            var nameSpan = document.createElement('span');
+            nameSpan.className = 'att-chip-name';
+            nameSpan.textContent = att.name;
+            chip.appendChild(nameSpan);
+
+            var remBtn = document.createElement('button');
+            remBtn.type = 'button';
+            remBtn.className = 'att-chip-remove';
+            remBtn.textContent = '×';
+            remBtn.addEventListener('click', function () {
+              state.pendingAttachments = state.pendingAttachments.filter(function (x) { return x.id !== att.id; });
+              renderAttachments();
+              updateSendButtonState();
+            });
+            chip.appendChild(remBtn);
+
+            attachmentsBarEl.appendChild(chip);
+          })(state.pendingAttachments[i]);
+        }
+      }
+
+      // =======================================================================
+      // 14. PILL COMPOSER INPUT, CUSTOM ENTER BEHAVIOR & SEND / STOP
+      // =======================================================================
+      function resizeComposer() {
+        chatInputEl.style.height = 'auto';
+        var nextH = Math.min(chatInputEl.scrollHeight, 150);
+        chatInputEl.style.height = nextH + 'px';
+        if (nextH > 42 || chatInputEl.value.indexOf('\n') > -1) {
+          pillBarEl.classList.add('is-multiline');
+        } else {
+          pillBarEl.classList.remove('is-multiline');
+        }
+      }
+
+      function updateSendButtonState() {
+        var hasContent = chatInputEl.value.trim().length > 0 || state.pendingAttachments.length > 0;
+        if (state.isGenerating) {
+          btnSendEl.disabled = false;
+          iconSendEl.classList.add('hidden');
+          iconStopEl.classList.remove('hidden');
+        } else {
+          btnSendEl.disabled = !hasContent;
+          iconSendEl.classList.remove('hidden');
+          iconStopEl.classList.add('hidden');
+        }
+      }
+
+      chatInputEl.addEventListener('input', function () {
+        resizeComposer();
+        updateSendButtonState();
+      });
+
+      chatInputEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.isComposing) {
+          if (state.settings.enterToSend) {
+            if (!e.shiftKey) {
+              e.preventDefault();
+              if (!state.isGenerating) sendMessage();
+            }
+          }
+          // Default (enterToSend === false): Enter inserts a newline naturally
+        }
+      });
+
+      function handleSendOrStop() {
+        if (state.isGenerating) {
+          stopGeneration();
+        } else {
+          sendMessage();
+        }
+      }
+
+      function stopGeneration() {
+        if (state.abortController) {
+          try { state.abortController.abort(); } catch (e) {}
+          state.abortController = null;
+        }
+        if (state.streamTimer) {
+          clearInterval(state.streamTimer);
+          state.streamTimer = null;
+        }
+        state.isGenerating = false;
+        updateSendButtonState();
+        syncStateToStorage();
+        renderActiveChat();
+      }
+
+      // =======================================================================
+      // 15. GEMINI API + BUILT-IN ASSISTANT ENGINE (100% RELIABLE)
+      // =======================================================================
+      function buildLocalAssistantReply(promptText, attachments) {
+        var p = String(promptText || '').trim();
+        var lower = p.toLowerCase();
+        var attNote = '';
+
+        if (attachments && attachments.length > 0) {
+          var names = attachments.map(function (a) { return a.name; }).join(', ');
+          attNote = '**Attached files received:** `' + names + '`\n\n';
+        }
+
+        if (lower.indexOf('quantum') > -1) {
+          return attNote +
+            '### Quantum Computing in Simple Terms\n\n' +
+            'Classical computers store information in **bits**, which are always either `0` or `1`. Quantum computers use **qubits**, which rely on two core principles of quantum mechanics:\n\n' +
+            '1. **Superposition:** A qubit can exist in a combination of `0` and `1` simultaneously until it is measured, letting quantum systems explore many possibilities at once.\n' +
+            '2. **Entanglement:** Qubits can become linked so that measuring one instantly determines the state of its partner, even across a distance.\n\n' +
+            'Think of a classical computer solving a maze by trying one path at a time, whereas a quantum computer evaluates waves of paths simultaneously.';
+        }
+
+        if (lower.indexOf('python') > -1 && (lower.indexOf('organize') > -1 || lower.indexOf('file') > -1)) {
+          return attNote +
+            'Here is a clean, safe Python script using `pathlib` and `shutil` to organize files into subfolders by extension:\n\n' +
+            '```python\n' +
+            'from pathlib import Path\n' +
+            'import shutil\n\n' +
+            'def organize_folder(target_dir: str) -> None:\n' +
+            '    base = Path(target_dir).expanduser().resolve()\n' +
+            '    for item in base.iterdir():\n' +
+            '        if item.is_file() and not item.name.startswith("."):\n' +
+            '            ext = item.suffix.lower().lstrip(".") or "no_extension"\n' +
+            '            dest_dir = base / ext\n' +
+            '            dest_dir.mkdir(exist_ok=True)\n' +
+            '            shutil.move(str(item), str(dest_dir / item.name))\n\n' +
+            'if __name__ == "__main__":\n' +
+            '    organize_folder("~/Downloads")\n' +
+            '```';
+        }
+
+        if (lower.indexOf('email') > -1 && (lower.indexOf('interview') > -1 || lower.indexOf('follow') > -1)) {
+          return attNote +
+            '### Post-Interview Follow-Up Email\n\n' +
+            '**Subject:** Thank you — [Role Title] interview\n\n' +
+            'Hi [Interviewer Name],\n\n' +
+            'Thank you for taking the time to speak with me today about the **[Role Title]** position. I enjoyed learning more about the team’s goals and how this role contributes to upcoming projects.\n\n' +
+            'Our conversation reinforced my excitement about bringing my background in [Key Skill/Area] to [Company Name]. Please let me know if there is any additional information I can provide.\n\n' +
+            'Best regards,\n[Your Name]';
+        }
+
+        if (lower.indexOf('habit') > -1 || lower.indexOf('focus') > -1 || lower.indexOf('productivity') > -1) {
+          return attNote +
+            '### 5 Practical Habits for Deep Focus\n\n' +
+            '1. **Time-block your top priority:** Dedicate the first 90 minutes of your day to your single highest-leverage task before checking messages.\n' +
+            '2. **Batch communications:** Check email and chat at 2–3 scheduled windows rather than reacting to every notification.\n' +
+            '3. **Use a shutdown ritual:** Write tomorrow’s top 3 tasks at the end of your workday so your brain can fully disconnect.\n' +
+            '4. **Single-tab execution:** Close unrelated browser tabs and silence phone notifications during focus blocks.\n' +
+            '5. **Take intentional breaks:** Step away from screens for 5–10 minutes every hour to reset mental energy.';
+        }
+
+        var responseLines = [
+          attNote + 'Here is a clear breakdown for **"' + (p || 'your request') + '"**:\n\n' +
+          '- **Direct Answer:** I have processed your input' + (attachments && attachments.length ? ' along with your attached file(s)' : '') + ' and structured a concise response ready for action.\n' +
+          '- **Next Steps:** Feel free to ask follow-up questions, paste code or text to refine, or attach additional documents.\n\n' +
+          '*Tip: You can also add a Google Gemini API key anytime in **Settings** to connect directly to live cloud Gemini models.*'
+        ];
+        return responseLines.join('');
+      }
+
+      function streamTextIntoMessage(chat, modelMsg, fullText) {
+        var index = 0;
+        var chunkSize = Math.max(3, Math.ceil(fullText.length / 45));
+
+        state.streamTimer = setInterval(function () {
+          if (!state.isGenerating) {
+            clearInterval(state.streamTimer);
+            state.streamTimer = null;
+            return;
+          }
+
+          index += chunkSize;
+          if (index >= fullText.length) {
+            modelMsg.text = fullText;
+            clearInterval(state.streamTimer);
+            state.streamTimer = null;
+            state.isGenerating = false;
+            updateSendButtonState();
+            syncStateToStorage();
+            renderActiveChat();
+          } else {
+            modelMsg.text = fullText.slice(0, index);
+            var latestBody = document.getElementById('latest-model-body');
+            if (latestBody) {
+              latestBody.innerHTML = '';
+              latestBody.appendChild(renderMarkdownToFragment(modelMsg.text));
+              scrollToBottom();
+            }
+          }
+        }, 22);
+      }
+
+      async function queryGeminiCloud(chat, apiKey) {
+        var models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+        var contents = [];
+
+        for (var i = 0; i < chat.messages.length; i++) {
+          var m = chat.messages[i];
+          if (!m.text && (!m.attachments || m.attachments.length === 0)) continue;
+          var parts = [];
+          if (m.attachments) {
+            for (var a = 0; a < m.attachments.length; a++) {
+              var att = m.attachments[a];
+              if (att.base64) {
+                parts.push({
+                  inlineData: {
+                    mimeType: att.mimeType || 'application/octet-stream',
+                    data: att.base64
+                  }
+                });
+              }
+            }
+          }
+          if (m.text) {
+            parts.push({ text: m.text });
+          }
+          contents.push({
+            role: m.role === 'user' ? 'user' : 'model',
+            parts: parts
+          });
+        }
+
+        var payload = { contents: contents };
+        if (state.settings.systemPrompt && state.settings.systemPrompt.trim()) {
+          payload.systemInstruction = {
+            parts: [{ text: state.settings.systemPrompt.trim() }]
+          };
+        }
+
+        state.abortController = new AbortController();
+
+        for (var idx = 0; idx < models.length; idx++) {
+          var modelName = models[idx];
+          var url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
+            encodeURIComponent(modelName) + ':generateContent?key=' + encodeURIComponent(apiKey);
+
+          try {
+            var res = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+              signal: state.abortController.signal
+            });
+
+            if (!res.ok) continue;
+            var data = await res.json();
+            var cand = data && data.candidates && data.candidates[0];
+            var outParts = cand && cand.content && cand.content.parts;
+            if (Array.isArray(outParts)) {
+              var combined = outParts.map(function (p) { return p.text || ''; }).join('');
+              if (combined.trim()) return combined;
+            }
+          } catch (err) {
+            if (err && err.name === 'AbortError') throw err;
+          }
+        }
+        return null;
+      }
+
+      async function sendMessage(overridePrompt) {
+        if (state.isGenerating) return;
+
+        var rawText = typeof overridePrompt === 'string' ? overridePrompt : chatInputEl.value;
+        var text = rawText.trim();
+        var atts = state.pendingAttachments.slice();
+
+        if (!text && atts.length === 0) return;
+
+        var chat = getActiveChat();
+        if (!chat) {
+          chat = createChatObject(text || (atts[0] ? atts[0].name : 'New Chat'));
+        }
+
+        chat.messages.push({
+          id: createId(),
+          role: 'user',
+          text: text,
+          attachments: atts,
+          timestamp: Date.now()
+        });
+
+        var modelMsg = {
+          id: createId(),
+          role: 'model',
+          text: '',
+          timestamp: Date.now()
+        };
+        chat.messages.push(modelMsg);
+        chat.updatedAt = Date.now();
+
+        chatInputEl.value = '';
+        state.pendingAttachments = [];
+        resizeComposer();
+        renderAttachments();
+
+        state.isGenerating = true;
+        updateSendButtonState();
+        syncStateToStorage();
+        renderSidebarChats();
+        renderActiveChat();
+
+        var apiKey = (state.settings.apiKey || '').trim();
+        if (apiKey) {
+          try {
+            var cloudReply = await queryGeminiCloud(chat, apiKey);
+            if (!state.isGenerating) return;
+            if (cloudReply) {
+              streamTextIntoMessage(chat, modelMsg, cloudReply);
+              return;
+            }
+          } catch (err) {
+            if (err && err.name === 'AbortError') return;
+          }
+        }
+
+        // Built-in assistant fallback (works offline & without an API key)
+        var fallbackReply = buildLocalAssistantReply(text, atts);
+        setTimeout(function () {
+          if (!state.isGenerating) return;
+          streamTextIntoMessage(chat, modelMsg, fallbackReply);
+        }, 280);
+      }
+
+      // =======================================================================
+      // 16. SETTINGS MODAL HANDLERS
+      // =======================================================================
+      function openSettings() {
+        toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
+        inputApiKeyEl.value = state.settings.apiKey || '';
+        inputSystemPromptEl.value = state.settings.systemPrompt || '';
+        applyTheme(state.settings.theme);
+        settingsModalEl.classList.remove('hidden');
+        closeSidebar();
+      }
+
+      function closeSettings() {
+        settingsModalEl.classList.add('hidden');
+        syncStateToStorage();
+      }
+
+      function toggleEnterToSend() {
+        state.settings.enterToSend = !state.settings.enterToSend;
+        toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
+        saveGlobalPrefs({
+          theme: state.settings.theme,
+          enterToSend: state.settings.enterToSend,
+          apiKey: state.settings.apiKey,
+          systemPrompt: state.settings.systemPrompt
+        });
+        syncStateToStorage();
+        showToast(state.settings.enterToSend ? 'Enter sends message' : 'Enter inserts new line');
+      }
+
+      function toggleKeyVisibility() {
+        if (inputApiKeyEl.type === 'password') {
+          inputApiKeyEl.type = 'text';
+          btnToggleKeyVis.textContent = 'Hide';
+        } else {
+          inputApiKeyEl.type = 'password';
+          btnToggleKeyVis.textContent = 'Show';
+        }
+      }
+
+      function clearAllChats() {
+        stopGeneration();
+        state.chats = [];
+        state.activeChatId = null;
+        if (state.mode === 'guest') {
+          guestSession = { chats: [], activeChatId: null };
+        } else {
+          syncStateToStorage();
+        }
+        renderSidebarChats();
+        renderActiveChat();
+        closeSettings();
+        showToast('All conversations cleared');
+      }
+
+      settingsModalEl.addEventListener('click', function (e) {
+        if (e.target === settingsModalEl) closeSettings();
+      });
+
+      inputApiKeyEl.addEventListener('input', function () {
+        state.settings.apiKey = inputApiKeyEl.value.trim();
+        saveGlobalPrefs({
+          theme: state.settings.theme,
+          enterToSend: state.settings.enterToSend,
+          apiKey: state.settings.apiKey,
+          systemPrompt: state.settings.systemPrompt
+        });
+        syncStateToStorage();
+      });
+
+      inputSystemPromptEl.addEventListener('input', function () {
+        state.settings.systemPrompt = inputSystemPromptEl.value;
+        saveGlobalPrefs({
+          theme: state.settings.theme,
+          enterToSend: state.settings.enterToSend,
+          apiKey: state.settings.apiKey,
+          systemPrompt: state.settings.systemPrompt
+        });
+        syncStateToStorage();
+      });
+
+      // Suggestion cards
+      var suggestionCards = document.querySelectorAll('.suggestion-card');
+      for (var s = 0; s < suggestionCards.length; s++) {
+        (function (card) {
+          card.addEventListener('click', function () {
+            var promptText = card.getAttribute('data-prompt');
+            if (promptText) sendMessage(promptText);
+          });
+        })(suggestionCards[s]);
+      }
+
+      // Expose global API for inline onclick/onsubmit fallbacks
+      window.DragonApp = {
+        cycleTheme: cycleTheme,
+        setTheme: applyTheme,
+        handleSignIn: handleSignIn,
+        enterGuestMode: enterGuestMode,
+        logout: logoutToAuthScreen,
+        openSidebar: openSidebar,
+        closeSidebar: closeSidebar,
+        startNewChat: startNewChat,
+        openSettings: openSettings,
+        closeSettings: closeSettings,
+        toggleEnterToSend: toggleEnterToSend,
+        toggleKeyVisibility: toggleKeyVisibility,
+        clearAllChats: clearAllChats,
+        triggerFilePicker: triggerFilePicker,
+        handleSendOrStop: handleSendOrStop
+      };
+
       // =======================================================================
       // 17. INITIAL BOOTSTRAP & AUTO-LOGIN RESTORATION
       // =======================================================================

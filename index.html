@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="DragonAI" />
+  <meta name="theme-color" content="#ffffff" id="metaThemeColor" />
+  <title>DragonAI</title>
+
+  <!-- Synchronous Theme Detection (Runs before first paint to prevent light-mode flash) -->
+  <script>
+    (function () {
+      try {
+        var savedTheme = 'system';
+        try {
+          var stored = window.localStorage ? window.localStorage.getItem('dragonai_theme') : null;
+          if (stored === 'light' || stored === 'dark' || stored === 'system') {
+            savedTheme = stored;
+          }
+        } catch (e) {}
+
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = savedTheme === 'dark' || (savedTheme === 'system' && prefersDark);
+        var root = document.documentElement;
+
+        if (isDark) {
+          root.classList.add('dark');
+          root.setAttribute('data-theme', 'dark');
+          root.style.colorScheme = 'dark';
+        } else {
+          root.classList.remove('dark');
+          root.setAttribute('data-theme', 'light');
+          root.style.colorScheme = 'light';
+        }
+
+        var metaTheme = document.getElementById('metaThemeColor');
+        if (metaTheme) {
+          metaTheme.setAttribute('content', isDark ? '#141416' : '#ffffff');
+        }
+      } catch (err) {}
+    })();
+  </script>
+
+  <!-- Dynamic Favicon, Apple Touch Icon & Web Manifest placeholders -->
+  <link id="dynamic-favicon" rel="icon" type="image/png" href="IMG_7732.png" />
+  <link id="dynamic-apple-icon" rel="apple-touch-icon" href="IMG_7732.png" />
+  <link id="dynamic-manifest" rel="manifest" />
+
+  <!-- Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: {
+              light: '#ffffff',
+              subtle: '#f9f9fb',
+              dark: '#141416',
+              darkSubtle: '#1c1c1f',
+              darkElevated: '#252529',
+            },
+            accent: {
+              cyan: '#00b4ff',
+              blue: '#2563eb',
+            }
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'fade-in': 'fadeIn 0.25s ease-out forwards',
+            'scale-in': 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(12px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            scaleIn: {
+              '0%': { opacity: '0', transform: 'scale(0.95)' },
+              '100%': { opacity: '1', transform: 'scale(1)' },
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Markdown & Code Highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <style>
+    /* Strict mobile zoom & bounce prevention */
+    html, body {
+      touch-action: pan-x pan-y;
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior: none;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Prevent iOS auto-zoom on focus by guaranteeing >= 16px font size */
+    textarea, input, select {
+      font-size: 16px !important;
+      touch-action: manipulation;
+    }
+
+    button, a {
+      touch-action: manipulation;
+    }
+
+    /* Disable sticky hover states on mobile / touch screens */
+    @media (hover: none), (pointer: coarse) {
+      button:hover,
+      a:hover,
+      .suggestion-chip:hover {
+        background-color: inherit !important;
+        color: inherit !important;
+        border-color: inherit !important;
+        opacity: inherit !important;
+      }
+      #btn-send-message:hover {
+        background-color: #18181b !important;
+      }
+      html.dark #btn-send-message:hover {
+        background-color: #ffffff !important;
+      }
+    }
+
+    /* Custom sleek scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.35);
+      border-radius: 9999px;
+    }
+
+    /* Spring button micro-interaction */
+    .btn-spring {
+      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+    .btn-spring:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    /* Typing dots animation */
+    .typing-dot {
+      animation: typingBounce 1.4s infinite ease-in-out both;
+    }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Markdown Typography Styling */
+    .markdown-body {
+      line-height: 1.65;
+      word-wrap: break-word;
+    }
+    .markdown-body p {
+      margin-bottom: 0.85rem;
+    }
+    .markdown-body p:last-child {
+      margin-bottom: 0;
+    }
+    .markdown-body ul, .markdown-body ol {
+      margin: 0.65rem 0 0.85rem 1.4rem;
+    }
+    .markdown-body ul { list-style-type: disc; }
+    .markdown-body ol { list-style-type: decimal; }
+    .markdown-body li { margin-bottom: 0.3rem; }
+    .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .markdown-body h1 { font-size: 1.35rem; }
+    .markdown-body h2 { font-size: 1.2rem; }
+    .markdown-body h3 { font-size: 1.05rem; }
+    .markdown-body code:not(pre code) {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      padding: 0.15rem 0.38rem;
+      border-radius: 0.375rem;
+      background-color: rgba(125, 125, 135, 0.16);
+    }
+    .markdown-body pre {
+      margin: 0.9rem 0;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background: #18181b;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .markdown-body pre code {
+      display: block;
+      padding: 0.95rem 1rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      background: transparent;
+      color: #f4f4f5;
+    }
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.9rem 0;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      display: block;
+    }
+    .markdown-body th, .markdown-body td {
+      border: 1px solid rgba(156, 163, 175, 0.25);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .markdown-body th {
+      background-color: rgba(156, 163, 175, 0.1);
+      font-weight: 600;
+    }
+    .markdown-body blockquote {
+      border-left: 3px solid #00b4ff;
+      padding-left: 0.9rem;
+      margin: 0.8rem 0;
+      opacity: 0.85;
+    }
+    .markdown-body a {
+      color: #0284c7;
+      text-decoration: underline;
+    }
+    html.dark .markdown-body a {
+      color: #38bdf8;
+    }
+
+    /* Safe area padding for iOS */
+    .pb-safe {
+      padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    }
+    .pt-safe {
+      padding-top: max(0.5rem, env(safe-area-inset-top));
+    }
+
+    /* Frosted glass transparency blur for bottom composer dock */
+    .composer-dock-blur {
+      background-color: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    html.dark .composer-dock-blur {
+      background-color: rgba(20, 20, 22, 0.75);
+    }
+
+    /* ChatGPT-style pill message bar */
+    .pill-composer {
+      border-radius: 9999px;
+      transition: border-radius 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .pill-composer.is-multiline {
+      border-radius: 26px;
+    }
+
+    /* Explicit Overlay & Modal Pointer-Events Safety Guards */
+    .overlay-inactive {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    .overlay-active {
+      pointer-events: auto !important;
+      visibility: visible !important;
+    }
+  </style>
+</head>
+<body class="bg-surface-light text-zinc-900 dark:bg-surface-dark dark:text-zinc-100 antialiased selection:bg-sky-500/20 selection:text-sky-600 dark:selection:text-sky-300">
+
+  <!-- Hidden App Icon Source Image (IMG_7732.png) used strictly for mobile home-screen icon & manifest -->
+  <img id="app-icon-source" src="IMG_7732.png" alt="" aria-hidden="true" class="hidden" />
+
+  <!-- Fallback SVG if IMG_7732.png is unavailable in preview -->
+  <svg id="dragon-fallback-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="hidden">
+    <defs>
+      <radialGradient id="sparkleGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffffff" />
+        <stop offset="32%" stop-color="#7dd3fc" />
+        <stop offset="70%" stop-color="#0284c7" />
+        <stop offset="100%" stop-color="#1d4ed8" />
+      </radialGradient>
+    </defs>
+    <rect width="512" height="512" rx="112" fill="#ffffff" />
+    <g transform="translate(24, 38) scale(0.86)">
+      <path fill="#09090b" d="M188 58c-12 22-30 36-52 44 18-18 28-36 30-56-16 14-34 24-54 30-14 4-28 14-34 28-8-2-16 2-20 10-4 8-2 18 4 24 8 6 20 8 32 4 12-4 22-12 30-20 10-8 22-6 26 4 4 10-4 22-16 32-24 20-46 48-52 84-6 36 4 74 26 102-6-22-6-46 2-66 6 14 14 26 24 36-6-24-2-50 12-72 14-22 36-38 56-56 18-16 30-38 28-62-2-18-12-34-26-44 10-2 20 2 28 8-4-14-14-26-26-32 10-8 16-22 14-36-6 10-18 16-32 18z"/>
+      <path fill="#ffffff" d="M98 112c8-2 16 0 22 4-6 4-14 6-22 4-2-2-2-6 0-8z"/>
+      <path fill="#09090b" d="M168 258c-28 24-44 60-38 96 6 38 36 68 74 74 34 6 68-8 92-30-26 12-56 14-82 4-28-10-46-36-46-66 0-28 14-54 36-70 28-20 64-24 96-12 24 10 42 30 62 46 22 18 52 24 78 12 24-10 40-34 42-60 2-22-6-44-18-62l14-12-42-16-8 44 14-8c8 14 12 30 8 46-4 18-18 32-36 36-18 4-36-4-50-16-20-18-40-38-66-48-42-16-92-6-122 24z"/>
+      <path fill="#09090b" d="M214 156c36-24 82-36 126-34 38 2 76 14 108 36-34-10-70-12-104-6-32 6-62 20-88 40 34-14 72-18 108-10-36 4-70 18-98 40 28-10 58-12 88-6-34 6-66 22-90 46-12-34-26-72-50-106z"/>
+      <path fill="#09090b" d="M118 286c-14 26-16 58-4 86 10 24 30 44 54 54-16-16-26-38-26-62 0-26 10-50 26-68-18 2-36-2-50-10z"/>
+    </g>
+    <path fill="url(#sparkleGlow)" d="M352 46 C356 126, 376 146, 456 150 C376 154, 356 174, 352 254 C348 174, 328 154, 248 150 C328 146, 348 126, 352 46 Z" />
+  </svg>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2 pointer-events-none w-[92%] max-w-sm"></div>
+
+  <!-- ===================================================================== -->
+  <!-- 1. LANDING / AUTHENTICATION SCREEN (Interactive Immediately)          -->
+  <!-- ===================================================================== -->
+  <section id="auth-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-between bg-surface-light dark:bg-surface-dark px-6 py-10 transition-opacity duration-300 overlay-active">
+    <!-- Top Subtle Theme Cycle Toggle -->
+    <div class="w-full max-w-md flex justify-end animate-fade-in">
+      <button id="auth-theme-toggle" type="button" aria-label="Toggle Theme" class="btn-spring p-2.5 rounded-full text-zinc-500 md:hover:text-zinc-900 dark:text-zinc-400 dark:md:hover:text-zinc-100 md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800/70">
+        <svg id="auth-sun-icon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg id="auth-moon-icon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+
+    <!-- Center Brand & Actions (No logo in visible UI) -->
+    <div class="w-full max-w-sm flex flex-col items-center text-center my-auto">
+      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight text-zinc-900 dark:text-white animate-fade-up">
+        DragonAI
+      </h1>
+      <p class="mt-3 text-sm sm:text-base text-zinc-500 dark:text-zinc-400 max-w-xs leading-relaxed animate-fade-up" style="animation-delay: 70ms;">
+        Minimalist intelligence powered by Google Gemini. Sharp, fast, and distraction-free.
+      </p>
+
+      <!-- Auth Form / Action Buttons -->
+      <div id="auth-buttons-container" class="w-full mt-9 space-y-3 animate-fade-up" style="animation-delay: 140ms;">
+        <button id="btn-open-signin" type="button" class="btn-spring w-full py-3.5 px-5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-medium text-[15px] shadow-sm md:hover:opacity-95 flex items-center justify-center gap-2.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          <span>Sign In to Your Account</span>
+        </button>
+
+        <button id="btn-guest-mode" type="button" class="btn-spring w-full py-3.5 px-5 rounded-full bg-zinc-100 text-zinc-800 dark:bg-surface-darkElevated dark:text-zinc-200 font-medium text-[15px] md:hover:bg-zinc-200/80 dark:md:hover:bg-zinc-800 flex items-center justify-center gap-2">
+          <span>Continue as Guest</span>
+          <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </button>
+      </div>
+
+      <!-- Expandable Email/Password or Quick Account Sign-In Card -->
+      <div id="signin-form-card" class="hidden w-full mt-7 text-left bg-surface-subtle dark:bg-surface-darkSubtle p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 animate-scale-in">
+        <div class="flex items-center justify-between mb-4">
+          <h2 id="signin-form-title" class="text-base font-semibold text-zinc-900 dark:text-white">Sign In</h2>
+          <button id="btn-cancel-signin" type="button" class="text-xs text-zinc-500 md:hover:text-zinc-800 dark:md:hover:text-zinc-200 px-2 py-1 rounded-lg">Back</button>
+        </div>
+
+        <form id="email-auth-form" class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">Email</label>
+            <input type="email" id="auth-email" required placeholder="you@example.com" class="w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-surface-dark border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/40" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">Password</label>
+            <input type="password" id="auth-password" required minlength="6" placeholder="••••••••" class="w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-surface-dark border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/40" />
+          </div>
+          <button type="submit" id="btn-submit-email-auth" class="btn-spring w-full py-3 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-medium text-sm mt-1 flex items-center justify-center gap-2">
+            <span id="submit-email-text">Sign In</span>
+          </button>
+        </form>
+
+        <div class="mt-3 pt-3 border-t border-zinc-200/70 dark:border-zinc-800 flex flex-col gap-2">
+          <button id="btn-toggle-signup" type="button" class="text-xs text-center text-zinc-600 dark:text-zinc-400 md:hover:text-zinc-900 dark:md:hover:text-white py-1">
+            Don't have an account? <span class="font-semibold underline">Create one</span>
+          </button>
+          <button id="btn-instant-cloud-account" type="button" class="btn-spring w-full py-2.5 px-3 rounded-full border border-zinc-200 dark:border-zinc-700 text-xs font-medium text-zinc-700 dark:text-zinc-300 md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800 flex items-center justify-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+            <span>Quick Cloud Profile (One-Tap Sign In)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Privacy Note -->
+    <p class="text-xs text-zinc-400 dark:text-zinc-500 text-center max-w-xs animate-fade-in">
+      Guest sessions are ephemeral and vanish when closed. Signed-in chats sync privately to your account.
+    </p>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 2. MAIN CHAT APPLICATION SHELL                                        -->
+  <!-- ===================================================================== -->
+  <div id="app-shell" class="overlay-inactive h-full w-full flex overflow-hidden relative">
+
+    <!-- Mobile Sidebar Backdrop (Strictly non-blocking when closed) -->
+    <div id="sidebar-backdrop" class="overlay-inactive fixed inset-0 bg-black/40 backdrop-blur-[2px] z-30 opacity-0 transition-opacity duration-300 md:hidden"></div>
+
+    <!-- Collapsible Sidebar -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-surface-subtle dark:bg-surface-darkSubtle border-r border-zinc-200/80 dark:border-zinc-800/80 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
+      <!-- Sidebar Top Header -->
+      <div class="p-3.5 pt-safe flex items-center justify-between gap-2">
+        <button id="btn-new-chat" type="button" class="btn-spring flex-1 flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white dark:bg-surface-darkElevated border border-zinc-200/80 dark:border-zinc-700/70 text-sm font-medium text-zinc-800 dark:text-zinc-100 shadow-2xs md:hover:bg-zinc-50 dark:md:hover:bg-zinc-800">
+          <span>New chat</span>
+          <svg class="w-4 h-4 ml-auto text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>
+        </button>
+
+        <!-- Close Sidebar (Mobile) -->
+        <button id="btn-close-sidebar" type="button" aria-label="Close menu" class="btn-spring md:hidden p-2.5 rounded-full text-zinc-500">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Guest Mode Banner inside Sidebar (visible only in Guest Mode) -->
+      <div id="sidebar-guest-notice" class="hidden mx-3.5 mb-2 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-300">
+        <div class="font-medium flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+          Guest Session Active
+        </div>
+        <p class="mt-1 opacity-85 leading-relaxed">Chats are stored in temporary memory only and will not be saved when you close DragonAI.</p>
+        <button id="btn-sidebar-signin-prompt" type="button" class="mt-2 w-full py-1.5 px-2.5 rounded-xl bg-amber-500/20 md:hover:bg-amber-500/30 font-medium text-center transition-colors">
+          Sign In to Save Chats
+        </button>
+      </div>
+
+      <!-- Chat History List -->
+      <div class="flex-1 overflow-y-auto px-2.5 py-1 space-y-0.5" id="chat-history-list">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Sidebar Footer: Settings & Profile -->
+      <div class="p-3 pb-safe border-t border-zinc-200/70 dark:border-zinc-800/80 space-y-1">
+        <button id="btn-open-settings" type="button" class="btn-spring w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-zinc-700 dark:text-zinc-300 md:hover:bg-zinc-200/60 dark:md:hover:bg-zinc-800/80 transition-colors">
+          <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>Settings</span>
+        </button>
+
+        <!-- User Account Row -->
+        <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-white/70 dark:bg-surface-darkElevated/60 border border-zinc-200/60 dark:border-zinc-800">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div id="user-avatar-badge" class="w-7 h-7 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-semibold flex items-center justify-center shrink-0">
+              G
+            </div>
+            <div class="min-w-0">
+              <div id="user-display-name" class="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate">Guest</div>
+              <div id="user-status-sub" class="text-[11px] text-zinc-400 truncate">Not saved</div>
+            </div>
+          </div>
+          <button id="btn-sign-out" type="button" title="Exit / Sign Out" class="btn-spring p-1.5 rounded-lg text-zinc-400 md:hover:text-red-500 md:hover:bg-red-500/10 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Column -->
+    <main id="main-content-area" class="flex-1 flex flex-col h-full min-w-0 bg-surface-light dark:bg-surface-dark relative">
+
+      <!-- Minimalist Top Header (No logo) -->
+      <header class="h-14 pt-safe px-3 sm:px-5 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800/60 shrink-0 z-20 bg-surface-light/85 dark:bg-surface-dark/85 backdrop-blur-md">
+        <div class="flex items-center gap-2">
+          <button id="btn-open-sidebar" type="button" aria-label="Open sidebar" class="btn-spring p-2 rounded-full text-zinc-600 dark:text-zinc-300 md:hidden">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/></svg>
+          </button>
+
+          <span class="font-semibold text-[16px] tracking-tight text-zinc-900 dark:text-white pl-1">DragonAI</span>
+
+          <span id="header-guest-badge" class="hidden ml-1 px-2 py-0.5 text-[11px] font-medium rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-700/70">
+            Guest
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1">
+          <button id="header-new-chat" type="button" aria-label="New chat" title="New chat" class="btn-spring p-2 rounded-full text-zinc-500 md:hover:text-zinc-900 dark:text-zinc-400 dark:md:hover:text-white md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          </button>
+          <button id="header-settings-btn" type="button" aria-label="Settings" title="Settings" class="btn-spring p-2 rounded-full text-zinc-500 md:hover:text-zinc-900 dark:text-zinc-400 dark:md:hover:text-white md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Messages Viewport -->
+      <div id="messages-scroll-area" class="flex-1 overflow-y-auto px-4 sm:px-6 pb-28">
+        <div class="max-w-3xl mx-auto min-h-full flex flex-col">
+
+          <!-- Empty State Welcome View (No logo) -->
+          <div id="empty-chat-state" class="my-auto py-12 flex flex-col items-center text-center animate-fade-up">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-zinc-900 dark:text-white tracking-tight">
+              How can DragonAI help today?
+            </h2>
+            <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400 max-w-md">
+              Ask anything, upload documents or images, or brainstorm ideas.
+            </p>
+
+            <!-- Minimalist Suggestion Pills -->
+            <div class="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full max-w-xl text-left">
+              <button type="button" class="suggestion-chip btn-spring p-3.5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-surface-subtle/60 dark:bg-surface-darkSubtle/60 md:hover:bg-zinc-100/80 dark:md:hover:bg-zinc-800/70 transition-colors" data-prompt="Explain quantum computing in simple, intuitive terms.">
+                <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">Explain a concept</div>
+                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">Quantum computing in simple terms</div>
+              </button>
+              <button type="button" class="suggestion-chip btn-spring p-3.5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-surface-subtle/60 dark:bg-surface-darkSubtle/60 md:hover:bg-zinc-100/80 dark:md:hover:bg-zinc-800/70 transition-colors" data-prompt="Write a clean, modern Python script to organize files by extension.">
+                <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">Write clean code</div>
+                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">Python script to organize files</div>
+              </button>
+              <button type="button" class="suggestion-chip btn-spring p-3.5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-surface-subtle/60 dark:bg-surface-darkSubtle/60 md:hover:bg-zinc-100/80 dark:md:hover:bg-zinc-800/70 transition-colors" data-prompt="Help me draft a concise, polite follow-up email after an interview.">
+                <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">Draft an email</div>
+                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">Polite post-interview follow-up</div>
+              </button>
+              <button type="button" class="suggestion-chip btn-spring p-3.5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-surface-subtle/60 dark:bg-surface-darkSubtle/60 md:hover:bg-zinc-100/80 dark:md:hover:bg-zinc-800/70 transition-colors" data-prompt="Give me 5 focused productivity habits for deep creative work.">
+                <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">Brainstorm ideas</div>
+                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">Productivity habits for deep work</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Message Thread -->
+          <div id="messages-list" class="hidden py-6 space-y-6 flex-1"></div>
+
+        </div>
+      </div>
+
+      <!-- Frosted Transparency Blur Bottom Composer Footer (No helper text) -->
+      <div class="absolute bottom-0 inset-x-0 z-20 px-3 sm:px-6 pt-3 pb-safe composer-dock-blur border-t border-zinc-200/50 dark:border-zinc-800/50">
+        <div class="max-w-3xl mx-auto">
+
+          <!-- Attached File Preview Chips -->
+          <div id="attachments-preview-bar" class="hidden flex-wrap gap-2 mb-2.5 px-1"></div>
+
+          <!-- ChatGPT-Style Pill Composer Input Box -->
+          <div id="composer-pill-container" class="pill-composer relative flex items-end gap-1.5 px-2 py-1.5 bg-surface-subtle/90 dark:bg-surface-darkSubtle/90 border border-zinc-200/90 dark:border-zinc-700/80 shadow-sm focus-within:border-zinc-400 dark:focus-within:border-zinc-500">
+
+            <!-- File Attachment Button -->
+            <input type="file" id="file-upload-input" multiple accept="image/png,image/jpeg,image/webp,.txt,.md,.json,.csv,.pdf,.js,.ts,.py,.html,.css,.xml,.yaml,.yml,.log" class="hidden" />
+            <button id="btn-attach-file" type="button" aria-label="Attach files" title="Attach image or document" class="btn-spring p-2.5 rounded-full text-zinc-500 md:hover:text-zinc-900 dark:text-zinc-400 dark:md:hover:text-white md:hover:bg-zinc-200/70 dark:md:hover:bg-zinc-700/60 shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            </button>
+
+            <!-- Auto-expanding Textarea (Enter adds newline by default) -->
+            <textarea
+              id="chat-textarea"
+              rows="1"
+              placeholder="Message DragonAI..."
+              class="flex-1 max-h-40 py-2 px-1 bg-transparent text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 resize-none focus:outline-none leading-normal"
+            ></textarea>
+
+            <!-- Explicit Send Button -->
+            <button
+              id="btn-send-message"
+              type="button"
+              disabled
+              aria-label="Send message"
+              class="btn-spring p-2.5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 disabled:opacity-25 disabled:pointer-events-none shrink-0 shadow-xs"
+            >
+              <svg id="send-icon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/></svg>
+              <svg id="stop-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 3. SETTINGS MODAL (Strictly non-blocking when closed)                 -->
+  <!-- ===================================================================== -->
+  <div id="settings-modal" class="overlay-inactive fixed inset-0 z-50 items-center justify-center p-4 bg-black/45 backdrop-blur-xs animate-fade-in">
+    <div class="w-full max-w-md rounded-3xl bg-white dark:bg-surface-darkSubtle border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden animate-scale-in">
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+        <h3 class="text-base font-semibold text-zinc-900 dark:text-white">Settings</h3>
+        <button id="btn-close-settings" type="button" class="btn-spring p-1.5 rounded-full text-zinc-400 md:hover:text-zinc-800 dark:md:hover:text-zinc-200 md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+
+        <!-- Setting 1: Press Enter to Send Toggle (OFF by default) -->
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Press Enter to send</div>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
+              When off (default), pressing Enter adds a new line and you tap Send to submit.
+            </p>
+          </div>
+          <button id="toggle-enter-to-send" type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-zinc-200 dark:bg-zinc-700 transition-colors duration-200 ease-in-out focus:outline-none">
+            <span id="toggle-enter-knob" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+          </button>
+        </div>
+
+        <!-- Setting 2: Theme Selector (System Default) -->
+        <div>
+          <label class="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-2">Appearance</label>
+          <div class="grid grid-cols-3 gap-2 p-1 rounded-2xl bg-zinc-100 dark:bg-surface-dark border border-zinc-200/60 dark:border-zinc-800">
+            <button type="button" data-theme-choice="system" class="theme-choice-btn py-2 px-3 rounded-xl text-xs font-medium transition-all">System</button>
+            <button type="button" data-theme-choice="light" class="theme-choice-btn py-2 px-3 rounded-xl text-xs font-medium transition-all">Light</button>
+            <button type="button" data-theme-choice="dark" class="theme-choice-btn py-2 px-3 rounded-xl text-xs font-medium transition-all">Dark</button>
+          </div>
+        </div>
+
+        <!-- Setting 3: Custom Instructions / AI Persona -->
+        <div>
+          <label for="setting-system-prompt" class="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1">Custom instructions</label>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-2">Optional guidance for how DragonAI should respond.</p>
+          <textarea
+            id="setting-system-prompt"
+            rows="3"
+            placeholder="e.g., Be concise, direct, and format technical answers with examples."
+            class="w-full px-3.5 py-2.5 rounded-2xl bg-surface-subtle dark:bg-surface-dark border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-sky-500/30 resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Setting 4: Clear All Chats -->
+        <div class="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+          <div>
+            <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Chat history</div>
+            <p id="settings-storage-desc" class="text-xs text-zinc-500 dark:text-zinc-400">Remove all conversations</p>
+          </div>
+          <button id="btn-clear-all-chats" type="button" class="btn-spring px-3.5 py-2 rounded-full text-xs font-medium text-red-600 dark:text-red-400 bg-red-500/10 md:hover:bg-red-500/20 transition-colors">
+            Clear All
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 4. CUSTOM CONFIRMATION MODAL (Strictly non-blocking when closed)      -->
+  <!-- ===================================================================== -->
+  <div id="confirm-modal" class="overlay-inactive fixed inset-0 z-[60] items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
+    <div class="w-full max-w-xs rounded-3xl bg-white dark:bg-surface-darkSubtle border border-zinc-200 dark:border-zinc-800 p-6 shadow-2xl animate-scale-in text-center">
+      <h4 id="confirm-title" class="text-base font-semibold text-zinc-900 dark:text-white">Are you sure?</h4>
+      <p id="confirm-desc" class="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">This action cannot be undone.</p>
+      <div class="mt-5 flex gap-2.5">
+        <button id="btn-confirm-cancel" type="button" class="btn-spring flex-1 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Cancel</button>
+        <button id="btn-confirm-accept" type="button" class="btn-spring flex-1 py-2.5 rounded-xl bg-red-600 text-white text-xs font-medium">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION SCRIPT (Theme + Firebase + Gemini API + UI Logic)         -->
+  <!-- ===================================================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getAuth,
+      signInAnonymously,
+      signInWithCustomToken,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      deleteDoc,
+      onSnapshot,
+      collection
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // =========================================================================
+    // 1. GLOBAL APPLICATION STATE (Default theme: 'system')
+    // =========================================================================
+    let initialTheme = 'system';
+    try {
+      const storedTheme = window.localStorage ? window.localStorage.getItem('dragonai_theme') : null;
+      if (storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system') {
+        initialTheme = storedTheme;
+      }
+    } catch (e) {}
+
+    const state = {
+      mode: null, // 'user' | 'guest'
+      user: null,
+      chats: [],
+      activeChatId: null,
+      pendingAttachments: [],
+      isGenerating: false,
+      abortController: null,
+      unsubscribeChats: null,
+      settings: {
+        enterToSend: false,
+        theme: initialTheme,
+        systemPrompt: ''
+      }
+    };
+
+    // =========================================================================
+    // 2. MOBILE HOME-SCREEN APP ICON & MANIFEST SETUP (Using IMG_7732.png)
+    // =========================================================================
+    function configureMobileAppIcon() {
+      const iconSource = document.getElementById('app-icon-source');
+      const faviconEl = document.getElementById('dynamic-favicon');
+      const appleIconEl = document.getElementById('dynamic-apple-icon');
+      const manifestEl = document.getElementById('dynamic-manifest');
+
+      const applyIconDataUrl = (iconUrl) => {
+        faviconEl.href = iconUrl;
+        appleIconEl.href = iconUrl;
+
+        const manifest = {
+          name: "DragonAI",
+          short_name: "DragonAI",
+          description: "Minimalist AI assistant powered by Google Gemini",
+          start_url: ".",
+          display: "standalone",
+          background_color: "#141416",
+          theme_color: "#141416",
+          icons: [
+            {
+              src: iconUrl,
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any maskable"
+            }
+          ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+        manifestEl.href = URL.createObjectURL(manifestBlob);
+      };
+
+      iconSource.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = 512;
+          canvas.height = 512;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(iconSource, 0, 0, 512, 512);
+          applyIconDataUrl(canvas.toDataURL('image/png'));
+        } catch (e) {
+          applyIconDataUrl('IMG_7732.png');
+        }
+      };
+
+      iconSource.onerror = () => {
+        const svgEl = document.getElementById('dragon-fallback-svg');
+        const svgString = new XMLSerializer().serializeToString(svgEl);
+        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = 512;
+          canvas.height = 512;
+          canvas.getContext('2d').drawImage(img, 0, 0, 512, 512);
+          applyIconDataUrl(canvas.toDataURL('image/png'));
+          URL.revokeObjectURL(url);
+        };
+        img.src = url;
+      };
+
+      if (iconSource.complete && iconSource.naturalWidth > 0) {
+        iconSource.onload();
+      }
+    }
+    configureMobileAppIcon();
+
+    // =========================================================================
+    // 3. SYSTEM DARK MODE & THEME SYNCHRONIZATION
+    // =========================================================================
+    const darkMediaQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+    function applyTheme(themeChoice) {
+      const validChoice = (themeChoice === 'light' || themeChoice === 'dark' || themeChoice === 'system')
+        ? themeChoice
+        : 'system';
+
+      state.settings.theme = validChoice;
+
+      try {
+        if (window.localStorage) {
+          window.localStorage.setItem('dragonai_theme', validChoice);
+        }
+      } catch (e) {}
+
+      const systemIsDark = darkMediaQuery ? darkMediaQuery.matches : false;
+      const isDark = validChoice === 'dark' || (validChoice === 'system' && systemIsDark);
+      const root = document.documentElement;
+      const body = document.body;
+
+      if (isDark) {
+        root.classList.add('dark');
+        body.classList.add('dark');
+        root.setAttribute('data-theme', 'dark');
+        root.style.colorScheme = 'dark';
+      } else {
+        root.classList.remove('dark');
+        body.classList.remove('dark');
+        root.setAttribute('data-theme', 'light');
+        root.style.colorScheme = 'light';
+      }
+
+      const metaTheme = document.getElementById('metaThemeColor');
+      if (metaTheme) {
+        metaTheme.setAttribute('content', isDark ? '#141416' : '#ffffff');
+      }
+
+      // Highlight active theme button in Settings
+      document.querySelectorAll('.theme-choice-btn').forEach(btn => {
+        const active = btn.dataset.themeChoice === validChoice;
+        if (active) {
+          btn.classList.add('bg-white', 'dark:bg-surface-darkElevated', 'text-zinc-900', 'dark:text-white', 'shadow-2xs');
+          btn.classList.remove('text-zinc-500', 'dark:text-zinc-400');
+        } else {
+          btn.classList.remove('bg-white', 'dark:bg-surface-darkElevated', 'text-zinc-900', 'dark:text-white', 'shadow-2xs');
+          btn.classList.add('text-zinc-500', 'dark:text-zinc-400');
+        }
+      });
+    }
+
+    // Live listener for OS theme changes (supports modern and legacy Safari/WebView APIs)
+    if (darkMediaQuery) {
+      const handleSystemThemeChange = () => {
+        if (state.settings.theme === 'system') {
+          applyTheme('system');
+        }
+      };
+      if (typeof darkMediaQuery.addEventListener === 'function') {
+        darkMediaQuery.addEventListener('change', handleSystemThemeChange);
+      } else if (typeof darkMediaQuery.addListener === 'function') {
+        darkMediaQuery.addListener(handleSystemThemeChange);
+      }
+    }
+
+    // Apply immediately on boot
+    applyTheme(state.settings.theme);
+
+    // Quick theme toggle on Auth Screen
+    document.getElementById('auth-theme-toggle').addEventListener('click', () => {
+      const currentlyDark = document.documentElement.classList.contains('dark');
+      applyTheme(currentlyDark ? 'light' : 'dark');
+    });
+
+    // =========================================================================
+    // 4. MOBILE ZOOM PROTECTION (Without interfering with normal clicks)
+    // =========================================================================
+    document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
+    document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+    document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
+
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    let lastTouchEndTimestamp = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTouchEndTimestamp <= 280) {
+        // Only prevent double-tap zoom if not tapping an interactive input/textarea
+        const tag = e.target && e.target.tagName;
+        if (tag !== 'TEXTAREA' && tag !== 'INPUT') {
+          e.preventDefault();
+        }
+      }
+      lastTouchEndTimestamp = now;
+    }, { passive: false });
+
+    // =========================================================================
+    // 5. TOAST & CUSTOM CONFIRMATION MODAL HELPERS
+    // =========================================================================
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colorClass = type === 'error'
+        ? 'bg-red-600 text-white'
+        : 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900';
+
+      toast.className = `${colorClass} px-4 py-2.5 rounded-full text-xs font-medium shadow-lg animate-fade-up pointer-events-auto text-center`;
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => toast.remove(), 260);
+      }, 2800);
+    }
+
+    let confirmCallback = null;
+    const confirmModal = document.getElementById('confirm-modal');
+
+    function openConfirmModal(title, desc, onConfirm) {
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-desc').textContent = desc;
+      confirmCallback = onConfirm;
+      confirmModal.classList.remove('overlay-inactive');
+      confirmModal.classList.add('overlay-active', 'flex');
+    }
+
+    function closeConfirmModal() {
+      confirmModal.classList.add('overlay-inactive');
+      confirmModal.classList.remove('overlay-active', 'flex');
+      confirmCallback = null;
+    }
+
+    document.getElementById('btn-confirm-cancel').addEventListener('click', closeConfirmModal);
+    document.getElementById('btn-confirm-accept').addEventListener('click', () => {
+      if (confirmCallback) confirmCallback();
+      closeConfirmModal();
+    });
+
+    // =========================================================================
+    // 6. NON-BLOCKING FIREBASE INITIALIZATION
+    // =========================================================================
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'dragonai-default';
+    let app = null;
+    let auth = null;
+    let db = null;
+
+    try {
+      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+        const firebaseConfig = JSON.parse(__firebase_config);
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+      }
+    } catch (err) {
+      console.warn('Firebase init skipped or offline:', err);
+    }
+
+    // Listen to Firebase Auth state changes asynchronously without blocking initial render
+    if (auth) {
+      onAuthStateChanged(auth, async (firebaseUser) => {
+        if (firebaseUser && state.mode === 'user') {
+          state.user = firebaseUser;
+          await loadUserSettingsAndChats(firebaseUser);
+        }
+      });
+    }
+
+    // =========================================================================
+    // 7. AUTHENTICATION SCREEN & GUEST MODE FLOW (Instant & Responsive)
+    // =========================================================================
+    const authScreen = document.getElementById('auth-screen');
+    const appShell = document.getElementById('app-shell');
+    const authButtonsContainer = document.getElementById('auth-buttons-container');
+    const signinFormCard = document.getElementById('signin-form-card');
+    let isSignUpMode = false;
+
+    function transitionToApp(mode, displayName, subLabel) {
+      state.mode = mode;
+
+      // Hide Auth Screen with strict overlay-inactive class
+      authScreen.classList.add('overlay-inactive');
+      authScreen.classList.remove('overlay-active');
+
+      // Show App Shell with overlay-active class
+      appShell.classList.remove('overlay-inactive');
+      appShell.classList.add('overlay-active');
+
+      // Update Sidebar & Header Account Indicators
+      const avatarBadge = document.getElementById('user-avatar-badge');
+      const nameEl = document.getElementById('user-display-name');
+      const subEl = document.getElementById('user-status-sub');
+      const guestNotice = document.getElementById('sidebar-guest-notice');
+      const headerGuestBadge = document.getElementById('header-guest-badge');
+
+      nameEl.textContent = displayName;
+      subEl.textContent = subLabel;
+      avatarBadge.textContent = (displayName || 'G').charAt(0).toUpperCase();
+
+      if (mode === 'guest') {
+        guestNotice.classList.remove('hidden');
+        headerGuestBadge.classList.remove('hidden');
+      } else {
+        guestNotice.classList.add('hidden');
+        headerGuestBadge.classList.add('hidden');
+      }
+
+      renderChatList();
+      renderActiveChat();
+    }
+
+    function returnToAuthScreen() {
+      if (state.unsubscribeChats) {
+        state.unsubscribeChats();
+        state.unsubscribeChats = null;
+      }
+      state.mode = null;
+      state.user = null;
+      state.chats = [];
+      state.activeChatId = null;
+      state.pendingAttachments = [];
+      renderAttachments();
+      closeSidebar();
+
+      appShell.classList.add('overlay-inactive');
+      appShell.classList.remove('overlay-active');
+
+      authScreen.classList.remove('overlay-inactive');
+      authScreen.classList.add('overlay-active');
+    }
+
+    // 1) Continue as Guest (Instant, zero persistence)
+    document.getElementById('btn-guest-mode').addEventListener('click', () => {
+      state.user = null;
+      state.chats = [];
+      state.activeChatId = null;
+      transitionToApp('guest', 'Guest', 'Not saved');
+      showToast('Guest mode: chats are not saved');
+    });
+
+    // 2) Open Sign-In Form
+    document.getElementById('btn-open-signin').addEventListener('click', () => {
+      authButtonsContainer.classList.add('hidden');
+      signinFormCard.classList.remove('hidden');
+      document.getElementById('auth-email').focus();
+    });
+
+    document.getElementById('btn-cancel-signin').addEventListener('click', () => {
+      signinFormCard.classList.add('hidden');
+      authButtonsContainer.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-toggle-signup').addEventListener('click', () => {
+      isSignUpMode = !isSignUpMode;
+      document.getElementById('signin-form-title').textContent = isSignUpMode ? 'Create Account' : 'Sign In';
+      document.getElementById('submit-email-text').textContent = isSignUpMode ? 'Create Account' : 'Sign In';
+      document.getElementById('btn-toggle-signup').innerHTML = isSignUpMode
+        ? 'Already have an account? <span class="font-semibold underline">Sign in</span>'
+        : 'Don\'t have an account? <span class="font-semibold underline">Create one</span>';
+    });
+
+    // Email/Password Sign-In or Registration
+    document.getElementById('email-auth-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const submitBtn = document.getElementById('btn-submit-email-auth');
+
+      if (!auth) {
+        // Fallback local session if Firebase is unavailable
+        const label = email.split('@')[0] || 'User';
+        transitionToApp('user', label, email);
+        showToast(`Signed in as ${label}`);
+        return;
+      }
+
+      submitBtn.disabled = true;
+      try {
+        let cred;
+        if (isSignUpMode) {
+          cred = await createUserWithEmailAndPassword(auth, email, password);
+        } else {
+          cred = await signInWithEmailAndPassword(auth, email, password);
+        }
+        state.user = cred.user;
+        const label = email.split('@')[0] || 'User';
+        transitionToApp('user', label, email);
+        await loadUserSettingsAndChats(cred.user);
+        showToast(`Welcome, ${label}`);
+      } catch (err) {
+        showToast(err.message || 'Authentication failed', 'error');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Quick One-Tap Cloud Sign In (Uses custom token or anonymous auth)
+    document.getElementById('btn-instant-cloud-account').addEventListener('click', async () => {
+      if (!auth) {
+        transitionToApp('user', 'Personal Account', 'Cloud synced');
+        return;
+      }
+      try {
+        let cred;
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          cred = await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          cred = await signInAnonymously(auth);
+        }
+        state.user = cred.user;
+        transitionToApp('user', 'Personal Account', 'Synced');
+        await loadUserSettingsAndChats(cred.user);
+        showToast('Signed in to your personal account');
+      } catch (err) {
+        showToast('Could not connect to cloud account', 'error');
+      }
+    });
+
+    // Prompt from Guest sidebar banner to sign in
+    document.getElementById('btn-sidebar-signin-prompt').addEventListener('click', () => {
+      returnToAuthScreen();
+      authButtonsContainer.classList.add('hidden');
+      signinFormCard.classList.remove('hidden');
+    });
+
+    // Sign Out / Exit button in sidebar
+    document.getElementById('btn-sign-out').addEventListener('click', async () => {
+      if (state.mode === 'user' && auth) {
+        try {
+          await signOut(auth);
+        } catch (e) {}
+      }
+      returnToAuthScreen();
+      showToast('Signed out');
+    });
+
+    // =========================================================================
+    // 8. FIRESTORE PERSISTENCE (Strictly for Signed-In Users; Guest = RAM only)
+    // =========================================================================
+    async function loadUserSettingsAndChats(user) {
+      if (!db || !user || state.mode !== 'user') return;
+
+      try {
+        // Load settings
+        const settingsRef = doc(db, 'artifacts', appId, 'users', user.uid, 'preferences', 'main');
+        const settingsSnap = await getDoc(settingsRef);
+        if (settingsSnap.exists()) {
+          const data = settingsSnap.data();
+          state.settings.enterToSend = Boolean(data.enterToSend);
+          state.settings.systemPrompt = data.systemPrompt || '';
+          if (data.theme === 'light' || data.theme === 'dark' || data.theme === 'system') {
+            applyTheme(data.theme);
+          }
+          updateSettingsUI();
+        }
+
+        // Subscribe to user's chats collection (Rule 1 & Rule 2 compliant: simple collection query)
+        if (state.unsubscribeChats) state.unsubscribeChats();
+        const chatsCol = collection(db, 'artifacts', appId, 'users', user.uid, 'chats');
+        state.unsubscribeChats = onSnapshot(
+          chatsCol,
+          (snapshot) => {
+            if (state.mode !== 'user') return;
+            const loaded = [];
+            snapshot.forEach((docSnap) => {
+              const d = docSnap.data();
+              loaded.push({
+                id: docSnap.id,
+                title: d.title || 'New Chat',
+                updatedAt: d.updatedAt || 0,
+                messages: typeof d.messagesJson === 'string' ? JSON.parse(d.messagesJson) : []
+              });
+            });
+            loaded.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            state.chats = loaded;
+            renderChatList();
+            if (state.activeChatId && !state.isGenerating) {
+              renderActiveChat();
+            }
+          },
+          (error) => {
+            console.warn('Firestore snapshot warning:', error);
+          }
+        );
+      } catch (err) {
+        console.warn('Failed to load user data:', err);
+      }
+    }
+
+    async function saveChatToStorage(chat) {
+      if (state.mode !== 'user' || !db || !state.user) return;
+      try {
+        // Strip heavy base64 previews before storing in Firestore document (1MB limit)
+        const sanitizedMessages = chat.messages.map(m => ({
+          role: m.role,
+          text: m.text || '',
+          timestamp: m.timestamp || Date.now(),
+          attachments: (m.attachments || []).map(a => ({
+            name: a.name,
+            mimeType: a.mimeType,
+            isImage: a.isImage,
+            isPdf: a.isPdf
+          }))
+        }));
+
+        const chatRef = doc(db, 'artifacts', appId, 'users', state.user.uid, 'chats', chat.id);
+        await setDoc(chatRef, {
+          title: chat.title,
+          updatedAt: chat.updatedAt,
+          messagesJson: JSON.stringify(sanitizedMessages)
+        });
+      } catch (err) {
+        console.warn('Could not save chat to cloud:', err);
+      }
+    }
+
+    async function deleteChatFromStorage(chatId) {
+      if (state.mode !== 'user' || !db || !state.user) return;
+      try {
+        const chatRef = doc(db, 'artifacts', appId, 'users', state.user.uid, 'chats', chatId);
+        await deleteDoc(chatRef);
+      } catch (err) {
+        console.warn('Could not delete chat:', err);
+      }
+    }
+
+    async function saveSettingsToStorage() {
+      if (state.mode !== 'user' || !db || !state.user) return;
+      try {
+        const settingsRef = doc(db, 'artifacts', appId, 'users', state.user.uid, 'preferences', 'main');
+        await setDoc(settingsRef, {
+          enterToSend: state.settings.enterToSend,
+          theme: state.settings.theme,
+          systemPrompt: state.settings.systemPrompt
+        });
+      } catch (err) {
+        console.warn('Could not save settings:', err);
+      }
+    }
+
+    // =========================================================================
+    // 9. SIDEBAR, SWIPE-RIGHT GESTURE & CHAT MANAGEMENT
+    // =========================================================================
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    let isSidebarOpen = false;
+
+    function openSidebar() {
+      isSidebarOpen = true;
+      sidebar.classList.remove('-translate-x-full');
+      sidebarBackdrop.classList.remove('overlay-inactive');
+      sidebarBackdrop.classList.add('overlay-active');
+      requestAnimationFrame(() => sidebarBackdrop.classList.remove('opacity-0'));
+    }
+
+    function closeSidebar() {
+      isSidebarOpen = false;
+      sidebar.classList.add('-translate-x-full');
+      sidebarBackdrop.classList.add('opacity-0');
+      setTimeout(() => {
+        if (!isSidebarOpen) {
+          sidebarBackdrop.classList.add('overlay-inactive');
+          sidebarBackdrop.classList.remove('overlay-active');
+        }
+      }, 300);
+    }
+
+    document.getElementById('btn-open-sidebar').addEventListener('click', openSidebar);
+    document.getElementById('btn-close-sidebar').addEventListener('click', closeSidebar);
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Mobile Swipe-Right to Open Sidebar & Swipe-Left to Close Sidebar (Passive, never blocks clicks)
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      if (window.innerWidth >= 768) return;
+      if (!e.changedTouches || e.changedTouches.length !== 1) return;
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = Math.abs(touchEndY - touchStartY);
+
+      if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > deltaY * 1.5) {
+        const appVisible = appShell.classList.contains('overlay-active');
+        const settingsClosed = settingsModal.classList.contains('overlay-inactive');
+
+        if (appVisible && settingsClosed) {
+          if (deltaX > 0 && !isSidebarOpen) {
+            openSidebar();
+          } else if (deltaX < 0 && isSidebarOpen) {
+            closeSidebar();
+          }
+        }
+      }
+    }, { passive: true });
+
+    function createNewChat() {
+      state.activeChatId = null;
+      state.pendingAttachments = [];
+      renderAttachments();
+      renderChatList();
+      renderActiveChat();
+      closeSidebar();
+      document.getElementById('chat-textarea').focus();
+    }
+
+    document.getElementById('btn-new-chat').addEventListener('click', createNewChat);
+    document.getElementById('header-new-chat').addEventListener('click', createNewChat);
+
+    function renderChatList() {
+      const listEl = document.getElementById('chat-history-list');
+      listEl.innerHTML = '';
+
+      if (state.chats.length === 0) {
+        const emptyHint = document.createElement('div');
+        emptyHint.className = 'px-3 py-8 text-center text-xs text-zinc-400 dark:text-zinc-500';
+        emptyHint.textContent = 'No conversations yet';
+        listEl.appendChild(emptyHint);
+        return;
+      }
+
+      state.chats.forEach((chat) => {
+        const isActive = chat.id === state.activeChatId;
+        const row = document.createElement('div');
+        row.className = `group flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl cursor-pointer text-sm transition-colors ${
+          isActive
+            ? 'bg-zinc-200/80 dark:bg-surface-darkElevated text-zinc-900 dark:text-white font-medium'
+            : 'text-zinc-600 dark:text-zinc-400 md:hover:bg-zinc-200/45 dark:md:hover:bg-zinc-800/50 md:hover:text-zinc-900 dark:md:hover:text-zinc-200'
+        }`;
+
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'truncate flex-1';
+        titleSpan.textContent = chat.title || 'New Chat';
+
+        row.onclick = () => {
+          state.activeChatId = chat.id;
+          renderChatList();
+          renderActiveChat();
+          closeSidebar();
+        };
+
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.title = 'Delete chat';
+        delBtn.className = 'opacity-70 sm:opacity-0 sm:group-hover:opacity-100 p-1 rounded-lg text-zinc-400 md:hover:text-red-500 md:hover:bg-red-500/10 transition-all';
+        delBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>';
+        delBtn.onclick = async (e) => {
+          e.stopPropagation();
+          state.chats = state.chats.filter(c => c.id !== chat.id);
+          if (state.activeChatId === chat.id) {
+            state.activeChatId = null;
+          }
+          renderChatList();
+          renderActiveChat();
+          await deleteChatFromStorage(chat.id);
+        };
+
+        row.appendChild(titleSpan);
+        row.appendChild(delBtn);
+        listEl.appendChild(row);
+      });
+    }
+
+    // =========================================================================
+    // 10. FILE ATTACHMENTS HANDLING
+    // =========================================================================
+    const fileInput = document.getElementById('file-upload-input');
+    document.getElementById('btn-attach-file').addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+
+      for (const file of files) {
+        if (file.size > 12 * 1024 * 1024) {
+          showToast(`${file.name} exceeds 12MB limit`, 'error');
+          continue;
+        }
+        try {
+          const parsed = await readUploadedFile(file);
+          state.pendingAttachments.push(parsed);
+        } catch (err) {
+          showToast(`Could not read ${file.name}`, 'error');
+        }
+      }
+      fileInput.value = '';
+      renderAttachments();
+      updateSendButtonState();
+    });
+
+    function readUploadedFile(file) {
+      return new Promise((resolve, reject) => {
+        const isImage = file.type.startsWith('image/');
+        const isPdf = file.type === 'application/pdf';
+        const reader = new FileReader();
+
+        if (isImage || isPdf) {
+          reader.onload = () => {
+            const result = reader.result;
+            const base64 = result.split(',')[1];
+            resolve({
+              id: crypto.randomUUID(),
+              name: file.name,
+              mimeType: file.type || (isPdf ? 'application/pdf' : 'image/png'),
+              dataBase64: base64,
+              previewUrl: isImage ? result : null,
+              isImage,
+              isPdf
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        } else {
+          reader.onload = () => {
+            resolve({
+              id: crypto.randomUUID(),
+              name: file.name,
+              mimeType: file.type || 'text/plain',
+              textContent: reader.result,
+              isImage: false,
+              isPdf: false
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsText(file);
+        }
+      });
+    }
+
+    function renderAttachments() {
+      const bar = document.getElementById('attachments-preview-bar');
+      bar.innerHTML = '';
+
+      if (state.pendingAttachments.length === 0) {
+        bar.classList.add('hidden');
+        bar.classList.remove('flex');
+        return;
+      }
+
+      bar.classList.remove('hidden');
+      bar.classList.add('flex');
+
+      state.pendingAttachments.forEach((att) => {
+        const chip = document.createElement('div');
+        chip.className = 'flex items-center gap-2 pl-2 pr-1.5 py-1.5 rounded-2xl bg-surface-subtle dark:bg-surface-darkElevated border border-zinc-200 dark:border-zinc-700 text-xs animate-scale-in max-w-[210px]';
+
+        if (att.isImage && att.previewUrl) {
+          const thumb = document.createElement('img');
+          thumb.src = att.previewUrl;
+          thumb.className = 'w-6 h-6 rounded-lg object-cover shrink-0';
+          chip.appendChild(thumb);
+        } else {
+          const icon = document.createElement('span');
+          icon.className = 'w-6 h-6 rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 font-mono text-[10px] font-semibold';
+          icon.textContent = att.name.split('.').pop().slice(0, 4).toUpperCase();
+          chip.appendChild(icon);
+        }
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'truncate text-zinc-700 dark:text-zinc-200 font-medium';
+        nameSpan.textContent = att.name;
+        chip.appendChild(nameSpan);
+
+        const rmBtn = document.createElement('button');
+        rmBtn.type = 'button';
+        rmBtn.className = 'p-1 rounded-full text-zinc-400 md:hover:text-zinc-800 dark:md:hover:text-white md:hover:bg-zinc-200/70 dark:md:hover:bg-zinc-700';
+        rmBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+        rmBtn.onclick = () => {
+          state.pendingAttachments = state.pendingAttachments.filter(a => a.id !== att.id);
+          renderAttachments();
+          updateSendButtonState();
+        };
+        chip.appendChild(rmBtn);
+        bar.appendChild(chip);
+      });
+    }
+
+    // =========================================================================
+    // 11. COMPOSER TEXTAREA & CUSTOM ENTER KEY BEHAVIOR
+    // =========================================================================
+    const textarea = document.getElementById('chat-textarea');
+    const sendBtn = document.getElementById('btn-send-message');
+    const composerPill = document.getElementById('composer-pill-container');
+
+    function autoResizeTextarea() {
+      textarea.style.height = 'auto';
+      const nextHeight = Math.min(textarea.scrollHeight, 160);
+      textarea.style.height = nextHeight + 'px';
+
+      if (nextHeight > 46) {
+        composerPill.classList.add('is-multiline');
+      } else {
+        composerPill.classList.remove('is-multiline');
+      }
+
+      updateSendButtonState();
+    }
+
+    function updateSendButtonState() {
+      if (state.isGenerating) {
+        sendBtn.disabled = false;
+        document.getElementById('send-icon').classList.add('hidden');
+        document.getElementById('stop-icon').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('send-icon').classList.remove('hidden');
+      document.getElementById('stop-icon').classList.add('hidden');
+      const hasContent = textarea.value.trim().length > 0 || state.pendingAttachments.length > 0;
+      sendBtn.disabled = !hasContent;
+    }
+
+    textarea.addEventListener('input', autoResizeTextarea);
+
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        if (state.settings.enterToSend && !e.shiftKey) {
+          e.preventDefault();
+          if (!sendBtn.disabled && !state.isGenerating) {
+            handleSendMessage();
+          }
+        }
+      }
+    });
+
+    sendBtn.addEventListener('click', () => {
+      if (state.isGenerating) {
+        if (state.abortController) state.abortController.abort();
+        return;
+      }
+      handleSendMessage();
+    });
+
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        textarea.value = chip.dataset.prompt;
+        autoResizeTextarea();
+        handleSendMessage();
+      });
+    });
+
+    // =========================================================================
+    // 12. MARKDOWN RENDERING & CODE BLOCK COPY BUTTONS
+    // =========================================================================
+    if (window.marked) {
+      marked.setOptions({
+        breaks: true,
+        gfm: true,
+        highlight: function(code, lang) {
+          if (window.hljs) {
+            if (lang && hljs.getLanguage(lang)) {
+              return hljs.highlight(code, { language: lang }).value;
+            }
+            return hljs.highlightAuto(code).value;
+          }
+          return code;
+        }
+      });
+    }
+
+    function renderFormattedMarkdown(rawText) {
+      const html = window.marked ? marked.parse(rawText || '') : (rawText || '');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'markdown-body text-[15px] text-zinc-800 dark:text-zinc-200';
+      wrapper.innerHTML = html;
+
+      wrapper.querySelectorAll('pre').forEach((pre) => {
+        const codeEl = pre.querySelector('code');
+        const codeText = codeEl ? codeEl.innerText : pre.innerText;
+        const langClass = codeEl ? Array.from(codeEl.classList).find(c => c.startsWith('language-')) : '';
+        const langName = langClass ? langClass.replace('language-', '') : 'code';
+
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between px-3.5 py-1.5 bg-zinc-900 text-zinc-400 text-[11px] font-mono border-b border-white/10';
+        header.innerHTML = `<span>${langName}</span>`;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'flex items-center gap-1 md:hover:text-white transition-colors py-0.5 px-1.5 rounded';
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = () => {
+          copyTextToClipboard(codeText);
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => (copyBtn.textContent = 'Copy'), 1800);
+        };
+
+        header.appendChild(copyBtn);
+        pre.insertBefore(header, pre.firstChild);
+      });
+
+      return wrapper;
+    }
+
+    function copyTextToClipboard(text) {
+      const helper = document.createElement('textarea');
+      helper.value = text;
+      helper.style.position = 'fixed';
+      helper.style.opacity = '0';
+      document.body.appendChild(helper);
+      helper.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {}
+      document.body.removeChild(helper);
+    }
+
+    // =========================================================================
+    // 13. MESSAGE THREAD RENDERING
+    // =========================================================================
+    function renderActiveChat() {
+      const emptyState = document.getElementById('empty-chat-state');
+      const messagesList = document.getElementById('messages-list');
+      const activeChat = state.chats.find(c => c.id === state.activeChatId);
+
+      if (!activeChat || activeChat.messages.length === 0) {
+        emptyState.classList.remove('hidden');
+        messagesList.classList.add('hidden');
+        messagesList.innerHTML = '';
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      messagesList.classList.remove('hidden');
+      messagesList.innerHTML = '';
+
+      activeChat.messages.forEach((msg, index) => {
+        const isLast = index === activeChat.messages.length - 1;
+        const el = buildMessageElement(msg, isLast);
+        messagesList.appendChild(el);
+      });
+
+      scrollToBottom();
+    }
+
+    function buildMessageElement(msg, animate = false) {
+      const row = document.createElement('div');
+      const animClass = animate ? 'animate-fade-up' : '';
+
+      if (msg.role === 'user') {
+        row.className = `flex flex-col items-end ${animClass}`;
+
+        if (msg.attachments && msg.attachments.length > 0) {
+          const attWrap = document.createElement('div');
+          attWrap.className = 'flex flex-wrap justify-end gap-2 mb-1.5 max-w-[85%]';
+          msg.attachments.forEach(att => {
+            if (att.isImage && att.previewUrl) {
+              const img = document.createElement('img');
+              img.src = att.previewUrl;
+              img.alt = att.name;
+              img.className = 'max-h-44 rounded-2xl border border-zinc-200 dark:border-zinc-700 object-cover shadow-xs';
+              attWrap.appendChild(img);
+            } else {
+              const pill = document.createElement('div');
+              pill.className = 'px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5';
+              pill.innerHTML = `<svg class="w-3.5 h-3.5 text-sky-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg><span class="truncate max-w-[160px]">${att.name}</span>`;
+              attWrap.appendChild(pill);
+            }
+          });
+          row.appendChild(attWrap);
+        }
+
+        if (msg.text) {
+          const bubble = document.createElement('div');
+          bubble.className = 'max-w-[85%] sm:max-w-[75%] px-4 py-3 rounded-3xl rounded-br-lg bg-zinc-100 dark:bg-surface-darkElevated text-zinc-900 dark:text-zinc-100 text-[15px] leading-relaxed whitespace-pre-wrap break-words';
+          bubble.textContent = msg.text;
+          row.appendChild(bubble);
+        }
+      } else {
+        row.className = `flex flex-col items-start ${animClass}`;
+
+        const contentCol = document.createElement('div');
+        contentCol.className = 'w-full min-w-0';
+
+        if (msg.isThinking) {
+          const loader = document.createElement('div');
+          loader.className = 'inline-flex items-center gap-1.5 py-2.5 px-3 rounded-2xl bg-surface-subtle dark:bg-surface-darkSubtle';
+          loader.innerHTML = `
+            <span class="w-2 h-2 rounded-full bg-sky-500 typing-dot"></span>
+            <span class="w-2 h-2 rounded-full bg-sky-500 typing-dot"></span>
+            <span class="w-2 h-2 rounded-full bg-sky-500 typing-dot"></span>
+          `;
+          contentCol.appendChild(loader);
+        } else {
+          contentCol.appendChild(renderFormattedMarkdown(msg.text));
+
+          const actionsBar = document.createElement('div');
+          actionsBar.className = 'mt-2 flex items-center gap-2';
+          const copyRespBtn = document.createElement('button');
+          copyRespBtn.type = 'button';
+          copyRespBtn.title = 'Copy response';
+          copyRespBtn.className = 'p-1.5 rounded-lg text-zinc-400 md:hover:text-zinc-700 dark:md:hover:text-zinc-200 md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800 transition-colors flex items-center gap-1 text-xs';
+          copyRespBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"/></svg>';
+          copyRespBtn.onclick = () => {
+            copyTextToClipboard(msg.text);
+            showToast('Copied to clipboard');
+          };
+          actionsBar.appendChild(copyRespBtn);
+          contentCol.appendChild(actionsBar);
+        }
+
+        row.appendChild(contentCol);
+      }
+
+      return row;
+    }
+
+    function scrollToBottom() {
+      const scrollArea = document.getElementById('messages-scroll-area');
+      requestAnimationFrame(() => {
+        scrollArea.scrollTop = scrollArea.scrollHeight;
+      });
+    }
+
+    // =========================================================================
+    // 14. GEMINI API INTEGRATION (Multimodal + Multi-Turn + Exponential Backoff)
+    // =========================================================================
+    async function callGeminiWithRetry(payload, signal) {
+      const apiKey = "";
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const maxRetries = 4;
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal
+          });
+
+          if (!response.ok) {
+            if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
+              const delay = Math.pow(2, attempt) * 1000;
+              await new Promise(res => setTimeout(res, delay));
+              continue;
+            }
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData?.error?.message || `API Error (${response.status})`);
+          }
+
+          const result = await response.json();
+          const text = result?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
+          if (!text) throw new Error('Empty response from Gemini.');
+          return text;
+        } catch (err) {
+          if (err.name === 'AbortError') throw err;
+          if (attempt === maxRetries) throw err;
+          const delay = Math.pow(2, attempt) * 1000;
+          await new Promise(res => setTimeout(res, delay));
+        }
+      }
+    }
+
+    async function handleSendMessage() {
+      const rawPrompt = textarea.value.trim();
+      const currentAttachments = [...state.pendingAttachments];
+
+      if (!rawPrompt && currentAttachments.length === 0) return;
+
+      let chat = state.chats.find(c => c.id === state.activeChatId);
+      if (!chat) {
+        const initialTitle = rawPrompt
+          ? rawPrompt.slice(0, 38) + (rawPrompt.length > 38 ? '...' : '')
+          : (currentAttachments[0]?.name || 'File Analysis');
+
+        chat = {
+          id: crypto.randomUUID(),
+          title: initialTitle,
+          updatedAt: Date.now(),
+          messages: []
+        };
+        state.chats.unshift(chat);
+        state.activeChatId = chat.id;
+      }
+
+      const userParts = [];
+      if (rawPrompt) {
+        userParts.push({ text: rawPrompt });
+      }
+      currentAttachments.forEach(att => {
+        if (att.isImage || att.isPdf) {
+          userParts.push({
+            inlineData: {
+              mimeType: att.mimeType,
+              data: att.dataBase64
+            }
+          });
+        } else if (att.textContent !== undefined) {
+          userParts.push({
+            text: `\n--- Attached File: ${att.name} ---\n${att.textContent}\n--- End of ${att.name} ---\n`
+          });
+        }
+      });
+
+      const userMessage = {
+        role: 'user',
+        text: rawPrompt,
+        attachments: currentAttachments,
+        apiParts: userParts,
+        timestamp: Date.now()
+      };
+      chat.messages.push(userMessage);
+      chat.updatedAt = Date.now();
+
+      textarea.value = '';
+      textarea.style.height = 'auto';
+      composerPill.classList.remove('is-multiline');
+      state.pendingAttachments = [];
+      renderAttachments();
+
+      const thinkingMsg = {
+        role: 'model',
+        text: '',
+        isThinking: true,
+        timestamp: Date.now()
+      };
+      chat.messages.push(thinkingMsg);
+
+      state.isGenerating = true;
+      state.abortController = new AbortController();
+      updateSendButtonState();
+      renderChatList();
+      renderActiveChat();
+
+      const contents = chat.messages
+        .filter(m => !m.isThinking)
+        .map(m => ({
+          role: m.role === 'user' ? 'user' : 'model',
+          parts: m.apiParts ? m.apiParts : [{ text: m.text || ' ' }]
+        }));
+
+      const defaultSystemInstruction = "You are DragonAI, a helpful, concise, and intelligent AI assistant powered by Google Gemini. Format responses cleanly using Markdown.";
+      const combinedSystem = state.settings.systemPrompt.trim()
+        ? `${defaultSystemInstruction}\n\nUser Custom Instructions:\n${state.settings.systemPrompt.trim()}`
+        : defaultSystemInstruction;
+
+      const payload = {
+        contents,
+        systemInstruction: {
+          parts: [{ text: combinedSystem }]
+        }
+      };
+
+      try {
+        const replyText = await callGeminiWithRetry(payload, state.abortController.signal);
+        chat.messages.pop();
+        chat.messages.push({
+          role: 'model',
+          text: replyText,
+          apiParts: [{ text: replyText }],
+          timestamp: Date.now()
+        });
+        chat.updatedAt = Date.now();
+        await saveChatToStorage(chat);
+      } catch (err) {
+        chat.messages.pop();
+        if (err.name === 'AbortError') {
+          chat.messages.push({
+            role: 'model',
+            text: '*Generation stopped.*',
+            timestamp: Date.now()
+          });
+        } else {
+          chat.messages.push({
+            role: 'model',
+            text: `⚠️ Sorry, I encountered an error: ${err.message}`,
+            timestamp: Date.now()
+          });
+        }
+      } finally {
+        state.isGenerating = false;
+        state.abortController = null;
+        updateSendButtonState();
+        renderChatList();
+        renderActiveChat();
+      }
+    }
+
+    // =========================================================================
+    // 15. SETTINGS MODAL LOGIC
+    // =========================================================================
+    const settingsModal = document.getElementById('settings-modal');
+    const toggleEnterBtn = document.getElementById('toggle-enter-to-send');
+    const toggleEnterKnob = document.getElementById('toggle-enter-knob');
+    const systemPromptInput = document.getElementById('setting-system-prompt');
+
+    function updateSettingsUI() {
+      const enabled = state.settings.enterToSend;
+      toggleEnterBtn.setAttribute('aria-checked', String(enabled));
+      if (enabled) {
+        toggleEnterBtn.classList.remove('bg-zinc-200', 'dark:bg-zinc-700');
+        toggleEnterBtn.classList.add('bg-zinc-900', 'dark:bg-sky-500');
+        toggleEnterKnob.classList.remove('translate-x-0');
+        toggleEnterKnob.classList.add('translate-x-5');
+      } else {
+        toggleEnterBtn.classList.add('bg-zinc-200', 'dark:bg-zinc-700');
+        toggleEnterBtn.classList.remove('bg-zinc-900', 'dark:bg-sky-500');
+        toggleEnterKnob.classList.add('translate-x-0');
+        toggleEnterKnob.classList.remove('translate-x-5');
+      }
+
+      systemPromptInput.value = state.settings.systemPrompt || '';
+      applyTheme(state.settings.theme);
+    }
+
+    function openSettings() {
+      closeSidebar();
+      updateSettingsUI();
+      settingsModal.classList.remove('overlay-inactive');
+      settingsModal.classList.add('overlay-active', 'flex');
+    }
+
+    function closeSettings() {
+      state.settings.systemPrompt = systemPromptInput.value.trim();
+      saveSettingsToStorage();
+      settingsModal.classList.add('overlay-inactive');
+      settingsModal.classList.remove('overlay-active', 'flex');
+    }
+
+    document.getElementById('btn-open-settings').addEventListener('click', openSettings);
+    document.getElementById('header-settings-btn').addEventListener('click', openSettings);
+    document.getElementById('btn-close-settings').addEventListener('click', closeSettings);
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) closeSettings();
+    });
+
+    toggleEnterBtn.addEventListener('click', () => {
+      state.settings.enterToSend = !state.settings.enterToSend;
+      updateSettingsUI();
+      saveSettingsToStorage();
+    });
+
+    document.querySelectorAll('.theme-choice-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyTheme(btn.dataset.themeChoice);
+        saveSettingsToStorage();
+      });
+    });
+
+    document.getElementById('btn-clear-all-chats').addEventListener('click', () => {
+      openConfirmModal(
+        'Clear all conversations?',
+        state.mode === 'guest'
+          ? 'This will wipe your temporary session messages.'
+          : 'This will permanently delete all saved chats from your account.',
+        async () => {
+          const toDelete = [...state.chats];
+          state.chats = [];
+          state.activeChatId = null;
+          renderChatList();
+          renderActiveChat();
+          closeSettings();
+
+          if (state.mode === 'user' && state.user && db) {
+            for (const c of toDelete) {
+              await deleteChatFromStorage(c.id);
+            }
+          }
+          showToast('All chats cleared');
+        }
+      );
+    });
+
+    updateSettingsUI();
+  </script>
+</body>
+</html>

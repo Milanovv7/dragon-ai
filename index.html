@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="DragonAI" />
   <meta name="theme-color" content="#ffffff" id="metaThemeColor" />
   <title>DragonAI</title>
@@ -37,119 +37,118 @@
 
         var metaTheme = document.getElementById('metaThemeColor');
         if (metaTheme) {
-          metaTheme.setAttribute('content', isDark ? '#141416' : '#ffffff');
+          metaTheme.setAttribute('content', isDark ? '#0d0d0f' : '#ffffff');
         }
       } catch (err) {}
     })();
   </script>
 
-  <!-- Dynamic Favicon, Apple Touch Icon & Web Manifest placeholders -->
+  <!-- Mobile Home-Screen App Icon & Web Manifest -->
   <link id="dynamic-favicon" rel="icon" type="image/png" href="IMG_7732.png" />
   <link id="dynamic-apple-icon" rel="apple-touch-icon" href="IMG_7732.png" />
   <link id="dynamic-manifest" rel="manifest" />
 
-  <!-- Fonts: Inter & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            surface: {
-              light: '#ffffff',
-              subtle: '#f9f9fb',
-              dark: '#141416',
-              darkSubtle: '#1c1c1f',
-              darkElevated: '#252529',
-            },
-            accent: {
-              cyan: '#00b4ff',
-              blue: '#2563eb',
-            }
-          },
-          animation: {
-            'fade-up': 'fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-            'fade-in': 'fadeIn 0.25s ease-out forwards',
-            'scale-in': 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-          },
-          keyframes: {
-            fadeUp: {
-              '0%': { opacity: '0', transform: 'translateY(12px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
-            },
-            fadeIn: {
-              '0%': { opacity: '0' },
-              '100%': { opacity: '1' },
-            },
-            scaleIn: {
-              '0%': { opacity: '0', transform: 'scale(0.95)' },
-              '100%': { opacity: '1', transform: 'scale(1)' },
-            }
-          }
-        }
-      }
-    };
-  </script>
-
-  <!-- Markdown & Code Highlighting -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
   <style>
-    /* Strict mobile zoom & bounce prevention */
-    html, body {
-      touch-action: pan-x pan-y;
-      -webkit-text-size-adjust: 100%;
-      overscroll-behavior: none;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
+    /* =========================================================================
+       1. DESIGN TOKENS & THEME VARIABLES
+       ========================================================================= */
+    :root {
+      --bg-app: #ffffff;
+      --bg-sidebar: #f7f7f8;
+      --bg-elevated: #f2f2f5;
+      --bg-card: #ffffff;
+      --bg-user-bubble: #f0f0f3;
+      --bg-dock: rgba(255, 255, 255, 0.72);
+      --bg-header: rgba(255, 255, 255, 0.82);
+      --bg-input: rgba(244, 244, 246, 0.92);
+      --bg-code: #16161a;
+      --text-primary: #111114;
+      --text-secondary: #5c5c66;
+      --text-muted: #8e8e98;
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.14);
+      --accent-primary: #111114;
+      --accent-primary-text: #ffffff;
+      --accent-blue: #0284c7;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.14);
+      --danger: #dc2626;
+      --danger-bg: rgba(220, 38, 38, 0.1);
+      --amber-text: #b45309;
+      --amber-bg: rgba(245, 158, 11, 0.12);
+      --amber-border: rgba(245, 158, 11, 0.25);
+    }
+
+    html.dark {
+      --bg-app: #0d0d0f;
+      --bg-sidebar: #141417;
+      --bg-elevated: #1e1e23;
+      --bg-card: #16161a;
+      --bg-user-bubble: #202026;
+      --bg-dock: rgba(13, 13, 15, 0.72);
+      --bg-header: rgba(13, 13, 15, 0.82);
+      --bg-input: rgba(28, 28, 33, 0.92);
+      --bg-code: #09090b;
+      --text-primary: #f4f4f6;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --accent-primary: #f4f4f6;
+      --accent-primary-text: #0d0d0f;
+      --accent-blue: #38bdf8;
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 24px 54px rgba(0, 0, 0, 0.55);
+      --danger: #f87171;
+      --danger-bg: rgba(248, 113, 113, 0.14);
+      --amber-text: #fbbf24;
+      --amber-bg: rgba(245, 158, 11, 0.12);
+      --amber-border: rgba(245, 158, 11, 0.24);
+    }
+
+    /* =========================================================================
+       2. RESET, MOBILE ZOOM PROTECTION & BASE TYPOGRAPHY
+       ========================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Prevent iOS auto-zoom on focus by guaranteeing >= 16px font size */
-    textarea, input, select {
-      font-size: 16px !important;
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      touch-action: pan-x pan-y;
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior: none;
+    }
+
+    /* Prevent iOS Safari zoom on input focus (>=16px) & enable fast touch taps */
+    input, textarea, select, button {
+      font-family: inherit;
+      font-size: 16px;
       touch-action: manipulation;
     }
 
-    button, a {
-      touch-action: manipulation;
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
     }
 
-    /* Scope hover states strictly to non-touch pointer devices */
-    @media (hover: hover) and (pointer: fine) {
-      .hover-surface:hover {
-        background-color: rgba(161, 161, 170, 0.14);
-      }
-      .hover-btn-dark:hover {
-        opacity: 0.92;
-      }
+    button:disabled {
+      cursor: default;
     }
 
-    /* Explicitly neutralize sticky hover on touch/coarse pointers */
-    @media (hover: none), (pointer: coarse) {
-      button:hover,
-      a:hover,
-      .suggestion-chip:hover {
-        background-color: inherit;
-        color: inherit;
-        border-color: inherit;
-      }
-    }
-
-    /* Custom sleek scrollbars */
+    /* Custom Thin Scrollbars */
     ::-webkit-scrollbar {
       width: 5px;
       height: 5px;
@@ -158,427 +157,1424 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(156, 163, 175, 0.35);
+      background: rgba(142, 142, 152, 0.3);
       border-radius: 9999px;
     }
 
-    /* Spring button micro-interaction */
-    .btn-spring {
-      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    /* =========================================================================
+       3. ANIMATIONS & SPRING MICRO-INTERACTIONS
+       ========================================================================= */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .btn-spring:active:not(:disabled) {
-      transform: scale(0.95);
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0.55); opacity: 0.35; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
     }
 
-    /* Typing dots animation */
+    .anim-fade-up {
+      animation: fadeUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .anim-fade-in {
+      animation: fadeIn 0.24s ease-out both;
+    }
+    .anim-scale-in {
+      animation: scaleIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .btn-spring {
+      transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background-color 0.2s ease,
+                  border-color 0.2s ease,
+                  opacity 0.2s ease;
+    }
+    .btn-spring:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    /* Strictly scope hover states to fine pointer devices (NO mobile sticky hover) */
+    @media (hover: hover) and (pointer: fine) {
+      .hover-elevate:hover {
+        background-color: var(--bg-elevated);
+      }
+      .hover-primary:hover:not(:disabled) {
+        opacity: 0.88;
+      }
+      .hover-danger:hover {
+        color: var(--danger);
+        background-color: var(--danger-bg);
+      }
+      .chat-row:hover {
+        background-color: var(--bg-elevated);
+      }
+      .chat-row:hover .chat-del-btn {
+        opacity: 1;
+      }
+    }
+
+    /* =========================================================================
+       4. SCREEN VISIBILITY & OVERLAY GUARDS
+       ========================================================================= */
+    .hidden {
+      display: none !important;
+    }
+
+    .screen-layer {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* =========================================================================
+       5. AUTHENTICATION / WELCOME SCREEN
+       ========================================================================= */
+    .auth-screen {
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-app);
+      padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+      overflow-y: auto;
+    }
+
+    .auth-top-bar {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+    }
+
+    .auth-center {
+      width: 100%;
+      max-width: 390px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin: auto 0;
+    }
+
+    .brand-title {
+      font-size: clamp(2.1rem, 6vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+
+    .brand-subtitle {
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      max-width: 320px;
+    }
+
+    .auth-card {
+      width: 100%;
+      margin-top: 28px;
+      padding: 22px;
+      border-radius: 26px;
+      background-color: var(--bg-sidebar);
+      border: 1px solid var(--border-subtle);
+      text-align: left;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .saved-accounts-wrap {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .saved-accounts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 132px;
+      overflow-y: auto;
+    }
+
+    .saved-account-chip {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      text-align: left;
+    }
+
+    .saved-account-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .saved-account-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .saved-account-action {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      flex-shrink: 0;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 14px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.16);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 4px 0 16px;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent-blue);
+    }
+
+    .btn-pill-primary {
+      width: 100%;
+      padding: 13px 18px;
+      border-radius: 9999px;
+      background-color: var(--accent-primary);
+      color: var(--accent-primary-text);
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-pill-secondary {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px 18px;
+      border-radius: 9999px;
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .auth-footer-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      max-width: 310px;
+      text-align: center;
+      line-height: 1.45;
+      margin-top: 16px;
+    }
+
+    /* =========================================================================
+       6. MAIN APPLICATION LAYOUT (SIDEBAR + CHAT WORKSPACE)
+       ========================================================================= */
+    .app-shell {
+      z-index: 10;
+      display: flex;
+      background-color: var(--bg-app);
+    }
+
+    /* Mobile Sidebar Backdrop */
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 25;
+      background-color: rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.26s ease;
+    }
+    .sidebar-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Sidebar Drawer */
+    .sidebar {
+      width: 280px;
+      height: 100%;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 30;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-102%);
+      }
+      .sidebar.is-open {
+        transform: translateX(0);
+      }
+    }
+
+    .sidebar-top {
+      padding: max(12px, env(safe-area-inset-top)) 12px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-new-chat {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-radius: 9999px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mobile-only-btn {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .mobile-only-btn {
+        display: inline-flex;
+      }
+    }
+
+    .guest-banner {
+      margin: 0 12px 10px;
+      padding: 12px;
+      border-radius: 16px;
+      background-color: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      color: var(--amber-text);
+      font-size: 12px;
+    }
+
+    .guest-banner-title {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 9999px;
+      background-color: currentColor;
+      animation: pulseDot 1.8s infinite ease-in-out;
+    }
+
+    .guest-banner p {
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+
+    .guest-banner-btn {
+      margin-top: 8px;
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 10px;
+      background-color: rgba(245, 158, 11, 0.2);
+      font-size: 12px;
+      font-weight: 600;
+      color: inherit;
+    }
+
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .chat-list-empty {
+      padding: 36px 12px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .chat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background-color 0.16s ease, color 0.16s ease;
+    }
+
+    .chat-row.is-active {
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .chat-row-title {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-del-btn {
+      padding: 4px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      opacity: 0.75;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .chat-del-btn {
+        opacity: 0;
+      }
+    }
+
+    .sidebar-footer {
+      padding: 10px 12px max(12px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-action-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .account-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .account-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .avatar-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 9999px;
+      background-color: var(--accent-primary);
+      color: var(--accent-primary-text);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .account-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .account-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .logout-btn {
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================================
+       7. MAIN CHAT COLUMN, HEADER, THREAD & FROSTED PILL COMPOSER
+       ========================================================================= */
+    .main-column {
+      flex: 1;
+      height: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .top-header {
+      height: calc(54px + env(safe-area-inset-top));
+      padding: env(safe-area-inset-top) 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background-color: var(--bg-header);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 15;
+      flex-shrink: 0;
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      padding-left: 4px;
+    }
+
+    .guest-chip {
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 500;
+      background-color: var(--bg-elevated);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .messages-viewport {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 16px 124px;
+      scroll-behavior: smooth;
+    }
+
+    .messages-container {
+      max-width: 760px;
+      min-height: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Empty State */
+    .empty-state {
+      margin: auto 0;
+      padding: 32px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .empty-title {
+      font-size: clamp(1.45rem, 4vw, 1.85rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .empty-subtitle {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 420px;
+    }
+
+    .suggestions-grid {
+      margin-top: 26px;
+      width: 100%;
+      max-width: 580px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      text-align: left;
+    }
+
+    @media (max-width: 560px) {
+      .suggestions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .suggestion-card {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background-color: var(--bg-sidebar);
+      border: 1px solid var(--border-subtle);
+      text-align: left;
+    }
+
+    .suggestion-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .suggestion-card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Message Thread */
+    .messages-list {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      padding: 8px 0 16px;
+    }
+
+    .msg-row {
+      display: flex;
+      flex-direction: column;
+      animation: fadeUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .msg-row.is-user {
+      align-items: flex-end;
+    }
+
+    .msg-row.is-model {
+      align-items: flex-start;
+    }
+
+    .user-bubble {
+      max-width: 84%;
+      padding: 12px 17px;
+      border-radius: 22px;
+      border-bottom-right-radius: 6px;
+      background-color: var(--bg-user-bubble);
+      color: var(--text-primary);
+      font-size: 15px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .msg-attachments {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+      justify-content: flex-end;
+    }
+
+    .msg-att-img {
+      max-width: 210px;
+      max-height: 170px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .msg-att-file {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 12px;
+      background-color: var(--bg-sidebar);
+      border: 1px solid var(--border-subtle);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .model-body {
+      width: 100%;
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .model-body p {
+      margin-bottom: 12px;
+    }
+    .model-body p:last-child {
+      margin-bottom: 0;
+    }
+    .model-body h1, .model-body h2, .model-body h3 {
+      font-weight: 600;
+      margin: 16px 0 8px;
+      line-height: 1.3;
+    }
+    .model-body h1 { font-size: 1.3rem; }
+    .model-body h2 { font-size: 1.15rem; }
+    .model-body h3 { font-size: 1.03rem; }
+    .model-body ul, .model-body ol {
+      margin: 8px 0 12px 22px;
+    }
+    .model-body li {
+      margin-bottom: 4px;
+    }
+    .model-body code.inline-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.86em;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background-color: var(--bg-elevated);
+    }
+
+    .code-block-wrap {
+      margin: 12px 0;
+      border-radius: 14px;
+      overflow: hidden;
+      background-color: var(--bg-code);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .code-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #a1a1aa;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .copy-code-btn {
+      padding: 3px 8px;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #e4e4e7;
+      font-size: 11px;
+    }
+
+    .code-block-wrap pre {
+      padding: 12px 14px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #f4f4f5;
+    }
+
+    .model-actions {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-msg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Typing Dots */
+    .typing-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 4px;
+    }
     .typing-dot {
-      animation: typingBounce 1.4s infinite ease-in-out both;
+      width: 7px;
+      height: 7px;
+      border-radius: 9999px;
+      background-color: var(--text-muted);
+      animation: typingBounce 1.3s infinite ease-in-out both;
     }
     .typing-dot:nth-child(1) { animation-delay: -0.32s; }
     .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-    @keyframes typingBounce {
-      0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; }
-      40% { transform: scale(1); opacity: 1; }
-    }
 
-    /* Markdown Typography Styling */
-    .markdown-body {
-      line-height: 1.65;
-      word-wrap: break-word;
-    }
-    .markdown-body p {
-      margin-bottom: 0.85rem;
-    }
-    .markdown-body p:last-child {
-      margin-bottom: 0;
-    }
-    .markdown-body ul, .markdown-body ol {
-      margin: 0.65rem 0 0.85rem 1.4rem;
-    }
-    .markdown-body ul { list-style-type: disc; }
-    .markdown-body ol { list-style-type: decimal; }
-    .markdown-body li { margin-bottom: 0.3rem; }
-    .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
-      font-weight: 600;
-      margin-top: 1.25rem;
-      margin-bottom: 0.5rem;
-      line-height: 1.3;
-    }
-    .markdown-body h1 { font-size: 1.35rem; }
-    .markdown-body h2 { font-size: 1.2rem; }
-    .markdown-body h3 { font-size: 1.05rem; }
-    .markdown-body code:not(pre code) {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85em;
-      padding: 0.15rem 0.38rem;
-      border-radius: 0.375rem;
-      background-color: rgba(125, 125, 135, 0.16);
-    }
-    .markdown-body pre {
-      margin: 0.9rem 0;
-      border-radius: 0.75rem;
-      overflow: hidden;
-      background: #18181b;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .markdown-body pre code {
-      display: block;
-      padding: 0.95rem 1rem;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.84rem;
-      line-height: 1.5;
-      background: transparent;
-      color: #f4f4f5;
-    }
-    .markdown-body table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0.9rem 0;
-      font-size: 0.9rem;
-      overflow-x: auto;
-      display: block;
-    }
-    .markdown-body th, .markdown-body td {
-      border: 1px solid rgba(156, 163, 175, 0.25);
-      padding: 0.5rem 0.75rem;
-      text-align: left;
-    }
-    .markdown-body th {
-      background-color: rgba(156, 163, 175, 0.1);
-      font-weight: 600;
-    }
-    .markdown-body blockquote {
-      border-left: 3px solid #00b4ff;
-      padding-left: 0.9rem;
-      margin: 0.8rem 0;
-      opacity: 0.85;
-    }
-    .markdown-body a {
-      color: #0284c7;
-      text-decoration: underline;
-    }
-    html.dark .markdown-body a {
-      color: #38bdf8;
-    }
-
-    /* Safe area padding for iOS */
-    .pb-safe {
-      padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
-    }
-    .pt-safe {
-      padding-top: max(0.5rem, env(safe-area-inset-top));
-    }
-
-    /* Frosted glass transparency blur for bottom composer dock */
-    .composer-dock-blur {
-      background-color: rgba(255, 255, 255, 0.75);
+    /* =========================================================================
+       8. FROSTED GLASS BOTTOM DOCK & PILL COMPOSER BAR (NO TEXT BELOW)
+       ========================================================================= */
+    .composer-dock {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      padding: 10px 14px max(12px, env(safe-area-inset-bottom));
+      background-color: var(--bg-dock);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-    }
-    html.dark .composer-dock-blur {
-      background-color: rgba(20, 20, 22, 0.75);
+      border-top: 1px solid var(--border-subtle);
     }
 
-    /* ChatGPT-style pill message bar */
-    .pill-composer {
-      border-radius: 9999px;
-      transition: border-radius 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    .composer-inner {
+      max-width: 760px;
+      margin: 0 auto;
     }
-    .pill-composer.is-multiline {
+
+    .attachments-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+
+    .att-chip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 14px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      font-size: 12px;
+      color: var(--text-primary);
+      max-width: 210px;
+      animation: scaleIn 0.2s ease both;
+    }
+
+    .att-chip-thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .att-chip-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .att-chip-remove {
+      width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      background-color: var(--bg-elevated);
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ChatGPT-style Pill Composer */
+    .pill-bar {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 9999px;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-sm);
+      transition: border-radius 0.18s ease, border-color 0.2s ease;
+    }
+
+    .pill-bar.is-multiline {
       border-radius: 26px;
     }
 
-    /* Explicit Overlay & Modal Pointer-Events Safety Guards */
-    .overlay-inactive {
-      display: none !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
+    .pill-bar:focus-within {
+      border-color: var(--text-secondary);
     }
-    .overlay-active {
-      pointer-events: auto !important;
-      visibility: visible !important;
+
+    .attach-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .chat-input {
+      flex: 1;
+      max-height: 150px;
+      min-height: 24px;
+      padding: 7px 4px;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      line-height: 1.45;
+      resize: none;
+      outline: none;
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 9999px;
+      background-color: var(--accent-primary);
+      color: var(--accent-primary-text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: opacity 0.2s ease, transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.25;
+    }
+
+    /* =========================================================================
+       9. SETTINGS & CONFIRMATION MODALS + TOASTS
+       ========================================================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background-color: rgba(0, 0, 0, 0.48);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 430px;
+      border-radius: 26px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .modal-body {
+      padding: 20px;
+      max-height: 75vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .setting-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .setting-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .setting-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* Switch Toggle */
+    .switch-btn {
+      width: 46px;
+      height: 26px;
+      border-radius: 9999px;
+      padding: 2px;
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      transition: background-color 0.2s ease;
+    }
+
+    .switch-btn[aria-checked="true"] {
+      background-color: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    .switch-knob {
+      width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      background-color: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      transform: translateX(0);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .switch-btn[aria-checked="true"] .switch-knob {
+      transform: translateX(20px);
+    }
+
+    /* Theme Segmented Control */
+    .segmented-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 4px;
+      border-radius: 14px;
+      background-color: var(--bg-elevated);
+      margin-top: 8px;
+    }
+
+    .seg-btn {
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: background-color 0.18s ease, color 0.18s ease;
+    }
+
+    .seg-btn.is-selected {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .api-input-wrap {
+      position: relative;
+      margin-top: 8px;
+    }
+
+    .api-vis-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background-color: var(--bg-elevated);
+    }
+
+    .btn-danger-pill {
+      padding: 8px 14px;
+      border-radius: 9999px;
+      background-color: var(--danger-bg);
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    /* Toast Notification */
+    .toast-stack {
+      position: fixed;
+      top: max(14px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      width: 90%;
+      max-width: 360px;
+    }
+
+    .toast-item {
+      padding: 10px 16px;
+      border-radius: 9999px;
+      background-color: var(--accent-primary);
+      color: var(--accent-primary-text);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      animation: fadeUp 0.25s ease both;
+      text-align: center;
     }
   </style>
 </head>
-<body class="bg-surface-light text-zinc-900 dark:bg-surface-dark dark:text-zinc-100 antialiased selection:bg-sky-500/20 selection:text-sky-600 dark:selection:text-sky-300">
+<body>
 
-  <!-- Hidden App Icon Source Image (IMG_7732.png) used strictly for mobile home-screen icon & manifest -->
-  <img id="app-icon-source" src="IMG_7732.png" alt="" aria-hidden="true" class="hidden" />
+  <!-- Hidden App Icon Source (IMG_7732.png) used strictly for mobile home-screen icon & manifest -->
+  <img id="app-icon-source" src="IMG_7732.png" alt="" style="display:none;" />
 
-  <!-- Fallback SVG if IMG_7732.png is unavailable in preview -->
-  <svg id="dragon-fallback-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="hidden">
-    <defs>
-      <radialGradient id="sparkleGlow" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#ffffff" />
-        <stop offset="32%" stop-color="#7dd3fc" />
-        <stop offset="70%" stop-color="#0284c7" />
-        <stop offset="100%" stop-color="#1d4ed8" />
-      </radialGradient>
-    </defs>
-    <rect width="512" height="512" rx="112" fill="#ffffff" />
-    <g transform="translate(24, 38) scale(0.86)">
-      <path fill="#09090b" d="M188 58c-12 22-30 36-52 44 18-18 28-36 30-56-16 14-34 24-54 30-14 4-28 14-34 28-8-2-16 2-20 10-4 8-2 18 4 24 8 6 20 8 32 4 12-4 22-12 30-20 10-8 22-6 26 4 4 10-4 22-16 32-24 20-46 48-52 84-6 36 4 74 26 102-6-22-6-46 2-66 6 14 14 26 24 36-6-24-2-50 12-72 14-22 36-38 56-56 18-16 30-38 28-62-2-18-12-34-26-44 10-2 20 2 28 8-4-14-14-26-26-32 10-8 16-22 14-36-6 10-18 16-32 18z"/>
-      <path fill="#ffffff" d="M98 112c8-2 16 0 22 4-6 4-14 6-22 4-2-2-2-6 0-8z"/>
-      <path fill="#09090b" d="M168 258c-28 24-44 60-38 96 6 38 36 68 74 74 34 6 68-8 92-30-26 12-56 14-82 4-28-10-46-36-46-66 0-28 14-54 36-70 28-20 64-24 96-12 24 10 42 30 62 46 22 18 52 24 78 12 24-10 40-34 42-60 2-22-6-44-18-62l14-12-42-16-8 44 14-8c8 14 12 30 8 46-4 18-18 32-36 36-18 4-36-4-50-16-20-18-40-38-66-48-42-16-92-6-122 24z"/>
-      <path fill="#09090b" d="M214 156c36-24 82-36 126-34 38 2 76 14 108 36-34-10-70-12-104-6-32 6-62 20-88 40 34-14 72-18 108-10-36 4-70 18-98 40 28-10 58-12 88-6-34 6-66 22-90 46-12-34-26-72-50-106z"/>
-      <path fill="#09090b" d="M118 286c-14 26-16 58-4 86 10 24 30 44 54 54-16-16-26-38-26-62 0-26 10-50 26-68-18 2-36-2-50-10z"/>
-    </g>
-    <path fill="url(#sparkleGlow)" d="M352 46 C356 126, 376 146, 456 150 C376 154, 356 174, 352 254 C348 174, 328 154, 248 150 C328 146, 348 126, 352 46 Z" />
-  </svg>
-
-  <!-- Toast Notification Container -->
-  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col items-center gap-2 pointer-events-none w-[92%] max-w-sm"></div>
+  <!-- Toast Stack -->
+  <div id="toast-stack" class="toast-stack"></div>
 
   <!-- ===================================================================== -->
-  <!-- 1. LANDING / AUTHENTICATION SCREEN (Interactive Immediately)          -->
+  <!-- 1. SIGN-IN & GUEST LANDING SCREEN (NO LOGO IN UI)                     -->
   <!-- ===================================================================== -->
-  <section id="auth-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-between bg-surface-light dark:bg-surface-dark px-6 py-10 transition-opacity duration-300 overlay-active">
-    <!-- Top Subtle Theme Cycle Toggle -->
-    <div class="w-full max-w-md flex justify-end animate-fade-in">
-      <button id="auth-theme-toggle" type="button" aria-label="Toggle Theme" class="btn-spring p-2.5 rounded-full text-zinc-500 md:hover:text-zinc-900 dark:text-zinc-400 dark:md:hover:text-zinc-100 md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800/70">
-        <svg id="auth-sun-icon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-        <svg id="auth-moon-icon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+  <section id="auth-screen" class="screen-layer auth-screen">
+    <div class="auth-top-bar anim-fade-in">
+      <button id="auth-theme-btn" type="button" aria-label="Switch Theme" class="icon-btn btn-spring hover-elevate">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M3 12h2m14 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+        </svg>
       </button>
     </div>
 
-    <!-- Center Brand & Actions (No logo in visible UI) -->
-    <div class="w-full max-w-sm flex flex-col items-center text-center my-auto">
-      <h1 class="text-4xl sm:text-5xl font-semibold tracking-tight text-zinc-900 dark:text-white animate-fade-up">
-        DragonAI
-      </h1>
-      <p class="mt-3 text-sm sm:text-base text-zinc-500 dark:text-zinc-400 max-w-xs leading-relaxed animate-fade-up" style="animation-delay: 70ms;">
-        Minimalist intelligence powered by Google Gemini. Sharp, fast, and distraction-free.
+    <div class="auth-center">
+      <h1 class="brand-title anim-fade-up">DragonAI</h1>
+      <p class="brand-subtitle anim-fade-up" style="animation-delay: 60ms;">
+        Minimalist intelligence powered by Google Gemini. Clean, fast, and distraction-free.
       </p>
 
-      <!-- Auth Form / Action Buttons -->
-      <div id="auth-buttons-container" class="w-full mt-9 space-y-3 animate-fade-up" style="animation-delay: 140ms;">
-        <button id="btn-open-signin" type="button" class="btn-spring w-full py-3.5 px-5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-medium text-[15px] shadow-sm md:hover:opacity-95 flex items-center justify-center gap-2.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-          <span>Sign In to Your Account</span>
-        </button>
-
-        <button id="btn-guest-mode" type="button" class="btn-spring w-full py-3.5 px-5 rounded-full bg-zinc-100 text-zinc-800 dark:bg-surface-darkElevated dark:text-zinc-200 font-medium text-[15px] md:hover:bg-zinc-200/80 dark:md:hover:bg-zinc-800 flex items-center justify-center gap-2">
-          <span>Continue as Guest</span>
-          <svg class="w-4 h-4 opacity-60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-        </button>
-      </div>
-
-      <!-- Expandable Email/Password or Quick Account Sign-In Card -->
-      <div id="signin-form-card" class="hidden w-full mt-7 text-left bg-surface-subtle dark:bg-surface-darkSubtle p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 animate-scale-in">
-        <div class="flex items-center justify-between mb-4">
-          <h2 id="signin-form-title" class="text-base font-semibold text-zinc-900 dark:text-white">Sign In</h2>
-          <button id="btn-cancel-signin" type="button" class="text-xs text-zinc-500 px-2 py-1 rounded-lg">Back</button>
+      <div class="auth-card anim-fade-up" style="animation-delay: 120ms;">
+        <!-- Saved Accounts Quick One-Tap Login -->
+        <div id="saved-accounts-wrap" class="saved-accounts-wrap hidden">
+          <div class="section-eyebrow">Saved Accounts</div>
+          <div id="saved-accounts-list" class="saved-accounts-list"></div>
         </div>
 
-        <!-- Saved Login Profiles (for instant one-tap re-login) -->
-        <div id="saved-accounts-section" class="hidden mb-4 pb-3 border-b border-zinc-200/70 dark:border-zinc-800">
-          <div class="text-[11px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2">Saved Accounts</div>
-          <div id="saved-accounts-list" class="space-y-1.5 max-h-32 overflow-y-auto"></div>
-        </div>
+        <form id="signin-form" novalidate>
+          <div class="form-group">
+            <label for="login-identity" class="form-label">Email or Username</label>
+            <input
+              id="login-identity"
+              type="text"
+              autocomplete="username"
+              placeholder="you@example.com"
+              class="form-input"
+              required
+            />
+          </div>
 
-        <form id="email-auth-form" class="space-y-3">
-          <div>
-            <label class="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">Email</label>
-            <input type="email" id="auth-email" required autocomplete="email" placeholder="you@example.com" class="w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-surface-dark border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/40" />
+          <div class="form-group">
+            <label for="login-password" class="form-label">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="••••••••"
+              class="form-input"
+              required
+            />
           </div>
-          <div>
-            <label class="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">Password</label>
-            <input type="password" id="auth-password" required minlength="4" autocomplete="current-password" placeholder="••••••••" class="w-full px-4 py-2.5 rounded-2xl bg-white dark:bg-surface-dark border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/40" />
-          </div>
-          <label class="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-400 cursor-pointer select-none pt-0.5">
-            <input type="checkbox" id="auth-remember-me" checked class="rounded border-zinc-300 dark:border-zinc-700 text-sky-500 focus:ring-0" />
+
+          <label class="checkbox-row">
+            <input id="remember-login-checkbox" type="checkbox" checked />
             <span>Save login details on this device</span>
           </label>
-          <button type="submit" id="btn-submit-email-auth" class="btn-spring w-full py-3 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-medium text-sm mt-1 flex items-center justify-center gap-2">
-            <span id="submit-email-text">Sign In</span>
+
+          <button id="btn-signin-submit" type="submit" class="btn-pill-primary btn-spring hover-primary">
+            <span>Sign In / Continue</span>
           </button>
         </form>
 
-        <div class="mt-3 pt-3 border-t border-zinc-200/70 dark:border-zinc-800 flex flex-col gap-2">
-          <button id="btn-toggle-signup" type="button" class="text-xs text-center text-zinc-600 dark:text-zinc-400 py-1">
-            Don't have an account? <span class="font-semibold underline">Create one</span>
-          </button>
-          <button id="btn-instant-cloud-account" type="button" class="btn-spring w-full py-2.5 px-3 rounded-full border border-zinc-200 dark:border-zinc-700 text-xs font-medium text-zinc-700 dark:text-zinc-300 flex items-center justify-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-            <span>Quick Personal Vault (Saved Locally)</span>
-          </button>
-        </div>
+        <button id="btn-guest-continue" type="button" class="btn-pill-secondary btn-spring hover-elevate">
+          <span>Continue as Guest</span>
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+          </svg>
+        </button>
       </div>
     </div>
 
-    <!-- Bottom Privacy Note -->
-    <p class="text-xs text-zinc-400 dark:text-zinc-500 text-center max-w-xs animate-fade-in">
-      Guest sessions are ephemeral and vanish when closed. Signed-in chats sync privately to your account.
+    <p class="auth-footer-note anim-fade-in">
+      Guest mode keeps nothing when you close DragonAI. Signing in saves your chats, settings, and login details privately.
     </p>
   </section>
 
   <!-- ===================================================================== -->
-  <!-- 2. MAIN CHAT APPLICATION SHELL                                        -->
+  <!-- 2. MAIN WORKSPACE SHELL                                               -->
   <!-- ===================================================================== -->
-  <div id="app-shell" class="overlay-inactive h-full w-full flex overflow-hidden relative">
+  <div id="app-shell" class="screen-layer app-shell hidden">
 
-    <!-- Mobile Sidebar Backdrop (Strictly non-blocking when closed) -->
-    <div id="sidebar-backdrop" class="overlay-inactive fixed inset-0 bg-black/40 backdrop-blur-[2px] z-30 opacity-0 transition-opacity duration-300 md:hidden"></div>
+    <!-- Mobile Backdrop -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
 
-    <!-- Collapsible Sidebar -->
-    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-surface-subtle dark:bg-surface-darkSubtle border-r border-zinc-200/80 dark:border-zinc-800/80 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
-      <!-- Sidebar Top Header -->
-      <div class="p-3.5 pt-safe flex items-center justify-between gap-2">
-        <button id="btn-new-chat" type="button" class="btn-spring flex-1 flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white dark:bg-surface-darkElevated border border-zinc-200/80 dark:border-zinc-700/70 text-sm font-medium text-zinc-800 dark:text-zinc-100 shadow-2xs md:hover:bg-zinc-50 dark:md:hover:bg-zinc-800">
+    <!-- Collapsible Chat History Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-top">
+        <button id="btn-new-chat" type="button" class="btn-new-chat btn-spring hover-elevate">
           <span>New chat</span>
-          <svg class="w-4 h-4 ml-auto text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
+          </svg>
         </button>
 
-        <!-- Close Sidebar (Mobile) -->
-        <button id="btn-close-sidebar" type="button" aria-label="Close menu" class="btn-spring md:hidden p-2.5 rounded-full text-zinc-500">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <button id="btn-close-sidebar" type="button" aria-label="Close sidebar" class="icon-btn btn-spring mobile-only-btn">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
         </button>
       </div>
 
-      <!-- Guest Mode Banner inside Sidebar (visible only in Guest Mode) -->
-      <div id="sidebar-guest-notice" class="hidden mx-3.5 mb-2 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-300">
-        <div class="font-medium flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-          Guest Session Active
+      <!-- Guest Mode Notice -->
+      <div id="sidebar-guest-banner" class="guest-banner hidden">
+        <div class="guest-banner-title">
+          <span class="pulse-dot"></span>
+          <span>Guest Mode</span>
         </div>
-        <p class="mt-1 opacity-85 leading-relaxed">Chats are stored in temporary memory only and will not be saved when you close DragonAI.</p>
-        <button id="btn-sidebar-signin-prompt" type="button" class="mt-2 w-full py-1.5 px-2.5 rounded-xl bg-amber-500/20 md:hover:bg-amber-500/30 font-medium text-center transition-colors">
+        <p>Nothing is saved when you close DragonAI.</p>
+        <button id="btn-guest-to-signin" type="button" class="guest-banner-btn btn-spring">
           Sign In to Save Chats
         </button>
       </div>
 
-      <!-- Chat History List -->
-      <div class="flex-1 overflow-y-auto px-2.5 py-1 space-y-0.5" id="chat-history-list">
-        <!-- Populated dynamically -->
-      </div>
+      <!-- Chat List -->
+      <div id="chat-list" class="chat-list"></div>
 
-      <!-- Sidebar Footer: Settings & Profile -->
-      <div class="p-3 pb-safe border-t border-zinc-200/70 dark:border-zinc-800/80 space-y-1">
-        <button id="btn-open-settings" type="button" class="btn-spring w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-zinc-700 dark:text-zinc-300 md:hover:bg-zinc-200/60 dark:md:hover:bg-zinc-800/80 transition-colors">
-          <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button id="btn-sidebar-settings" type="button" class="sidebar-action-btn btn-spring hover-elevate">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
           <span>Settings</span>
         </button>
 
-        <!-- User Account Row -->
-        <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-white/70 dark:bg-surface-darkElevated/60 border border-zinc-200/60 dark:border-zinc-800">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div id="user-avatar-badge" class="w-7 h-7 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-semibold flex items-center justify-center shrink-0">
-              G
-            </div>
-            <div class="min-w-0">
-              <div id="user-display-name" class="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate">Guest</div>
-              <div id="user-status-sub" class="text-[11px] text-zinc-400 truncate">Not saved</div>
+        <div class="account-pill">
+          <div class="account-info">
+            <div id="user-avatar" class="avatar-circle">G</div>
+            <div style="min-width:0;">
+              <div id="user-name-label" class="account-name">Guest</div>
+              <div id="user-sub-label" class="account-sub">Temporary session</div>
             </div>
           </div>
-          <button id="btn-sign-out" type="button" title="Exit / Sign Out" class="btn-spring p-1.5 rounded-lg text-zinc-400 md:hover:text-red-500 md:hover:bg-red-500/10 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+          <button id="btn-logout" type="button" class="logout-btn btn-spring hover-danger" title="Log Out">
+            <span>Log Out</span>
           </button>
         </div>
       </div>
     </aside>
 
-    <!-- Main Content Column -->
-    <main id="main-content-area" class="flex-1 flex flex-col h-full min-w-0 bg-surface-light dark:bg-surface-dark relative">
-
-      <!-- Minimalist Top Header (No logo) -->
-      <header class="h-14 pt-safe px-3 sm:px-5 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800/60 shrink-0 z-20 bg-surface-light/85 dark:bg-surface-dark/85 backdrop-blur-md">
-        <div class="flex items-center gap-2">
-          <button id="btn-open-sidebar" type="button" aria-label="Open sidebar" class="btn-spring p-2 rounded-full text-zinc-600 dark:text-zinc-300 md:hidden">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/></svg>
+    <!-- Main Chat Area -->
+    <main class="main-column">
+      <!-- Top Header (No logo) -->
+      <header class="top-header">
+        <div class="header-left">
+          <button id="btn-open-sidebar" type="button" aria-label="Open menu" class="icon-btn btn-spring mobile-only-btn">
+            <svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/>
+            </svg>
           </button>
-
-          <span class="font-semibold text-[16px] tracking-tight text-zinc-900 dark:text-white pl-1">DragonAI</span>
-
-          <span id="header-guest-badge" class="hidden ml-1 px-2 py-0.5 text-[11px] font-medium rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-700/70">
-            Guest
-          </span>
+          <span class="header-title">DragonAI</span>
+          <span id="header-guest-chip" class="guest-chip hidden">Guest</span>
         </div>
 
-        <div class="flex items-center gap-1">
-          <button id="header-new-chat" type="button" aria-label="New chat" title="New chat" class="btn-spring p-2 rounded-full text-zinc-500 md:hover:text-zinc-900 dark:text-zinc-400 dark:md:hover:text-white md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        <div class="header-right">
+          <button id="btn-header-new" type="button" aria-label="New chat" title="New chat" class="icon-btn btn-spring hover-elevate">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+            </svg>
           </button>
-          <button id="header-settings-btn" type="button" aria-label="Settings" title="Settings" class="btn-spring p-2 rounded-full text-zinc-500 md:hover:text-zinc-900 dark:text-zinc-400 dark:md:hover:text-white md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
+          <button id="btn-header-settings" type="button" aria-label="Settings" title="Settings" class="icon-btn btn-spring hover-elevate">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
+            </svg>
           </button>
         </div>
       </header>
 
-      <!-- Messages Viewport -->
-      <div id="messages-scroll-area" class="flex-1 overflow-y-auto px-4 sm:px-6 pb-28">
-        <div class="max-w-3xl mx-auto min-h-full flex flex-col">
+      <!-- Scrollable Message Viewport -->
+      <div id="messages-viewport" class="messages-viewport">
+        <div class="messages-container">
 
-          <!-- Empty State Welcome View (No logo) -->
-          <div id="empty-chat-state" class="my-auto py-12 flex flex-col items-center text-center animate-fade-up">
-            <h2 class="text-2xl sm:text-3xl font-semibold text-zinc-900 dark:text-white tracking-tight">
-              How can DragonAI help today?
-            </h2>
-            <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400 max-w-md">
-              Ask anything, upload documents or images, or brainstorm ideas.
+          <!-- Empty State (No logo) -->
+          <div id="empty-state" class="empty-state anim-fade-up">
+            <h2 class="empty-title">How can DragonAI help today?</h2>
+            <p class="empty-subtitle">
+              Ask anything, upload files or images, or brainstorm ideas.
             </p>
 
-            <!-- Minimalist Suggestion Pills -->
-            <div class="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full max-w-xl text-left">
-              <button type="button" class="suggestion-chip btn-spring p-3.5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-surface-subtle/60 dark:bg-surface-darkSubtle/60 md:hover:bg-zinc-100/80 dark:md:hover:bg-zinc-800/70 transition-colors" data-prompt="Explain quantum computing in simple, intuitive terms.">
-                <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">Explain a concept</div>
-                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">Quantum computing in simple terms</div>
+            <div class="suggestions-grid">
+              <button type="button" class="suggestion-card btn-spring hover-elevate" data-prompt="Explain quantum computing in simple, intuitive terms.">
+                <div class="suggestion-card-title">Explain a concept</div>
+                <div class="suggestion-card-desc">Quantum computing in simple terms</div>
               </button>
-              <button type="button" class="suggestion-chip btn-spring p-3.5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-surface-subtle/60 dark:bg-surface-darkSubtle/60 md:hover:bg-zinc-100/80 dark:md:hover:bg-zinc-800/70 transition-colors" data-prompt="Write a clean, modern Python script to organize files by extension.">
-                <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">Write clean code</div>
-                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">Python script to organize files</div>
+              <button type="button" class="suggestion-card btn-spring hover-elevate" data-prompt="Write a clean Python script to organize files in a folder by file extension.">
+                <div class="suggestion-card-title">Write clean code</div>
+                <div class="suggestion-card-desc">Python script to organize files</div>
               </button>
-              <button type="button" class="suggestion-chip btn-spring p-3.5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-surface-subtle/60 dark:bg-surface-darkSubtle/60 md:hover:bg-zinc-100/80 dark:md:hover:bg-zinc-800/70 transition-colors" data-prompt="Help me draft a concise, polite follow-up email after an interview.">
-                <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">Draft an email</div>
-                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">Polite post-interview follow-up</div>
+              <button type="button" class="suggestion-card btn-spring hover-elevate" data-prompt="Help me draft a concise, polite follow-up email after a job interview.">
+                <div class="suggestion-card-title">Draft an email</div>
+                <div class="suggestion-card-desc">Polite post-interview follow-up</div>
               </button>
-              <button type="button" class="suggestion-chip btn-spring p-3.5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-surface-subtle/60 dark:bg-surface-darkSubtle/60 md:hover:bg-zinc-100/80 dark:md:hover:bg-zinc-800/70 transition-colors" data-prompt="Give me 5 focused productivity habits for deep creative work.">
-                <div class="text-xs font-medium text-zinc-900 dark:text-zinc-100">Brainstorm ideas</div>
-                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">Productivity habits for deep work</div>
+              <button type="button" class="suggestion-card btn-spring hover-elevate" data-prompt="Give me 5 practical habits for deep focus and productivity.">
+                <div class="suggestion-card-title">Brainstorm ideas</div>
+                <div class="suggestion-card-desc">Practical habits for deep focus</div>
               </button>
             </div>
           </div>
 
-          <!-- Active Message Thread -->
-          <div id="messages-list" class="hidden py-6 space-y-6 flex-1"></div>
-
+          <!-- Active Messages List -->
+          <div id="messages-list" class="messages-list hidden"></div>
         </div>
       </div>
 
-      <!-- Frosted Transparency Blur Bottom Composer Footer (No helper text) -->
-      <div class="absolute bottom-0 inset-x-0 z-20 px-3 sm:px-6 pt-3 pb-safe composer-dock-blur border-t border-zinc-200/50 dark:border-zinc-800/50">
-        <div class="max-w-3xl mx-auto">
+      <!-- Frosted Transparency Blur Bottom Composer Dock (NO text below message bar) -->
+      <div class="composer-dock">
+        <div class="composer-inner">
+          <div id="attachments-bar" class="attachments-bar hidden"></div>
 
-          <!-- Attached File Preview Chips -->
-          <div id="attachments-preview-bar" class="hidden flex-wrap gap-2 mb-2.5 px-1"></div>
-
-          <!-- ChatGPT-Style Pill Composer Input Box -->
-          <div id="composer-pill-container" class="pill-composer relative flex items-end gap-1.5 px-2 py-1.5 bg-surface-subtle/90 dark:bg-surface-darkSubtle/90 border border-zinc-200/90 dark:border-zinc-700/80 shadow-sm focus-within:border-zinc-400 dark:focus-within:border-zinc-500">
-
-            <!-- File Attachment Button -->
-            <input type="file" id="file-upload-input" multiple accept="image/png,image/jpeg,image/webp,.txt,.md,.json,.csv,.pdf,.js,.ts,.py,.html,.css,.xml,.yaml,.yml,.log" class="hidden" />
-            <button id="btn-attach-file" type="button" aria-label="Attach files" title="Attach image or document" class="btn-spring p-2.5 rounded-full text-zinc-500 md:hover:text-zinc-900 dark:text-zinc-400 dark:md:hover:text-white md:hover:bg-zinc-200/70 dark:md:hover:bg-zinc-700/60 shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          <div id="pill-bar" class="pill-bar">
+            <input
+              id="file-input"
+              type="file"
+              multiple
+              accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py,.html,.css"
+              class="hidden"
+            />
+            <button id="btn-attach" type="button" aria-label="Attach files" title="Upload files" class="attach-btn btn-spring hover-elevate">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+              </svg>
             </button>
 
-            <!-- Auto-expanding Textarea (Enter adds newline by default) -->
             <textarea
-              id="chat-textarea"
+              id="chat-input"
               rows="1"
               placeholder="Message DragonAI..."
-              class="flex-1 max-h-40 py-2 px-1 bg-transparent text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 resize-none focus:outline-none leading-normal"
+              class="chat-input"
             ></textarea>
 
-            <!-- Explicit Send Button -->
-            <button
-              id="btn-send-message"
-              type="button"
-              disabled
-              aria-label="Send message"
-              class="btn-spring p-2.5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 disabled:opacity-25 disabled:pointer-events-none shrink-0 shadow-xs"
-            >
-              <svg id="send-icon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/></svg>
-              <svg id="stop-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            <button id="btn-send" type="button" disabled aria-label="Send message" class="send-btn btn-spring hover-primary">
+              <svg id="icon-send" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/>
+              </svg>
+              <svg id="icon-stop" width="16" height="16" fill="currentColor" viewBox="0 0 24 24" class="hidden">
+                <rect x="6" y="6" width="12" height="12" rx="2"/>
+              </svg>
             </button>
           </div>
         </div>
@@ -587,1191 +1583,1526 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- 3. SETTINGS MODAL (Strictly non-blocking when closed)                 -->
+  <!-- 3. SETTINGS MODAL                                                     -->
   <!-- ===================================================================== -->
-  <div id="settings-modal" class="overlay-inactive fixed inset-0 z-50 items-center justify-center p-4 bg-black/45 backdrop-blur-xs animate-fade-in">
-    <div class="w-full max-w-md rounded-3xl bg-white dark:bg-surface-darkSubtle border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden animate-scale-in">
-      <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-        <h3 class="text-base font-semibold text-zinc-900 dark:text-white">Settings</h3>
-        <button id="btn-close-settings" type="button" class="btn-spring p-1.5 rounded-full text-zinc-400 md:hover:text-zinc-800 dark:md:hover:text-zinc-200 md:hover:bg-zinc-100 dark:md:hover:bg-zinc-800">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+  <div id="settings-modal" class="modal-overlay hidden anim-fade-in">
+    <div class="modal-card anim-scale-in">
+      <div class="modal-header">
+        <h3 class="modal-title">Settings</h3>
+        <button id="btn-close-settings" type="button" aria-label="Close settings" class="icon-btn btn-spring hover-elevate">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
         </button>
       </div>
 
-      <!-- Modal Body -->
-      <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
-
-        <!-- Setting 0: Gemini API Key (Optional; built-in assistant works even without key) -->
-        <div>
-          <label for="setting-gemini-api-key" class="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1">Google Gemini API Key</label>
-          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-2">
-            Optional. Add your Gemini API key for live cloud model responses, or leave blank to use DragonAI's built-in assistant mode with zero errors.
-          </p>
-          <div class="relative flex items-center">
-            <input
-              type="password"
-              id="setting-gemini-api-key"
-              placeholder="AIzaSy..."
-              autocomplete="off"
-              class="w-full px-3.5 py-2.5 pr-16 rounded-2xl bg-surface-subtle dark:bg-surface-dark border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-sky-500/30 font-mono text-sm"
-            />
-            <button id="btn-toggle-api-key-vis" type="button" class="absolute right-2.5 px-2 py-1 text-xs font-medium text-zinc-500 dark:text-zinc-400 rounded-lg">
-              Show
-            </button>
-          </div>
-        </div>
-
-        <!-- Setting 1: Press Enter to Send Toggle (OFF by default) -->
-        <div class="flex items-start justify-between gap-4">
+      <div class="modal-body">
+        <!-- Setting 1: Press Enter to Send (Default OFF) -->
+        <div class="setting-row">
           <div>
-            <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Press Enter to send</div>
-            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
-              When off (default), pressing Enter adds a new line and you tap Send to submit.
-            </p>
+            <div class="setting-label">Press Enter to send message</div>
+            <div class="setting-desc">
+              Off by default so Enter inserts a new line and you click Send to submit.
+            </div>
           </div>
-          <button id="toggle-enter-to-send" type="button" role="switch" aria-checked="false" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-zinc-200 dark:bg-zinc-700 transition-colors duration-200 ease-in-out focus:outline-none">
-            <span id="toggle-enter-knob" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+          <button id="toggle-enter-send" type="button" role="switch" aria-checked="false" class="switch-btn">
+            <span class="switch-knob"></span>
           </button>
         </div>
 
-        <!-- Setting 2: Theme Selector (System Default) -->
+        <!-- Setting 2: Appearance (Default System) -->
         <div>
-          <label class="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-2">Appearance</label>
-          <div class="grid grid-cols-3 gap-2 p-1 rounded-2xl bg-zinc-100 dark:bg-surface-dark border border-zinc-200/60 dark:border-zinc-800">
-            <button type="button" data-theme-choice="system" class="theme-choice-btn py-2 px-3 rounded-xl text-xs font-medium transition-all">System</button>
-            <button type="button" data-theme-choice="light" class="theme-choice-btn py-2 px-3 rounded-xl text-xs font-medium transition-all">Light</button>
-            <button type="button" data-theme-choice="dark" class="theme-choice-btn py-2 px-3 rounded-xl text-xs font-medium transition-all">Dark</button>
+          <div class="setting-label">Appearance</div>
+          <div class="segmented-group">
+            <button type="button" class="seg-btn" data-theme-opt="system">System</button>
+            <button type="button" class="seg-btn" data-theme-opt="light">Light</button>
+            <button type="button" class="seg-btn" data-theme-opt="dark">Dark</button>
           </div>
         </div>
 
-        <!-- Setting 3: Custom Instructions / AI Persona -->
+        <!-- Setting 3: Google Gemini API Key -->
         <div>
-          <label for="setting-system-prompt" class="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1">Custom instructions</label>
-          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-2">Optional guidance for how DragonAI should respond.</p>
+          <label for="input-api-key" class="setting-label">Google Gemini API Key</label>
+          <div class="setting-desc">
+            Optional. Connect your Gemini API key for live cloud model responses, or leave empty to use the built-in assistant.
+          </div>
+          <div class="api-input-wrap">
+            <input
+              id="input-api-key"
+              type="password"
+              autocomplete="off"
+              placeholder="AIzaSy..."
+              class="form-input"
+              style="padding-right: 64px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px;"
+            />
+            <button id="btn-toggle-key-vis" type="button" class="api-vis-btn">Show</button>
+          </div>
+        </div>
+
+        <!-- Setting 4: Custom Instructions -->
+        <div>
+          <label for="input-system-prompt" class="setting-label">Custom instructions</label>
+          <div class="setting-desc">Optional guidance for DragonAI's tone and style.</div>
           <textarea
-            id="setting-system-prompt"
+            id="input-system-prompt"
             rows="3"
-            placeholder="e.g., Be concise, direct, and format technical answers with examples."
-            class="w-full px-3.5 py-2.5 rounded-2xl bg-surface-subtle dark:bg-surface-dark border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-sky-500/30 resize-none"
+            placeholder="e.g., Keep answers concise and include practical examples."
+            class="form-input"
+            style="margin-top: 8px; resize: none;"
           ></textarea>
         </div>
 
-        <!-- Setting 4: Clear All Chats -->
-        <div class="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+        <!-- Setting 5: Clear Conversations -->
+        <div class="setting-row" style="padding-top: 14px; border-top: 1px solid var(--border-subtle); align-items: center;">
           <div>
-            <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">Chat history</div>
-            <p id="settings-storage-desc" class="text-xs text-zinc-500 dark:text-zinc-400">Remove all conversations</p>
+            <div class="setting-label">Clear conversations</div>
+            <div id="clear-chats-desc" class="setting-desc">Delete all chats in this session</div>
           </div>
-          <button id="btn-clear-all-chats" type="button" class="btn-spring px-3.5 py-2 rounded-full text-xs font-medium text-red-600 dark:text-red-400 bg-red-500/10 md:hover:bg-red-500/20 transition-colors">
+          <button id="btn-clear-chats" type="button" class="btn-danger-pill btn-spring">
             Clear All
           </button>
         </div>
-
       </div>
     </div>
   </div>
 
   <!-- ===================================================================== -->
-  <!-- 4. CUSTOM CONFIRMATION MODAL (Strictly non-blocking when closed)      -->
+  <!-- SELF-CONTAINED APPLICATION LOGIC (ZERO EXTERNAL BLOCKING SCRIPTS)     -->
   <!-- ===================================================================== -->
-  <div id="confirm-modal" class="overlay-inactive fixed inset-0 z-[60] items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
-    <div class="w-full max-w-xs rounded-3xl bg-white dark:bg-surface-darkSubtle border border-zinc-200 dark:border-zinc-800 p-6 shadow-2xl animate-scale-in text-center">
-      <h4 id="confirm-title" class="text-base font-semibold text-zinc-900 dark:text-white">Are you sure?</h4>
-      <p id="confirm-desc" class="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">This action cannot be undone.</p>
-      <div class="mt-5 flex gap-2.5">
-        <button id="btn-confirm-cancel" type="button" class="btn-spring flex-1 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300">Cancel</button>
-        <button id="btn-confirm-accept" type="button" class="btn-spring flex-1 py-2.5 rounded-xl bg-red-600 text-white text-xs font-medium">Confirm</button>
-      </div>
-    </div>
-  </div>
+  <script>
+    (function () {
+      'use strict';
 
-  <!-- ===================================================================== -->
-  <!-- APPLICATION SCRIPT (Theme + Firebase + Gemini API + UI Logic)         -->
-  <!-- ===================================================================== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import {
-      getAuth,
-      signInAnonymously,
-      signInWithCustomToken,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      deleteDoc,
-      onSnapshot,
-      collection
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+      // =======================================================================
+      // 1. SAFE STORAGE & ACCOUNT VAULT HELPERS
+      // =======================================================================
+      var VAULT_KEY = 'dragonai_vault_v2';
+      var THEME_KEY = 'dragonai_theme';
+      var GLOBAL_KEY = 'dragonai_global_v2';
 
-    // =========================================================================
-    // 1. GLOBAL APPLICATION STATE (Default theme: 'system', sendOnEnter: false)
-    // =========================================================================
-    const VAULT_STORAGE_KEY = 'dragonai_account_vault_v1';
-    const GLOBAL_PREFS_KEY = 'dragonai_global_prefs_v1';
-
-    function safeReadStorage(key) {
-      try {
-        return window.localStorage ? window.localStorage.getItem(key) : null;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function safeWriteStorage(key, value) {
-      try {
-        if (window.localStorage) {
-          window.localStorage.setItem(key, value);
+      function readLS(key) {
+        try {
+          return window.localStorage ? window.localStorage.getItem(key) : null;
+        } catch (e) {
+          return null;
         }
-      } catch (e) {}
-    }
-
-    function loadAccountVault() {
-      try {
-        const raw = safeReadStorage(VAULT_STORAGE_KEY);
-        if (!raw) return { accounts: {}, lastSignedInId: null };
-        const parsed = JSON.parse(raw);
-        return {
-          accounts: parsed && typeof parsed.accounts === 'object' ? parsed.accounts : {},
-          lastSignedInId: parsed && parsed.lastSignedInId ? parsed.lastSignedInId : null
-        };
-      } catch (e) {
-        return { accounts: {}, lastSignedInId: null };
       }
-    }
 
-    function saveAccountVault(vault) {
-      safeWriteStorage(VAULT_STORAGE_KEY, JSON.stringify(vault));
-    }
-
-    let initialTheme = 'system';
-    let initialApiKey = '';
-    try {
-      const storedTheme = safeReadStorage('dragonai_theme');
-      if (storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system') {
-        initialTheme = storedTheme;
+      function writeLS(key, val) {
+        try {
+          if (window.localStorage) {
+            window.localStorage.setItem(key, val);
+          }
+        } catch (e) {}
       }
-      const globalPrefsRaw = safeReadStorage(GLOBAL_PREFS_KEY);
-      if (globalPrefsRaw) {
-        const gp = JSON.parse(globalPrefsRaw);
-        if (gp.apiKey) initialApiKey = gp.apiKey;
-        if (!storedTheme && gp.theme) initialTheme = gp.theme;
+
+      function loadVault() {
+        try {
+          var raw = readLS(VAULT_KEY);
+          if (!raw) return { accounts: {}, lastAccountId: null };
+          var parsed = JSON.parse(raw);
+          return {
+            accounts: parsed && typeof parsed.accounts === 'object' ? parsed.accounts : {},
+            lastAccountId: parsed && parsed.lastAccountId ? parsed.lastAccountId : null
+          };
+        } catch (e) {
+          return { accounts: {}, lastAccountId: null };
+        }
       }
-    } catch (e) {}
 
-    const state = {
-      mode: null, // 'user' | 'guest'
-      accountId: null,
-      accountEmail: '',
-      user: null,
-      chats: [],
-      activeChatId: null,
-      pendingAttachments: [],
-      isGenerating: false,
-      abortController: null,
-      unsubscribeChats: null,
-      settings: {
-        apiKey: initialApiKey,
-        enterToSend: false,
-        theme: initialTheme,
-        systemPrompt: ''
+      function saveVault(vault) {
+        writeLS(VAULT_KEY, JSON.stringify(vault));
       }
-    };
 
-    // =========================================================================
-    // 2. MOBILE HOME-SCREEN APP ICON & MANIFEST SETUP (Using IMG_7732.png)
-    // =========================================================================
-    function configureMobileAppIcon() {
-      const iconSource = document.getElementById('app-icon-source');
-      const faviconEl = document.getElementById('dynamic-favicon');
-      const appleIconEl = document.getElementById('dynamic-apple-icon');
-      const manifestEl = document.getElementById('dynamic-manifest');
+      function loadGlobalPrefs() {
+        try {
+          var raw = readLS(GLOBAL_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return {};
+        }
+      }
 
-      const applyIconDataUrl = (iconUrl) => {
-        faviconEl.href = iconUrl;
-        appleIconEl.href = iconUrl;
+      function saveGlobalPrefs(prefs) {
+        writeLS(GLOBAL_KEY, JSON.stringify(prefs));
+      }
 
-        const manifest = {
-          name: "DragonAI",
-          short_name: "DragonAI",
-          description: "Minimalist AI assistant powered by Google Gemini",
-          start_url: ".",
-          display: "standalone",
-          background_color: "#141416",
-          theme_color: "#141416",
+      function normalizeId(str) {
+        return String(str || '').trim().toLowerCase().replace(/[^a-z0-9@._-]/g, '_');
+      }
+
+      function generateId() {
+        if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+          return window.crypto.randomUUID();
+        }
+        return 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+      }
+
+      // =======================================================================
+      // 2. APPLICATION STATE (Ephemeral Guest RAM vs Persistent User Vault)
+      // =======================================================================
+      var globalPrefs = loadGlobalPrefs();
+      var storedTheme = readLS(THEME_KEY);
+      var initialTheme = (storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system')
+        ? storedTheme
+        : (globalPrefs.theme || 'system');
+
+      var guestSession = {
+        chats: [],
+        activeChatId: null
+      };
+
+      var state = {
+        mode: null, // 'user' | 'guest'
+        accountId: null,
+        identity: '',
+        displayName: '',
+        chats: [],
+        activeChatId: null,
+        pendingAttachments: [],
+        isGenerating: false,
+        abortController: null,
+        streamTimer: null,
+        settings: {
+          theme: initialTheme,
+          enterToSend: Boolean(globalPrefs.enterToSend),
+          apiKey: (typeof window.__GEMINI_API_KEY__ === 'string' && window.__GEMINI_API_KEY__) || globalPrefs.apiKey || '',
+          systemPrompt: globalPrefs.systemPrompt || ''
+        }
+      };
+
+      // =======================================================================
+      // 3. MOBILE APP ICON & WEB MANIFEST CONFIGURATION (IMG_7732.png)
+      // =======================================================================
+      (function setupMobileIcon() {
+        var iconUrl = 'IMG_7732.png';
+        var manifest = {
+          name: 'DragonAI',
+          short_name: 'DragonAI',
+          description: 'Minimalist AI assistant powered by Google Gemini',
+          start_url: '.',
+          display: 'standalone',
+          background_color: '#0d0d0f',
+          theme_color: '#0d0d0f',
           icons: [
             {
               src: iconUrl,
-              sizes: "512x512",
-              type: "image/png",
-              purpose: "any maskable"
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any maskable'
             }
           ]
         };
-        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-        manifestEl.href = URL.createObjectURL(manifestBlob);
-      };
-
-      iconSource.onload = () => {
         try {
-          const canvas = document.createElement('canvas');
-          canvas.width = 512;
-          canvas.height = 512;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(iconSource, 0, 0, 512, 512);
-          applyIconDataUrl(canvas.toDataURL('image/png'));
-        } catch (e) {
-          applyIconDataUrl('IMG_7732.png');
-        }
-      };
+          var blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+          var manifestLink = document.getElementById('dynamic-manifest');
+          if (manifestLink) {
+            manifestLink.href = URL.createObjectURL(blob);
+          }
+        } catch (e) {}
+      })();
 
-      iconSource.onerror = () => {
-        const svgEl = document.getElementById('dragon-fallback-svg');
-        const svgString = new XMLSerializer().serializeToString(svgEl);
-        const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(svgBlob);
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = 512;
-          canvas.height = 512;
-          canvas.getContext('2d').drawImage(img, 0, 0, 512, 512);
-          applyIconDataUrl(canvas.toDataURL('image/png'));
-          URL.revokeObjectURL(url);
+      // =======================================================================
+      // 4. MOBILE ZOOM BLOCKING (Pinch & Double-Tap Prevention)
+      // =======================================================================
+      document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('gesturechange', function (e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('touchmove', function (e) {
+        if (e.touches && e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      // =======================================================================
+      // 5. LIVE SYSTEM THEME MANAGEMENT
+      // =======================================================================
+      var colorSchemeMQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+      function applyTheme(choice) {
+        var valid = (choice === 'light' || choice === 'dark' || choice === 'system') ? choice : 'system';
+        state.settings.theme = valid;
+        writeLS(THEME_KEY, valid);
+
+        var prefersDark = colorSchemeMQ ? colorSchemeMQ.matches : false;
+        var isDark = valid === 'dark' || (valid === 'system' && prefersDark);
+        var root = document.documentElement;
+
+        if (isDark) {
+          root.classList.add('dark');
+          root.setAttribute('data-theme', 'dark');
+          root.style.colorScheme = 'dark';
+        } else {
+          root.classList.remove('dark');
+          root.setAttribute('data-theme', 'light');
+          root.style.colorScheme = 'light';
+        }
+
+        var metaTheme = document.getElementById('metaThemeColor');
+        if (metaTheme) {
+          metaTheme.setAttribute('content', isDark ? '#0d0d0f' : '#ffffff');
+        }
+
+        var segBtns = document.querySelectorAll('.seg-btn');
+        for (var i = 0; i < segBtns.length; i++) {
+          var btn = segBtns[i];
+          if (btn.getAttribute('data-theme-opt') === valid) {
+            btn.classList.add('is-selected');
+          } else {
+            btn.classList.remove('is-selected');
+          }
+        }
+      }
+
+      if (colorSchemeMQ) {
+        var onSystemThemeChange = function () {
+          if (state.settings.theme === 'system') {
+            applyTheme('system');
+          }
         };
-        img.src = url;
-      };
-
-      if (iconSource.complete && iconSource.naturalWidth > 0) {
-        iconSource.onload();
-      }
-    }
-    configureMobileAppIcon();
-
-    // =========================================================================
-    // 7. AUTHENTICATION SCREEN, SAVED LOGIN DETAILS & GUEST MODE FLOW
-    // =========================================================================
-    const authScreen = document.getElementById('auth-screen');
-    const appShell = document.getElementById('app-shell');
-    const authButtonsContainer = document.getElementById('auth-buttons-container');
-    const signinFormCard = document.getElementById('signin-form-card');
-    const savedAccountsSection = document.getElementById('saved-accounts-section');
-    const savedAccountsList = document.getElementById('saved-accounts-list');
-    let isSignUpMode = false;
-
-    function normalizeAccountId(emailOrName) {
-      return (emailOrName || 'user').trim().toLowerCase().replace(/[^a-z0-9@._-]/g, '_');
-    }
-
-    function persistCurrentAccountState() {
-      if (state.mode !== 'user' || !state.accountId) return;
-
-      const vault = loadAccountVault();
-      const existing = vault.accounts[state.accountId] || {};
-      const sanitizedChats = state.chats.map(chat => ({
-        id: chat.id,
-        title: chat.title || 'New Chat',
-        updatedAt: chat.updatedAt || Date.now(),
-        messages: (chat.messages || [])
-          .filter(m => !m.isThinking)
-          .map(m => ({
-            role: m.role,
-            text: m.text || '',
-            timestamp: m.timestamp || Date.now(),
-            attachments: (m.attachments || []).map(a => ({
-              name: a.name,
-              mimeType: a.mimeType,
-              isImage: a.isImage,
-              isPdf: a.isPdf,
-              previewUrl: a.isImage ? (a.previewUrl || null) : null
-            }))
-          }))
-      }));
-
-      vault.accounts[state.accountId] = {
-        ...existing,
-        id: state.accountId,
-        displayName: existing.displayName || state.accountEmail.split('@')[0] || 'Account User',
-        email: state.accountEmail || existing.email || '',
-        password: existing.password || '',
-        savedCredentials: existing.savedCredentials !== false,
-        updatedAt: Date.now(),
-        chats: sanitizedChats,
-        settings: {
-          apiKey: state.settings.apiKey || '',
-          enterToSend: Boolean(state.settings.enterToSend),
-          theme: state.settings.theme || 'system',
-          systemPrompt: state.settings.systemPrompt || ''
-        }
-      };
-      vault.lastSignedInId = state.accountId;
-      saveAccountVault(vault);
-
-      safeWriteStorage(GLOBAL_PREFS_KEY, JSON.stringify({
-        apiKey: state.settings.apiKey || '',
-        theme: state.settings.theme || 'system'
-      }));
-    }
-
-    function renderSavedAccounts() {
-      const vault = loadAccountVault();
-      const entries = Object.values(vault.accounts || {})
-        .filter(acc => acc && acc.savedCredentials !== false)
-        .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-
-      savedAccountsList.innerHTML = '';
-      if (!entries.length) {
-        savedAccountsSection.classList.add('hidden');
-        return;
-      }
-
-      savedAccountsSection.classList.remove('hidden');
-      entries.forEach(acc => {
-        const row = document.createElement('button');
-        row.type = 'button';
-        row.className = 'btn-spring w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white dark:bg-surface-dark border border-zinc-200/80 dark:border-zinc-700/80 text-left text-xs';
-        const chatCount = Array.isArray(acc.chats) ? acc.chats.length : 0;
-        row.innerHTML = `
-          <div class="min-w-0">
-            <div class="font-medium text-zinc-900 dark:text-zinc-100 truncate">${acc.displayName || acc.email || 'Saved Account'}</div>
-            <div class="text-[11px] text-zinc-400 truncate">${acc.email || 'Local Vault'} · ${chatCount} ${chatCount === 1 ? 'chat' : 'chats'}</div>
-          </div>
-          <span class="text-[11px] font-medium text-sky-600 dark:text-sky-400 shrink-0">Sign In</span>
-        `;
-        row.onclick = () => {
-          signInWithVaultAccount(acc);
-        };
-        savedAccountsList.appendChild(row);
-      });
-    }
-
-    function signInWithVaultAccount(acc) {
-      state.accountId = acc.id;
-      state.accountEmail = acc.email || '';
-      state.chats = Array.isArray(acc.chats) ? acc.chats.map(c => ({
-        ...c,
-        messages: Array.isArray(c.messages) ? [...c.messages] : []
-      })) : [];
-      state.activeChatId = state.chats.length > 0 ? state.chats[0].id : null;
-
-      if (acc.settings) {
-        state.settings.enterToSend = Boolean(acc.settings.enterToSend);
-        state.settings.systemPrompt = acc.settings.systemPrompt || '';
-        if (acc.settings.apiKey) {
-          state.settings.apiKey = acc.settings.apiKey;
-        }
-        if (acc.settings.theme) {
-          applyTheme(acc.settings.theme);
+        if (typeof colorSchemeMQ.addEventListener === 'function') {
+          colorSchemeMQ.addEventListener('change', onSystemThemeChange);
+        } else if (typeof colorSchemeMQ.addListener === 'function') {
+          colorSchemeMQ.addListener(onSystemThemeChange);
         }
       }
 
-      const vault = loadAccountVault();
-      vault.lastSignedInId = acc.id;
-      saveAccountVault(vault);
-
-      updateSettingsUI();
-      transitionToApp('user', acc.displayName || 'Account User', acc.email || 'Saved account');
-      showToast(`Welcome back, ${acc.displayName || 'Account User'}`);
-    }
-
-    function transitionToApp(mode, displayName, subLabel) {
-      state.mode = mode;
-
-      // Hide Auth Screen with strict overlay-inactive class
-      authScreen.classList.add('overlay-inactive');
-      authScreen.classList.remove('overlay-active');
-
-      // Show App Shell with overlay-active class
-      appShell.classList.remove('overlay-inactive');
-      appShell.classList.add('overlay-active');
-
-      // Update Sidebar & Header Account Indicators
-      const avatarBadge = document.getElementById('user-avatar-badge');
-      const nameEl = document.getElementById('user-display-name');
-      const subEl = document.getElementById('user-status-sub');
-      const guestNotice = document.getElementById('sidebar-guest-notice');
-      const headerGuestBadge = document.getElementById('header-guest-badge');
-
-      nameEl.textContent = displayName;
-      subEl.textContent = subLabel;
-      avatarBadge.textContent = (displayName || 'G').charAt(0).toUpperCase();
-
-      if (mode === 'guest') {
-        guestNotice.classList.remove('hidden');
-        headerGuestBadge.classList.remove('hidden');
-      } else {
-        guestNotice.classList.add('hidden');
-        headerGuestBadge.classList.add('hidden');
+      // =======================================================================
+      // 6. TOAST NOTIFICATIONS
+      // =======================================================================
+      function showToast(text) {
+        var stack = document.getElementById('toast-stack');
+        if (!stack) return;
+        var el = document.createElement('div');
+        el.className = 'toast-item';
+        el.textContent = text;
+        stack.appendChild(el);
+        setTimeout(function () {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(-6px)';
+          el.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+          setTimeout(function () {
+            if (el.parentNode) el.parentNode.removeChild(el);
+          }, 240);
+        }, 2400);
       }
 
-      renderChatList();
-      renderActiveChat();
-    }
+      // =======================================================================
+      // 7. PERSISTENCE SYNC (Signed-In Vault vs Guest RAM)
+      // =======================================================================
+      function syncStateToStorage() {
+        saveGlobalPrefs({
+          theme: state.settings.theme,
+          enterToSend: state.settings.enterToSend,
+          apiKey: state.settings.apiKey,
+          systemPrompt: state.settings.systemPrompt
+        });
 
-    function returnToAuthScreen(preserveUserData = true) {
-      if (state.mode === 'user' && preserveUserData) {
-        persistCurrentAccountState();
-      }
-      if (state.unsubscribeChats) {
-        state.unsubscribeChats();
-        state.unsubscribeChats = null;
-      }
-      if (state.abortController) {
-        try { state.abortController.abort(); } catch (e) {}
-      }
-
-      const previousEmail = state.accountEmail;
-      state.mode = null;
-      state.user = null;
-      state.accountId = null;
-      state.chats = [];
-      state.activeChatId = null;
-      state.pendingAttachments = [];
-      state.isGenerating = false;
-      updateSendButtonState();
-      renderAttachments();
-      closeSidebar();
-
-      if (previousEmail) {
-        document.getElementById('auth-email').value = previousEmail;
-      }
-      renderSavedAccounts();
-
-      appShell.classList.add('overlay-inactive');
-      appShell.classList.remove('overlay-active');
-
-      authScreen.classList.remove('overlay-inactive');
-      authScreen.classList.add('overlay-active');
-    }
-
-    // 1) Continue as Guest (Instant, zero persistence across closing/reopening)
-    document.getElementById('btn-guest-mode').addEventListener('click', () => {
-      state.user = null;
-      state.accountId = null;
-      state.accountEmail = '';
-      state.chats = [];
-      state.activeChatId = null;
-      transitionToApp('guest', 'Guest', 'Not saved');
-      showToast('Guest mode: chats are not saved');
-    });
-
-    // 2) Open Sign-In Form & show saved accounts
-    document.getElementById('btn-open-signin').addEventListener('click', () => {
-      authButtonsContainer.classList.add('hidden');
-      signinFormCard.classList.remove('hidden');
-      renderSavedAccounts();
-      const vault = loadAccountVault();
-      if (vault.lastSignedInId && vault.accounts[vault.lastSignedInId]) {
-        const lastAcc = vault.accounts[vault.lastSignedInId];
-        if (lastAcc.email) document.getElementById('auth-email').value = lastAcc.email;
-        if (lastAcc.password) document.getElementById('auth-password').value = lastAcc.password;
-      }
-      document.getElementById('auth-email').focus();
-    });
-
-    document.getElementById('btn-cancel-signin').addEventListener('click', () => {
-      signinFormCard.classList.add('hidden');
-      authButtonsContainer.classList.remove('hidden');
-    });
-
-    document.getElementById('btn-toggle-signup').addEventListener('click', () => {
-      isSignUpMode = !isSignUpMode;
-      document.getElementById('signin-form-title').textContent = isSignUpMode ? 'Create Account' : 'Sign In';
-      document.getElementById('submit-email-text').textContent = isSignUpMode ? 'Create Account' : 'Sign In';
-      document.getElementById('btn-toggle-signup').innerHTML = isSignUpMode
-        ? 'Already have an account? <span class="font-semibold underline">Sign in</span>'
-        : 'Don\'t have an account? <span class="font-semibold underline">Create one</span>';
-    });
-
-    // Email/Password Sign-In or Registration (Persists login details & restores chats)
-    document.getElementById('email-auth-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('auth-email').value.trim();
-      const password = document.getElementById('auth-password').value;
-      const rememberMe = document.getElementById('auth-remember-me').checked;
-      const submitBtn = document.getElementById('btn-submit-email-auth');
-
-      if (!email) return;
-      submitBtn.disabled = true;
-
-      try {
-        const accId = normalizeAccountId(email);
-        const displayName = email.split('@')[0] || 'User';
-        const vault = loadAccountVault();
-        const existingAccount = vault.accounts[accId];
-
-        if (isSignUpMode && existingAccount) {
-          showToast('Account found — signed in and restored your chats');
+        if (state.mode === 'guest') {
+          guestSession.chats = state.chats;
+          guestSession.activeChatId = state.activeChatId;
+          return;
         }
 
-        const mergedAccount = {
-          id: accId,
-          displayName: existingAccount?.displayName || displayName,
-          email,
-          password: rememberMe ? password : '',
-          savedCredentials: rememberMe,
+        if (state.mode !== 'user' || !state.accountId) return;
+
+        var vault = loadVault();
+        var existing = vault.accounts[state.accountId] || {};
+
+        var cleanChats = state.chats.map(function (c) {
+          return {
+            id: c.id,
+            title: c.title || 'New Chat',
+            updatedAt: c.updatedAt || Date.now(),
+            messages: (c.messages || [])
+              .filter(function (m) { return !m.isThinking; })
+              .map(function (m) {
+                return {
+                  role: m.role,
+                  text: m.text || '',
+                  timestamp: m.timestamp || Date.now(),
+                  attachments: (m.attachments || []).map(function (a) {
+                    return {
+                      name: a.name,
+                      mimeType: a.mimeType,
+                      sizeLabel: a.sizeLabel || '',
+                      isImage: Boolean(a.isImage),
+                      isPdf: Boolean(a.isPdf),
+                      previewUrl: a.isImage ? (a.previewUrl || '') : ''
+                    };
+                  })
+                };
+              })
+          };
+        });
+
+        vault.accounts[state.accountId] = {
+          id: state.accountId,
+          identity: state.identity || existing.identity || '',
+          displayName: state.displayName || existing.displayName || 'User',
+          password: existing.password || '',
+          saveCredentials: existing.saveCredentials !== false,
           updatedAt: Date.now(),
-          chats: Array.isArray(existingAccount?.chats) ? existingAccount.chats : [],
-          settings: existingAccount?.settings || {
-            apiKey: state.settings.apiKey || '',
-            enterToSend: state.settings.enterToSend,
+          chats: cleanChats,
+          settings: {
             theme: state.settings.theme,
+            enterToSend: state.settings.enterToSend,
+            apiKey: state.settings.apiKey,
+            systemPrompt: state.settings.systemPrompt
+          }
+        };
+        vault.lastAccountId = state.accountId;
+        saveVault(vault);
+      }
+
+      // =======================================================================
+      // 8. AUTHENTICATION, SAVED ACCOUNTS & GUEST MODE
+      // =======================================================================
+      var authScreen = document.getElementById('auth-screen');
+      var appShell = document.getElementById('app-shell');
+      var savedAccountsWrap = document.getElementById('saved-accounts-wrap');
+      var savedAccountsList = document.getElementById('saved-accounts-list');
+      var loginIdentityInput = document.getElementById('login-identity');
+      var loginPasswordInput = document.getElementById('login-password');
+      var rememberCheckbox = document.getElementById('remember-login-checkbox');
+
+      function renderSavedAccounts() {
+        var vault = loadVault();
+        var list = Object.keys(vault.accounts)
+          .map(function (k) { return vault.accounts[k]; })
+          .filter(function (acc) { return acc && acc.saveCredentials !== false; })
+          .sort(function (a, b) { return (b.updatedAt || 0) - (a.updatedAt || 0); });
+
+        savedAccountsList.innerHTML = '';
+        if (list.length === 0) {
+          savedAccountsWrap.classList.add('hidden');
+          return;
+        }
+
+        savedAccountsWrap.classList.remove('hidden');
+        list.forEach(function (acc) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'saved-account-chip btn-spring hover-elevate';
+          var count = Array.isArray(acc.chats) ? acc.chats.length : 0;
+          var chatWord = count === 1 ? 'chat' : 'chats';
+
+          var left = document.createElement('div');
+          left.style.minWidth = '0';
+
+          var nameDiv = document.createElement('div');
+          nameDiv.className = 'saved-account-name';
+          nameDiv.textContent = acc.displayName || acc.identity;
+
+          var metaDiv = document.createElement('div');
+          metaDiv.className = 'saved-account-meta';
+          metaDiv.textContent = acc.identity + ' · ' + count + ' ' + chatWord;
+
+          left.appendChild(nameDiv);
+          left.appendChild(metaDiv);
+
+          var right = document.createElement('span');
+          right.className = 'saved-account-action';
+          right.textContent = 'Sign In';
+
+          btn.appendChild(left);
+          btn.appendChild(right);
+
+          btn.addEventListener('click', function () {
+            loginWithVaultAccount(acc);
+          });
+
+          savedAccountsList.appendChild(btn);
+        });
+      }
+
+      function prefillLastSavedCredentials() {
+        var vault = loadVault();
+        if (vault.lastAccountId && vault.accounts[vault.lastAccountId]) {
+          var last = vault.accounts[vault.lastAccountId];
+          if (last.saveCredentials !== false) {
+            loginIdentityInput.value = last.identity || '';
+            loginPasswordInput.value = last.password || '';
+            rememberCheckbox.checked = true;
+          }
+        }
+      }
+
+      function enterWorkspace(mode, displayName, subLabel) {
+        state.mode = mode;
+        authScreen.classList.add('hidden');
+        appShell.classList.remove('hidden');
+
+        document.getElementById('user-avatar').textContent = (displayName || 'G').charAt(0).toUpperCase();
+        document.getElementById('user-name-label').textContent = displayName;
+        document.getElementById('user-sub-label').textContent = subLabel;
+
+        var guestBanner = document.getElementById('sidebar-guest-banner');
+        var headerGuestChip = document.getElementById('header-guest-chip');
+        if (mode === 'guest') {
+          guestBanner.classList.remove('hidden');
+          headerGuestChip.classList.remove('hidden');
+        } else {
+          guestBanner.classList.add('hidden');
+          headerGuestChip.classList.add('hidden');
+        }
+
+        updateSettingsUI();
+        renderChatList();
+        renderMessages();
+      }
+
+      function loginWithVaultAccount(acc) {
+        state.accountId = acc.id;
+        state.identity = acc.identity;
+        state.displayName = acc.displayName || acc.identity.split('@')[0] || 'User';
+        state.chats = Array.isArray(acc.chats) ? JSON.parse(JSON.stringify(acc.chats)) : [];
+        state.activeChatId = state.chats.length > 0 ? state.chats[0].id : null;
+
+        if (acc.settings) {
+          state.settings.enterToSend = Boolean(acc.settings.enterToSend);
+          state.settings.systemPrompt = acc.settings.systemPrompt || '';
+          if (acc.settings.apiKey) {
+            state.settings.apiKey = acc.settings.apiKey;
+          }
+          if (acc.settings.theme) {
+            applyTheme(acc.settings.theme);
+          }
+        }
+
+        var vault = loadVault();
+        vault.lastAccountId = acc.id;
+        saveVault(vault);
+
+        enterWorkspace('user', state.displayName, state.identity);
+        showToast('Signed in as ' + state.displayName);
+      }
+
+      document.getElementById('signin-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var identity = loginIdentityInput.value.trim();
+        var password = loginPasswordInput.value;
+        var saveCreds = rememberCheckbox.checked;
+
+        if (!identity) {
+          showToast('Please enter an email or username');
+          loginIdentityInput.focus();
+          return;
+        }
+        if (!password) {
+          showToast('Please enter a password');
+          loginPasswordInput.focus();
+          return;
+        }
+
+        var accId = normalizeId(identity);
+        var vault = loadVault();
+        var existing = vault.accounts[accId];
+
+        if (existing && existing.password && existing.password !== password) {
+          showToast('Incorrect password for this saved account');
+          loginPasswordInput.focus();
+          return;
+        }
+
+        var displayName = existing && existing.displayName
+          ? existing.displayName
+          : (identity.indexOf('@') > -1 ? identity.split('@')[0] : identity);
+
+        var accountRecord = {
+          id: accId,
+          identity: identity,
+          displayName: displayName,
+          password: saveCreds ? password : (existing ? existing.password : password),
+          saveCredentials: saveCreds,
+          updatedAt: Date.now(),
+          chats: existing && Array.isArray(existing.chats) ? existing.chats : [],
+          settings: (existing && existing.settings) ? existing.settings : {
+            theme: state.settings.theme,
+            enterToSend: state.settings.enterToSend,
+            apiKey: state.settings.apiKey,
             systemPrompt: state.settings.systemPrompt
           }
         };
 
-        vault.accounts[accId] = mergedAccount;
-        if (rememberMe) {
-          vault.lastSignedInId = accId;
-        }
-        saveAccountVault(vault);
+        vault.accounts[accId] = accountRecord;
+        vault.lastAccountId = accId;
+        saveVault(vault);
 
-        // Optional Firebase sync if configured in host environment
-        if (auth) {
-          try {
-            if (isSignUpMode) {
-              const cred = await createUserWithEmailAndPassword(auth, email, password);
-              state.user = cred.user;
-            } else {
-              const cred = await signInWithEmailAndPassword(auth, email, password);
-              state.user = cred.user;
-            }
-          } catch (fbErr) {
-            // Keep local account session active seamlessly
-          }
+        loginWithVaultAccount(accountRecord);
+      });
+
+      document.getElementById('btn-guest-continue').addEventListener('click', function () {
+        // Fresh RAM-only session; never written to localStorage
+        guestSession = { chats: [], activeChatId: null };
+        state.accountId = null;
+        state.identity = '';
+        state.displayName = 'Guest';
+        state.chats = guestSession.chats;
+        state.activeChatId = null;
+        state.pendingAttachments = [];
+        renderAttachments();
+
+        enterWorkspace('guest', 'Guest', 'Not saved');
+        showToast('Guest mode: nothing is saved on exit');
+      });
+
+      function logoutToAuthScreen() {
+        stopGeneration();
+
+        if (state.mode === 'user') {
+          // Persist all user chats & settings before leaving workspace
+          syncStateToStorage();
+        } else if (state.mode === 'guest') {
+          // Wipe guest RAM session completely
+          guestSession = { chats: [], activeChatId: null };
         }
 
-        signInWithVaultAccount(mergedAccount);
-        if (state.user && db) {
-          await loadUserSettingsAndChats(state.user);
-        }
-      } finally {
-        submitBtn.disabled = false;
+        state.mode = null;
+        state.accountId = null;
+        state.chats = [];
+        state.activeChatId = null;
+        state.pendingAttachments = [];
+        renderAttachments();
+        closeSidebar();
+
+        renderSavedAccounts();
+        prefillLastSavedCredentials();
+
+        appShell.classList.add('hidden');
+        authScreen.classList.remove('hidden');
+        showToast('Logged out — your chats are safely saved');
       }
-    });
 
-    // Quick Personal Vault (One-Tap Saved Account)
-    document.getElementById('btn-instant-cloud-account').addEventListener('click', async () => {
-      const accId = 'personal_vault_user';
-      const vault = loadAccountVault();
-      const existing = vault.accounts[accId];
-      const accountObj = {
-        id: accId,
-        displayName: existing?.displayName || 'Personal Account',
-        email: existing?.email || 'personal@dragonai.local',
-        password: existing?.password || '',
-        savedCredentials: true,
-        updatedAt: Date.now(),
-        chats: Array.isArray(existing?.chats) ? existing.chats : [],
-        settings: existing?.settings || {
-          apiKey: state.settings.apiKey || '',
-          enterToSend: state.settings.enterToSend,
+      document.getElementById('btn-logout').addEventListener('click', logoutToAuthScreen);
+      document.getElementById('btn-guest-to-signin').addEventListener('click', function () {
+        guestSession = { chats: [], activeChatId: null };
+        state.mode = null;
+        state.chats = [];
+        state.activeChatId = null;
+        closeSidebar();
+        renderSavedAccounts();
+        prefillLastSavedCredentials();
+        appShell.classList.add('hidden');
+        authScreen.classList.remove('hidden');
+      });
+
+      document.getElementById('auth-theme-btn').addEventListener('click', function () {
+        var order = ['system', 'light', 'dark'];
+        var next = order[(order.indexOf(state.settings.theme) + 1) % order.length];
+        applyTheme(next);
+        saveGlobalPrefs({
           theme: state.settings.theme,
-          systemPrompt: state.settings.systemPrompt
-        }
-      };
-      vault.accounts[accId] = accountObj;
-      vault.lastSignedInId = accId;
-      saveAccountVault(vault);
-
-      if (auth) {
-        try {
-          const cred = (typeof __initial_auth_token !== 'undefined' && __initial_auth_token)
-            ? await signInWithCustomToken(auth, __initial_auth_token)
-            : await signInAnonymously(auth);
-          state.user = cred.user;
-        } catch (e) {}
-      }
-
-      signInWithVaultAccount(accountObj);
-    });
-
-    // Prompt from Guest sidebar banner to sign in
-    document.getElementById('btn-sidebar-signin-prompt').addEventListener('click', () => {
-      returnToAuthScreen(false);
-      authButtonsContainer.classList.add('hidden');
-      signinFormCard.classList.remove('hidden');
-      renderSavedAccounts();
-    });
-
-    // Log Out / Sign Out button in sidebar (Preserves all user chats & login details!)
-    document.getElementById('btn-sign-out').addEventListener('click', async () => {
-      if (state.mode === 'user') {
-        persistCurrentAccountState();
-      }
-      if (state.mode === 'user' && auth) {
-        try {
-          await signOut(auth);
-        } catch (e) {}
-      }
-      returnToAuthScreen(true);
-      showToast('Logged out — your chats and login details are saved');
-    });
-
-    // =========================================================================
-    // 8. FIRESTORE + LOCAL VAULT PERSISTENCE
-    // =========================================================================
-    async function loadUserSettingsAndChats(user) {
-      if (!db || !user || state.mode !== 'user') return;
-
-      try {
-        const settingsRef = doc(db, 'artifacts', appId, 'users', user.uid, 'preferences', 'main');
-        const settingsSnap = await getDoc(settingsRef);
-        if (settingsSnap.exists()) {
-          const data = settingsSnap.data();
-          state.settings.enterToSend = Boolean(data.enterToSend);
-          state.settings.systemPrompt = data.systemPrompt || '';
-          if (data.theme === 'light' || data.theme === 'dark' || data.theme === 'system') {
-            applyTheme(data.theme);
-          }
-          updateSettingsUI();
-        }
-
-        if (state.unsubscribeChats) state.unsubscribeChats();
-        const chatsCol = collection(db, 'artifacts', appId, 'users', user.uid, 'chats');
-        state.unsubscribeChats = onSnapshot(
-          chatsCol,
-          (snapshot) => {
-            if (state.mode !== 'user') return;
-            const loaded = [];
-            snapshot.forEach((docSnap) => {
-              const d = docSnap.data();
-              loaded.push({
-                id: docSnap.id,
-                title: d.title || 'New Chat',
-                updatedAt: d.updatedAt || 0,
-                messages: typeof d.messagesJson === 'string' ? JSON.parse(d.messagesJson) : []
-              });
-            });
-            if (loaded.length > 0) {
-              loaded.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-              state.chats = loaded;
-              persistCurrentAccountState();
-              renderChatList();
-              if (state.activeChatId && !state.isGenerating) {
-                renderActiveChat();
-              }
-            }
-          },
-          () => {}
-        );
-      } catch (err) {
-        // Keep local vault data intact
-      }
-    }
-
-    async function saveChatToStorage(chat) {
-      if (state.mode !== 'user') return;
-      persistCurrentAccountState();
-
-      if (!db || !state.user) return;
-      try {
-        const sanitizedMessages = chat.messages.map(m => ({
-          role: m.role,
-          text: m.text || '',
-          timestamp: m.timestamp || Date.now(),
-          attachments: (m.attachments || []).map(a => ({
-            name: a.name,
-            mimeType: a.mimeType,
-            isImage: a.isImage,
-            isPdf: a.isPdf
-          }))
-        }));
-
-        const chatRef = doc(db, 'artifacts', appId, 'users', state.user.uid, 'chats', chat.id);
-        await setDoc(chatRef, {
-          title: chat.title,
-          updatedAt: chat.updatedAt,
-          messagesJson: JSON.stringify(sanitizedMessages)
-        });
-      } catch (err) {}
-    }
-
-    async function deleteChatFromStorage(chatId) {
-      if (state.mode !== 'user') return;
-      persistCurrentAccountState();
-
-      if (!db || !state.user) return;
-      try {
-        const chatRef = doc(db, 'artifacts', appId, 'users', state.user.uid, 'chats', chatId);
-        await deleteDoc(chatRef);
-      } catch (err) {}
-    }
-
-    async function saveSettingsToStorage() {
-      safeWriteStorage(GLOBAL_PREFS_KEY, JSON.stringify({
-        apiKey: state.settings.apiKey || '',
-        theme: state.settings.theme || 'system'
-      }));
-
-      if (state.mode !== 'user') return;
-      persistCurrentAccountState();
-
-      if (!db || !state.user) return;
-      try {
-        const settingsRef = doc(db, 'artifacts', appId, 'users', state.user.uid, 'preferences', 'main');
-        await setDoc(settingsRef, {
           enterToSend: state.settings.enterToSend,
-          theme: state.settings.theme,
+          apiKey: state.settings.apiKey,
           systemPrompt: state.settings.systemPrompt
         });
-      } catch (err) {}
-    }
+        showToast('Theme: ' + next.charAt(0).toUpperCase() + next.slice(1));
+      });
 
-    // =========================================================================
-    // 9. SIDEBAR, SWIPE-RIGHT GESTURE & CHAT MANAGEMENT
-    // =========================================================================
-    const sidebar = document.getElementById('sidebar');
-    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
-    let isSidebarOpen = false;
+      // =======================================================================
+      // 9. SIDEBAR & MOBILE SWIPE-RIGHT GESTURE
+      // =======================================================================
+      var sidebarEl = document.getElementById('sidebar');
+      var backdropEl = document.getElementById('sidebar-backdrop');
+      var sidebarOpen = false;
 
-    function openSidebar() {
-      isSidebarOpen = true;
-      sidebar.classList.remove('-translate-x-full');
-      sidebarBackdrop.classList.remove('overlay-inactive');
-      sidebarBackdrop.classList.add('overlay-active');
-      requestAnimationFrame(() => sidebarBackdrop.classList.remove('opacity-0'));
-    }
+      function openSidebar() {
+        sidebarOpen = true;
+        sidebarEl.classList.add('is-open');
+        backdropEl.classList.add('is-open');
+      }
 
-    function closeSidebar() {
-      isSidebarOpen = false;
-      sidebar.classList.add('-translate-x-full');
-      sidebarBackdrop.classList.add('opacity-0');
-      setTimeout(() => {
-        if (!isSidebarOpen) {
-          sidebarBackdrop.classList.add('overlay-inactive');
-          sidebarBackdrop.classList.remove('overlay-active');
-        }
-      }, 300);
-    }
+      function closeSidebar() {
+        sidebarOpen = false;
+        sidebarEl.classList.remove('is-open');
+        backdropEl.classList.remove('is-open');
+      }
 
-    document.getElementById('btn-open-sidebar').addEventListener('click', openSidebar);
-    document.getElementById('btn-close-sidebar').addEventListener('click', closeSidebar);
-    sidebarBackdrop.addEventListener('click', closeSidebar);
+      document.getElementById('btn-open-sidebar').addEventListener('click', openSidebar);
+      document.getElementById('btn-close-sidebar').addEventListener('click', closeSidebar);
+      backdropEl.addEventListener('click', closeSidebar);
 
-    // Mobile Swipe-Right to Open Sidebar & Swipe-Left to Close Sidebar (Passive, never blocks clicks)
-    let touchStartX = 0;
-    let touchStartY = 0;
+      // Mobile Swipe-Right to Open & Swipe-Left to Close (Non-blocking passive touch listeners)
+      var swipeStartX = 0;
+      var swipeStartY = 0;
+      var swipeActive = false;
 
-    document.addEventListener('touchstart', (e) => {
-      if (e.touches.length !== 1) return;
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
+      document.addEventListener('touchstart', function (e) {
+        if (window.innerWidth > 768) return;
+        if (!e.touches || e.touches.length !== 1) return;
+        swipeStartX = e.touches[0].clientX;
+        swipeStartY = e.touches[0].clientY;
+        swipeActive = true;
+      }, { passive: true });
 
-    document.addEventListener('touchend', (e) => {
-      if (window.innerWidth >= 768) return;
-      if (!e.changedTouches || e.changedTouches.length !== 1) return;
+      document.addEventListener('touchend', function (e) {
+        if (!swipeActive || window.innerWidth > 768) return;
+        swipeActive = false;
+        if (!e.changedTouches || e.changedTouches.length !== 1) return;
 
-      const touchEndX = e.changedTouches[0].clientX;
-      const touchEndY = e.changedTouches[0].clientY;
-      const deltaX = touchEndX - touchStartX;
-      const deltaY = Math.abs(touchEndY - touchStartY);
+        var dx = e.changedTouches[0].clientX - swipeStartX;
+        var dy = Math.abs(e.changedTouches[0].clientY - swipeStartY);
+        var inWorkspace = !appShell.classList.contains('hidden');
+        var modalClosed = document.getElementById('settings-modal').classList.contains('hidden');
 
-      if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > deltaY * 1.5) {
-        const appVisible = appShell.classList.contains('overlay-active');
-        const settingsClosed = settingsModal.classList.contains('overlay-inactive');
-
-        if (appVisible && settingsClosed) {
-          if (deltaX > 0 && !isSidebarOpen) {
+        if (inWorkspace && modalClosed && Math.abs(dx) > 58 && Math.abs(dx) > dy * 1.4) {
+          if (dx > 0 && !sidebarOpen) {
             openSidebar();
-          } else if (deltaX < 0 && isSidebarOpen) {
+          } else if (dx < 0 && sidebarOpen) {
             closeSidebar();
           }
         }
-      }
-    }, { passive: true });
+      }, { passive: true });
 
-    function createNewChat() {
-      state.activeChatId = null;
-      state.pendingAttachments = [];
-      renderAttachments();
-      renderChatList();
-      renderActiveChat();
-      closeSidebar();
-      document.getElementById('chat-textarea').focus();
-    }
-
-    document.getElementById('btn-new-chat').addEventListener('click', createNewChat);
-    document.getElementById('header-new-chat').addEventListener('click', createNewChat);
-
-    function renderChatList() {
-      const listEl = document.getElementById('chat-history-list');
-      listEl.innerHTML = '';
-
-      if (state.chats.length === 0) {
-        const emptyHint = document.createElement('div');
-        emptyHint.className = 'px-3 py-8 text-center text-xs text-zinc-400 dark:text-zinc-500';
-        emptyHint.textContent = 'No conversations yet';
-        listEl.appendChild(emptyHint);
-        return;
+      // =======================================================================
+      // 10. CHAT HISTORY RENDERING
+      // =======================================================================
+      function startNewChat() {
+        stopGeneration();
+        state.activeChatId = null;
+        state.pendingAttachments = [];
+        renderAttachments();
+        renderChatList();
+        renderMessages();
+        closeSidebar();
+        document.getElementById('chat-input').focus();
       }
 
-      state.chats.forEach((chat) => {
-        const isActive = chat.id === state.activeChatId;
-        const row = document.createElement('div');
-        row.className = `group flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl cursor-pointer text-sm transition-colors ${
-          isActive
-            ? 'bg-zinc-200/80 dark:bg-surface-darkElevated text-zinc-900 dark:text-white font-medium'
-            : 'text-zinc-600 dark:text-zinc-400 md:hover:bg-zinc-200/45 dark:md:hover:bg-zinc-800/50 md:hover:text-zinc-900 dark:md:hover:text-zinc-200'
-        }`;
+      document.getElementById('btn-new-chat').addEventListener('click', startNewChat);
+      document.getElementById('btn-header-new').addEventListener('click', startNewChat);
 
-        const titleSpan = document.createElement('span');
-        titleSpan.className = 'truncate flex-1';
-        titleSpan.textContent = chat.title || 'New Chat';
+      function renderChatList() {
+        var listEl = document.getElementById('chat-list');
+        listEl.innerHTML = '';
 
-        row.onclick = () => {
-          state.activeChatId = chat.id;
-          renderChatList();
-          renderActiveChat();
-          closeSidebar();
-        };
+        if (!state.chats || state.chats.length === 0) {
+          var empty = document.createElement('div');
+          empty.className = 'chat-list-empty';
+          empty.textContent = 'No conversations yet';
+          listEl.appendChild(empty);
+          return;
+        }
 
-        const delBtn = document.createElement('button');
-        delBtn.type = 'button';
-        delBtn.title = 'Delete chat';
-        delBtn.className = 'opacity-70 sm:opacity-0 sm:group-hover:opacity-100 p-1 rounded-lg text-zinc-400 md:hover:text-red-500 md:hover:bg-red-500/10 transition-all';
-        delBtn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>';
-        delBtn.onclick = async (e) => {
-          e.stopPropagation();
-          state.chats = state.chats.filter(c => c.id !== chat.id);
-          if (state.activeChatId === chat.id) {
-            state.activeChatId = null;
+        state.chats.forEach(function (chat) {
+          var row = document.createElement('div');
+          row.className = 'chat-row' + (chat.id === state.activeChatId ? ' is-active' : '');
+
+          var title = document.createElement('span');
+          title.className = 'chat-row-title';
+          title.textContent = chat.title || 'New Chat';
+
+          var delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'chat-del-btn hover-danger';
+          delBtn.title = 'Delete chat';
+          delBtn.setAttribute('aria-label', 'Delete chat');
+          delBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+
+          row.addEventListener('click', function () {
+            stopGeneration();
+            state.activeChatId = chat.id;
+            renderChatList();
+            renderMessages();
+            closeSidebar();
+          });
+
+          delBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            state.chats = state.chats.filter(function (c) { return c.id !== chat.id; });
+            if (state.activeChatId === chat.id) {
+              state.activeChatId = state.chats.length > 0 ? state.chats[0].id : null;
+            }
+            syncStateToStorage();
+            renderChatList();
+            renderMessages();
+          });
+
+          row.appendChild(title);
+          row.appendChild(delBtn);
+          listEl.appendChild(row);
+        });
+      }
+
+      // =======================================================================
+      // 11. LIGHTWEIGHT MARKDOWN RENDERER (WITH CODE COPY BUTTONS)
+      // =======================================================================
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function renderMarkdownToElement(container, rawText) {
+        var text = String(rawText || '');
+        var codeBlocks = [];
+
+        // Extract fenced code blocks first
+        text = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, function (_, lang, code) {
+          var idx = codeBlocks.length;
+          codeBlocks.push({ lang: lang || 'code', code: code.replace(/\n$/, '') });
+          return '@@CODEBLOCK_' + idx + '@@';
+        });
+
+        var lines = text.split('\n');
+        var htmlParts = [];
+        var inUl = false;
+        var inOl = false;
+
+        function closeLists() {
+          if (inUl) { htmlParts.push('</ul>'); inUl = false; }
+          if (inOl) { htmlParts.push('</ol>'); inOl = false; }
+        }
+
+        function formatInline(line) {
+          var safe = escapeHtml(line);
+          safe = safe.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+          safe = safe.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+          safe = safe.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+          return safe;
+        }
+
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i];
+          var trimmed = line.trim();
+
+          if (/^@@CODEBLOCK_(\d+)@@$/.test(trimmed)) {
+            closeLists();
+            htmlParts.push(trimmed);
+            continue;
           }
-          renderChatList();
-          renderActiveChat();
-          await deleteChatFromStorage(chat.id);
+
+          if (!trimmed) {
+            closeLists();
+            continue;
+          }
+
+          if (/^###\s+/.test(trimmed)) {
+            closeLists();
+            htmlParts.push('<h3>' + formatInline(trimmed.replace(/^###\s+/, '')) + '</h3>');
+          } else if (/^##\s+/.test(trimmed)) {
+            closeLists();
+            htmlParts.push('<h2>' + formatInline(trimmed.replace(/^##\s+/, '')) + '</h2>');
+          } else if (/^#\s+/.test(trimmed)) {
+            closeLists();
+            htmlParts.push('<h1>' + formatInline(trimmed.replace(/^#\s+/, '')) + '</h1>');
+          } else if (/^[-*]\s+/.test(trimmed)) {
+            if (inOl) { htmlParts.push('</ol>'); inOl = false; }
+            if (!inUl) { htmlParts.push('<ul>'); inUl = true; }
+            htmlParts.push('<li>' + formatInline(trimmed.replace(/^[-*]\s+/, '')) + '</li>');
+          } else if (/^\d+\.\s+/.test(trimmed)) {
+            if (inUl) { htmlParts.push('</ul>'); inUl = false; }
+            if (!inOl) { htmlParts.push('<ol>'); inOl = true; }
+            htmlParts.push('<li>' + formatInline(trimmed.replace(/^\d+\.\s+/, '')) + '</li>');
+          } else {
+            closeLists();
+            htmlParts.push('<p>' + formatInline(trimmed) + '</p>');
+          }
+        }
+        closeLists();
+
+        var finalHtml = htmlParts.join('');
+        finalHtml = finalHtml.replace(/@@CODEBLOCK_(\d+)@@/g, function (_, idxStr) {
+          var block = codeBlocks[Number(idxStr)];
+          return (
+            '<div class="code-block-wrap">' +
+              '<div class="code-block-header">' +
+                '<span>' + escapeHtml(block.lang) + '</span>' +
+                '<button type="button" class="copy-code-btn" data-code-idx="' + idxStr + '">Copy</button>' +
+              '</div>' +
+              '<pre><code>' + escapeHtml(block.code) + '</code></pre>' +
+            '</div>'
+          );
+        });
+
+        container.innerHTML = finalHtml;
+
+        var copyBtns = container.querySelectorAll('.copy-code-btn');
+        for (var j = 0; j < copyBtns.length; j++) {
+          (function (btn) {
+            btn.addEventListener('click', function () {
+              var idx = Number(btn.getAttribute('data-code-idx'));
+              var codeStr = codeBlocks[idx] ? codeBlocks[idx].code : '';
+              copyTextToClipboard(codeStr);
+              btn.textContent = 'Copied';
+              setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+            });
+          })(copyBtns[j]);
+        }
+      }
+
+      function copyTextToClipboard(text) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          showToast('Copied to clipboard');
+        } catch (e) {}
+      }
+
+      // =======================================================================
+      // 12. MESSAGE RENDERING
+      // =======================================================================
+      var emptyStateEl = document.getElementById('empty-state');
+      var messagesListEl = document.getElementById('messages-list');
+      var viewportEl = document.getElementById('messages-viewport');
+
+      function scrollToBottom() {
+        viewportEl.scrollTop = viewportEl.scrollHeight;
+      }
+
+      function renderMessages() {
+        var activeChat = null;
+        for (var i = 0; i < state.chats.length; i++) {
+          if (state.chats[i].id === state.activeChatId) {
+            activeChat = state.chats[i];
+            break;
+          }
+        }
+
+        if (!activeChat || !activeChat.messages || activeChat.messages.length === 0) {
+          emptyStateEl.classList.remove('hidden');
+          messagesListEl.classList.add('hidden');
+          messagesListEl.innerHTML = '';
+          return;
+        }
+
+        emptyStateEl.classList.add('hidden');
+        messagesListEl.classList.remove('hidden');
+        messagesListEl.innerHTML = '';
+
+        activeChat.messages.forEach(function (msg, index) {
+          var row = document.createElement('div');
+          row.className = 'msg-row ' + (msg.role === 'user' ? 'is-user' : 'is-model');
+
+          if (msg.role === 'user') {
+            if (msg.attachments && msg.attachments.length > 0) {
+              var attWrap = document.createElement('div');
+              attWrap.className = 'msg-attachments';
+              msg.attachments.forEach(function (att) {
+                if (att.isImage && att.previewUrl) {
+                  var img = document.createElement('img');
+                  img.src = att.previewUrl;
+                  img.alt = att.name || 'Image';
+                  img.className = 'msg-att-img';
+                  attWrap.appendChild(img);
+                } else {
+                  var badge = document.createElement('div');
+                  badge.className = 'msg-att-file';
+                  badge.textContent = att.name || 'File';
+                  attWrap.appendChild(badge);
+                }
+              });
+              row.appendChild(attWrap);
+            }
+
+            if (msg.text) {
+              var bubble = document.createElement('div');
+              bubble.className = 'user-bubble';
+              bubble.textContent = msg.text;
+              row.appendChild(bubble);
+            }
+          } else {
+            if (msg.isThinking) {
+              var dots = document.createElement('div');
+              dots.className = 'typing-indicator';
+              dots.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+              row.appendChild(dots);
+            } else {
+              var body = document.createElement('div');
+              body.className = 'model-body';
+              body.id = 'model-msg-body-' + index;
+              renderMarkdownToElement(body, msg.text || '');
+              row.appendChild(body);
+
+              if (!msg.isStreaming) {
+                var actions = document.createElement('div');
+                actions.className = 'model-actions';
+                var copyBtn = document.createElement('button');
+                copyBtn.type = 'button';
+                copyBtn.className = 'copy-msg-btn btn-spring hover-elevate';
+                copyBtn.textContent = 'Copy';
+                copyBtn.addEventListener('click', function () {
+                  copyTextToClipboard(msg.text || '');
+                });
+                actions.appendChild(copyBtn);
+                row.appendChild(actions);
+              }
+            }
+          }
+
+          messagesListEl.appendChild(row);
+        });
+
+        scrollToBottom();
+      }
+
+      // =======================================================================
+      // 13. FILE UPLOADS & ATTACHMENT CHIPS
+      // =======================================================================
+      var fileInputEl = document.getElementById('file-input');
+      var attachmentsBarEl = document.getElementById('attachments-bar');
+
+      document.getElementById('btn-attach').addEventListener('click', function () {
+        fileInputEl.click();
+      });
+
+      function formatBytes(bytes) {
+        if (!bytes) return '';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      }
+
+      fileInputEl.addEventListener('change', function (e) {
+        var files = Array.prototype.slice.call(e.target.files || []);
+        if (files.length === 0) return;
+
+        files.forEach(function (file) {
+          var isImage = file.type && file.type.indexOf('image/') === 0;
+          var isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+          var reader = new FileReader();
+
+          if (isImage || isPdf) {
+            reader.onload = function () {
+              var dataUrl = String(reader.result || '');
+              var base64 = dataUrl.indexOf(',') > -1 ? dataUrl.split(',')[1] : '';
+              state.pendingAttachments.push({
+                id: generateId(),
+                name: file.name,
+                mimeType: file.type || (isPdf ? 'application/pdf' : 'image/png'),
+                sizeLabel: formatBytes(file.size),
+                isImage: isImage,
+                isPdf: isPdf,
+                previewUrl: isImage ? dataUrl : '',
+                dataBase64: base64
+              });
+              renderAttachments();
+              updateSendButtonState();
+            };
+            reader.readAsDataURL(file);
+          } else {
+            reader.onload = function () {
+              state.pendingAttachments.push({
+                id: generateId(),
+                name: file.name,
+                mimeType: file.type || 'text/plain',
+                sizeLabel: formatBytes(file.size),
+                isImage: false,
+                isPdf: false,
+                textContent: String(reader.result || '').slice(0, 24000)
+              });
+              renderAttachments();
+              updateSendButtonState();
+            };
+            reader.readAsText(file);
+          }
+        });
+
+        fileInputEl.value = '';
+      });
+
+      function renderAttachments() {
+        attachmentsBarEl.innerHTML = '';
+        if (state.pendingAttachments.length === 0) {
+          attachmentsBarEl.classList.add('hidden');
+          return;
+        }
+
+        attachmentsBarEl.classList.remove('hidden');
+        state.pendingAttachments.forEach(function (att) {
+          var chip = document.createElement('div');
+          chip.className = 'att-chip';
+
+          if (att.isImage && att.previewUrl) {
+            var thumb = document.createElement('img');
+            thumb.src = att.previewUrl;
+            thumb.alt = att.name;
+            thumb.className = 'att-chip-thumb';
+            chip.appendChild(thumb);
+          }
+
+          var nameSpan = document.createElement('span');
+          nameSpan.className = 'att-chip-name';
+          nameSpan.textContent = att.name + (att.sizeLabel ? ' (' + att.sizeLabel + ')' : '');
+          chip.appendChild(nameSpan);
+
+          var remBtn = document.createElement('button');
+          remBtn.type = 'button';
+          remBtn.className = 'att-chip-remove';
+          remBtn.textContent = '×';
+          remBtn.setAttribute('aria-label', 'Remove attachment');
+          remBtn.addEventListener('click', function () {
+            state.pendingAttachments = state.pendingAttachments.filter(function (a) { return a.id !== att.id; });
+            renderAttachments();
+            updateSendButtonState();
+          });
+          chip.appendChild(remBtn);
+
+          attachmentsBarEl.appendChild(chip);
+        });
+      }
+
+      // =======================================================================
+      // 14. COMPOSER INPUT, ENTER KEY CUSTOMIZATION & SEND ACTION
+      // =======================================================================
+      var chatInputEl = document.getElementById('chat-input');
+      var pillBarEl = document.getElementById('pill-bar');
+      var sendBtnEl = document.getElementById('btn-send');
+      var iconSendEl = document.getElementById('icon-send');
+      var iconStopEl = document.getElementById('icon-stop');
+
+      function adjustTextareaHeight() {
+        chatInputEl.style.height = 'auto';
+        var nextH = Math.min(chatInputEl.scrollHeight, 150);
+        chatInputEl.style.height = nextH + 'px';
+        if (nextH > 42 || chatInputEl.value.indexOf('\n') > -1) {
+          pillBarEl.classList.add('is-multiline');
+        } else {
+          pillBarEl.classList.remove('is-multiline');
+        }
+      }
+
+      function updateSendButtonState() {
+        if (state.isGenerating) {
+          sendBtnEl.disabled = false;
+          sendBtnEl.setAttribute('aria-label', 'Stop generating');
+          iconSendEl.classList.add('hidden');
+          iconStopEl.classList.remove('hidden');
+          return;
+        }
+
+        iconSendEl.classList.remove('hidden');
+        iconStopEl.classList.add('hidden');
+        sendBtnEl.setAttribute('aria-label', 'Send message');
+
+        var hasText = chatInputEl.value.trim().length > 0;
+        var hasFiles = state.pendingAttachments.length > 0;
+        sendBtnEl.disabled = !(hasText || hasFiles);
+      }
+
+      chatInputEl.addEventListener('input', function () {
+        adjustTextareaHeight();
+        updateSendButtonState();
+      });
+
+      // Enter inserts newline by default unless user turns ON "Press Enter to send" in Settings
+      chatInputEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.isComposing) {
+          if (state.settings.enterToSend && !e.shiftKey) {
+            e.preventDefault();
+            if (!sendBtnEl.disabled && !state.isGenerating) {
+              sendMessage();
+            }
+          }
+        }
+      });
+
+      sendBtnEl.addEventListener('click', function () {
+        if (state.isGenerating) {
+          stopGeneration();
+          return;
+        }
+        sendMessage();
+      });
+
+      // Suggestion cards
+      var suggestionBtns = document.querySelectorAll('.suggestion-card');
+      for (var s = 0; s < suggestionBtns.length; s++) {
+        (function (btn) {
+          btn.addEventListener('click', function () {
+            chatInputEl.value = btn.getAttribute('data-prompt') || '';
+            adjustTextareaHeight();
+            updateSendButtonState();
+            sendMessage();
+          });
+        })(suggestionBtns[s]);
+      }
+
+      // =======================================================================
+      // 15. GEMINI API + STREAMING BUILT-IN INTELLIGENT ASSISTANT ENGINE
+      // =======================================================================
+      function stopGeneration() {
+        if (state.abortController) {
+          try { state.abortController.abort(); } catch (e) {}
+          state.abortController = null;
+        }
+        if (state.streamTimer) {
+          clearInterval(state.streamTimer);
+          state.streamTimer = null;
+        }
+        if (state.isGenerating) {
+          state.isGenerating = false;
+          var chat = state.chats.find(function (c) { return c.id === state.activeChatId; });
+          if (chat && chat.messages.length > 0) {
+            var last = chat.messages[chat.messages.length - 1];
+            if (last.isThinking) {
+              chat.messages.pop();
+            } else if (last.isStreaming) {
+              last.isStreaming = false;
+            }
+          }
+          syncStateToStorage();
+          updateSendButtonState();
+          renderMessages();
+        }
+      }
+
+      function buildLocalAssistantResponse(prompt, attachments) {
+        var q = String(prompt || '').trim();
+        var lower = q.toLowerCase();
+        var attNames = (attachments || []).map(function (a) { return a.name; });
+
+        var fileSummary = '';
+        if (attachments && attachments.length > 0) {
+          var snippets = [];
+          attachments.forEach(function (a) {
+            if (a.textContent) {
+              var linesCount = a.textContent.split('\n').length;
+              snippets.push('- **' + a.name + '** (' + linesCount + ' lines): `' + a.textContent.trim().slice(0, 140).replace(/\n/g, ' ') + (a.textContent.length > 140 ? '...' : '') + '`');
+            } else {
+              snippets.push('- **' + a.name + '** (' + (a.mimeType || 'file') + ')');
+            }
+          });
+          fileSummary = '\n\n### Attached Files\n' + snippets.join('\n');
+        }
+
+        if (!q && attNames.length > 0) {
+          return 'I received **' + attNames.join(', ') + '**.' + fileSummary + '\n\nAsk any question about these files, or add a **Google Gemini API key** in **Settings** for full cloud multimodal analysis.';
+        }
+
+        if (/^(hi|hello|hey|yo|greetings)\b/i.test(lower)) {
+          return 'Hello! How can **DragonAI** help you today? You can ask questions, write or debug code, draft emails, or upload documents and images.' + fileSummary;
+        }
+
+        if (lower.indexOf('quantum') > -1) {
+          return '### Quantum Computing in Simple Terms\n\n- **Classical bits** are like switches that hold either **0** or **1**.\n- **Qubits** use *superposition* to represent a blend of **0** and **1** simultaneously, and *entanglement* to link states across qubits.\n- Because of this, quantum computers can evaluate complex probability spaces in parallel—making them promising for cryptography, materials discovery, and optimization.' + fileSummary;
+        }
+
+        if (lower.indexOf('python') > -1 || lower.indexOf('organize files') > -1) {
+          return 'Here is a clean Python script that organizes files into subfolders by extension:\n\n```python\nfrom pathlib import Path\nimport shutil\n\ndef organize_folder(directory: str) -> None:\n    base = Path(directory)\n    for item in base.iterdir():\n        if item.is_file():\n            folder_name = item.suffix.lower().lstrip(".") or "other"\n            target_dir = base / folder_name\n            target_dir.mkdir(exist_ok=True)\n            shutil.move(str(item), str(target_dir / item.name))\n\nif __name__ == "__main__":\n    organize_folder("./Downloads")\n```' + fileSummary;
+        }
+
+        if (lower.indexOf('email') > -1 || lower.indexOf('follow-up') > -1 || lower.indexOf('interview') > -1) {
+          return 'Here is a concise, polite post-interview follow-up email:\n\n**Subject:** Thank you — [Role Title] interview\n\nHi [Interviewer Name],\n\nThank you for taking the time to speak with me today about the **[Role Title]** position. I enjoyed learning more about your team’s goals and how this role contributes to them.\n\nPlease let me know if there is any additional information I can share. I look forward to staying in touch.\n\nBest regards,\n**[Your Name]**' + fileSummary;
+        }
+
+        if (lower.indexOf('habit') > -1 || lower.indexOf('productivity') > -1 || lower.indexOf('focus') > -1) {
+          return '### 5 Habits for Deep Focus\n\n1. **Time-block 90-minute sprints:** Dedicate uninterrupted blocks to your highest-leverage task before checking messages.\n2. **Single-tab workspace:** Close unrelated tabs and silence non-urgent notifications during deep work.\n3. **Define the next concrete action:** End each session by writing down the exact first step for tomorrow.\n4. **Batch shallow tasks:** Group emails, quick replies, and admin work into two short daily windows.\n5. **Take deliberate breaks:** Step away from screens for 5–10 minutes between sprints to reset mental energy.' + fileSummary;
+        }
+
+        return 'Here is a structured response for **" ' + q + ' "**:\n\n- **Core Takeaway:** Focus on breaking the problem into clear, actionable steps and validating assumptions early.\n- **Next Step:** Tell me your preferred format, constraints, or target audience if you want me to tailor this further.\n- **Cloud Gemini Model:** You can also add a personal **Google Gemini API key** in **Settings** anytime to connect directly to live Gemini models.' + fileSummary;
+      }
+
+      function streamReplyIntoChat(chat, fullText) {
+        var words = fullText.split(/(\s+)/);
+        var idx = 0;
+        var currentText = '';
+
+        var replyMsg = {
+          role: 'model',
+          text: '',
+          isStreaming: true,
+          timestamp: Date.now()
+        };
+        chat.messages.push(replyMsg);
+        renderMessages();
+
+        state.streamTimer = setInterval(function () {
+          var step = Math.min(4, words.length - idx);
+          for (var k = 0; k < step; k++) {
+            currentText += words[idx++];
+          }
+          replyMsg.text = currentText;
+
+          var bodyEl = document.getElementById('model-msg-body-' + (chat.messages.length - 1));
+          if (bodyEl) {
+            renderMarkdownToElement(bodyEl, currentText);
+            scrollToBottom();
+          }
+
+          if (idx >= words.length) {
+            clearInterval(state.streamTimer);
+            state.streamTimer = null;
+            replyMsg.isStreaming = false;
+            state.isGenerating = false;
+            chat.updatedAt = Date.now();
+            syncStateToStorage();
+            updateSendButtonState();
+            renderChatList();
+            renderMessages();
+          }
+        }, 28);
+      }
+
+      async function requestGeminiReply(chat, signal) {
+        var apiKey = (state.settings.apiKey || '').trim();
+        var lastUserMsg = null;
+        for (var i = chat.messages.length - 1; i >= 0; i--) {
+          if (chat.messages[i].role === 'user') {
+            lastUserMsg = chat.messages[i];
+            break;
+          }
+        }
+
+        if (!apiKey) {
+          await new Promise(function (r) { setTimeout(r, 380); });
+          return buildLocalAssistantResponse(
+            lastUserMsg ? lastUserMsg.text : '',
+            lastUserMsg ? lastUserMsg.attachments : []
+          );
+        }
+
+        var contents = chat.messages
+          .filter(function (m) { return !m.isThinking; })
+          .map(function (m) {
+            var parts = [];
+            if (m.text) parts.push({ text: m.text });
+            if (m.attachments && m.attachments.length > 0) {
+              m.attachments.forEach(function (att) {
+                if ((att.isImage || att.isPdf) && att.dataBase64) {
+                  parts.push({
+                    inlineData: {
+                      mimeType: att.mimeType,
+                      data: att.dataBase64
+                    }
+                  });
+                } else if (att.textContent) {
+                  parts.push({
+                    text: '\n[Attached File: ' + att.name + ']\n' + att.textContent + '\n'
+                  });
+                }
+              });
+            }
+            if (parts.length === 0) parts.push({ text: ' ' });
+            return {
+              role: m.role === 'user' ? 'user' : 'model',
+              parts: parts
+            };
+          });
+
+        var sysText = 'You are DragonAI, a minimalist, helpful AI assistant powered by Google Gemini.';
+        if (state.settings.systemPrompt && state.settings.systemPrompt.trim()) {
+          sysText += '\n\nCustom user instructions:\n' + state.settings.systemPrompt.trim();
+        }
+
+        var payload = {
+          contents: contents,
+          systemInstruction: { parts: [{ text: sysText }] }
         };
 
-        row.appendChild(titleSpan);
-        row.appendChild(delBtn);
-        listEl.appendChild(row);
-      });
-    }
+        var models = ['gemini-4-hydrogen', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'];
+        var lastErrMsg = '';
 
-    // =========================================================================
-    // 14. GEMINI API INTEGRATION + SMART FALLBACK MODE (Never Throws Dead Error)
-    // =========================================================================
-    function generateSmartFallbackReply(promptText, attachments) {
-      const cleanPrompt = (promptText || '').trim();
-      const lower = cleanPrompt.toLowerCase();
-      const fileNames = (attachments || []).map(a => a.name).filter(Boolean);
-      const fileNote = fileNames.length
-        ? `\n\n**Attached Files Reviewed:** ${fileNames.join(', ')} (ready for analysis once connected to a Gemini API key).`
-        : '';
-
-      if (!cleanPrompt && fileNames.length > 0) {
-        return `I received **${fileNames.join(', ')}**. Add your Google Gemini API key in **Settings** to analyze file contents directly with Gemini, or ask a question about what you need help with.${fileNote}`;
-      }
-
-      if (lower.includes('hello') || lower.includes('hi ') || lower === 'hi' || lower.includes('hey')) {
-        return `Hello! I'm **DragonAI**. Ask me a question, write code, brainstorm ideas, or attach files. You can also add a **Google Gemini API key** in **Settings** anytime for live cloud responses.${fileNote}`;
-      }
-
-      if (lower.includes('quantum')) {
-        return `### Quantum Computing in Simple Terms\n\n- **Classical bits** are like light switches: either **0** or **1**.\n- **Quantum bits (qubits)** can represent a combination of **0** and **1** at the same time (*superposition*) and link together across states (*entanglement*).\n- This lets quantum processors explore many possibilities in parallel for problems like molecular simulation and optimization.${fileNote}`;
-      }
-
-      if (lower.includes('python') || lower.includes('code') || lower.includes('script')) {
-        return `Here is a clean Python example to organize files by extension:\n\n\`\`\`python\nfrom pathlib import Path\nimport shutil\n\ndef organize_folder(target_dir: str) -> None:\n    folder = Path(target_dir)\n    for item in folder.iterdir():\n        if item.is_file():\n            ext = item.suffix.lower().lstrip(".") or "no_extension"\n            dest = folder / ext\n            dest.mkdir(exist_ok=True)\n            shutil.move(str(item), str(dest / item.name))\n\nif __name__ == "__main__":\n    organize_folder("./downloads")\n\`\`\`\n\nAdd a Gemini API key in **Settings** if you'd like live cloud generation for custom edge cases.${fileNote}`;
-      }
-
-      return `Here is a clear response to **"${cleanPrompt}"**:\n\n1. **Clarify the Goal:** Break down what outcome you want and any constraints or format preferences.\n2. **Draft & Iterate:** Start with a concise structure or example, then refine step by step.\n3. **Live Gemini Connection:** Enter a Google Gemini API key in **Settings** to connect directly to live Gemini models.${fileNote}`;
-    }
-
-    async function callGeminiWithRetry(payload, signal) {
-      const apiKey = (state.settings.apiKey || '').trim();
-      if (!apiKey) {
-        await new Promise(resolve => setTimeout(resolve, 450));
-        const lastUserTurn = [...(payload.contents || [])].reverse().find(c => c.role === 'user');
-        const userText = (lastUserTurn?.parts || []).map(p => p.text || '').join(' ');
-        const hasAttachments = (lastUserTurn?.parts || []).some(p => p.inlineData || (p.text && p.text.includes('Attached File:')));
-        return generateSmartFallbackReply(userText, hasAttachments ? [{ name: 'attachment' }] : []);
-      }
-
-      const models = ['gemini-4-hydrogen', 'gemini-3.8-flash', 'gemini-3.5-flash-lite'];
-      let lastError = null;
-
-      for (const model of models) {
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
-        const maxRetries = 2;
-
-        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        for (var mIdx = 0; mIdx < models.length; mIdx++) {
+          var model = models[mIdx];
+          var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(apiKey);
           try {
-            const response = await fetch(apiUrl, {
+            var res = await fetch(url, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload),
-              signal
+              signal: signal
             });
 
-            if (!response.ok) {
-              const errData = await response.json().catch(() => ({}));
-              const errMsg = errData?.error?.message || `API Error (${response.status})`;
-              if (response.status === 404) {
-                lastError = new Error(errMsg);
-                break;
-              }
-              if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
-                await new Promise(res => setTimeout(res, Math.pow(2, attempt) * 700));
-                continue;
-              }
-              throw new Error(errMsg);
+            if (!res.ok) {
+              var errJson = await res.json().catch(function () { return {}; });
+              lastErrMsg = (errJson && errJson.error && errJson.error.message) || ('HTTP ' + res.status);
+              continue;
             }
 
-            const result = await response.json();
-            const text = result?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
-            if (!text) throw new Error('Empty response from Gemini.');
-            return text;
+            var data = await res.json();
+            var partsOut = data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
+            var reply = Array.isArray(partsOut) ? partsOut.map(function (p) { return p.text || ''; }).join('') : '';
+            if (reply) return reply;
           } catch (err) {
-            if (err.name === 'AbortError') throw err;
-            lastError = err;
-            if (attempt < maxRetries) {
-              await new Promise(res => setTimeout(res, Math.pow(2, attempt) * 700));
-            }
+            if (err && err.name === 'AbortError') throw err;
+            lastErrMsg = err && err.message ? err.message : 'Network error';
           }
         }
+
+        var fallback = buildLocalAssistantResponse(
+          lastUserMsg ? lastUserMsg.text : '',
+          lastUserMsg ? lastUserMsg.attachments : []
+        );
+        return fallback + (lastErrMsg ? '\n\n*(Cloud Gemini fallback: ' + lastErrMsg + ')*' : '');
       }
 
-      const lastUserTurn = [...(payload.contents || [])].reverse().find(c => c.role === 'user');
-      const userText = (lastUserTurn?.parts || []).map(p => p.text || '').join(' ');
-      const detail = lastError && lastError.message ? ` (${lastError.message})` : '';
-      return `${generateSmartFallbackReply(userText, [])}\n\n*Note: Live Gemini request could not complete${detail}. Check your API key in Settings or try again.*`;
-    }
+      async function sendMessage() {
+        var text = chatInputEl.value.trim();
+        var attachments = state.pendingAttachments.slice();
 
-    async function handleSendMessage() {
-      const rawPrompt = textarea.value.trim();
-      const currentAttachments = [...state.pendingAttachments];
+        if (!text && attachments.length === 0) return;
 
-      if (!rawPrompt && currentAttachments.length === 0) return;
-
-      let chat = state.chats.find(c => c.id === state.activeChatId);
-      if (!chat) {
-        const initialTitle = rawPrompt
-          ? rawPrompt.slice(0, 38) + (rawPrompt.length > 38 ? '...' : '')
-          : (currentAttachments[0]?.name || 'File Analysis');
-
-        chat = {
-          id: crypto.randomUUID(),
-          title: initialTitle,
-          updatedAt: Date.now(),
-          messages: []
-        };
-        state.chats.unshift(chat);
-        state.activeChatId = chat.id;
-      }
-
-      const userParts = [];
-      if (rawPrompt) {
-        userParts.push({ text: rawPrompt });
-      }
-      currentAttachments.forEach(att => {
-        if (att.isImage || att.isPdf) {
-          userParts.push({
-            inlineData: {
-              mimeType: att.mimeType,
-              data: att.dataBase64
-            }
-          });
-        } else if (att.textContent !== undefined) {
-          userParts.push({
-            text: `\n--- Attached File: ${att.name} ---\n${att.textContent}\n--- End of ${att.name} ---\n`
-          });
+        var chat = null;
+        for (var i = 0; i < state.chats.length; i++) {
+          if (state.chats[i].id === state.activeChatId) {
+            chat = state.chats[i];
+            break;
+          }
         }
-      });
 
-      const userMessage = {
-        role: 'user',
-        text: rawPrompt,
-        attachments: currentAttachments,
-        apiParts: userParts,
-        timestamp: Date.now()
-      };
-      chat.messages.push(userMessage);
-      chat.updatedAt = Date.now();
-
-      textarea.value = '';
-      textarea.style.height = 'auto';
-      composerPill.classList.remove('is-multiline');
-      state.pendingAttachments = [];
-      renderAttachments();
-
-      const thinkingMsg = {
-        role: 'model',
-        text: '',
-        isThinking: true,
-        timestamp: Date.now()
-      };
-      chat.messages.push(thinkingMsg);
-
-      state.isGenerating = true;
-      state.abortController = new AbortController();
-      updateSendButtonState();
-      renderChatList();
-      renderActiveChat();
-
-      const contents = chat.messages
-        .filter(m => !m.isThinking)
-        .map(m => ({
-          role: m.role === 'user' ? 'user' : 'model',
-          parts: m.apiParts ? m.apiParts : [{ text: m.text || ' ' }]
-        }));
-
-      const defaultSystemInstruction = "You are DragonAI, a helpful, concise, and intelligent AI assistant powered by Google Gemini. Format responses cleanly using Markdown.";
-      const combinedSystem = state.settings.systemPrompt.trim()
-        ? `${defaultSystemInstruction}\n\nUser Custom Instructions:\n${state.settings.systemPrompt.trim()}`
-        : defaultSystemInstruction;
-
-      const payload = {
-        contents,
-        systemInstruction: {
-          parts: [{ text: combinedSystem }]
+        if (!chat) {
+          var title = text
+            ? (text.length > 38 ? text.slice(0, 38) + '...' : text)
+            : (attachments[0] ? attachments[0].name : 'New Chat');
+          chat = {
+            id: generateId(),
+            title: title,
+            updatedAt: Date.now(),
+            messages: []
+          };
+          state.chats.unshift(chat);
+          state.activeChatId = chat.id;
         }
-      };
 
-      try {
-        const replyText = await callGeminiWithRetry(payload, state.abortController.signal);
-        chat.messages.pop();
         chat.messages.push({
-          role: 'model',
-          text: replyText,
-          apiParts: [{ text: replyText }],
+          role: 'user',
+          text: text,
+          attachments: attachments,
           timestamp: Date.now()
         });
         chat.updatedAt = Date.now();
-        await saveChatToStorage(chat);
-      } catch (err) {
-        chat.messages.pop();
-        if (err.name === 'AbortError') {
-          chat.messages.push({
-            role: 'model',
-            text: '*Generation stopped.*',
-            timestamp: Date.now()
-          });
-        } else {
-          chat.messages.push({
-            role: 'model',
-            text: `⚠️ Sorry, I encountered an error: ${err.message}`,
-            timestamp: Date.now()
-          });
-        }
-      } finally {
-        state.isGenerating = false;
-        state.abortController = null;
+
+        // Clear composer immediately
+        chatInputEl.value = '';
+        adjustTextareaHeight();
+        state.pendingAttachments = [];
+        renderAttachments();
+
+        // Show thinking dots
+        chat.messages.push({
+          role: 'model',
+          text: '',
+          isThinking: true,
+          timestamp: Date.now()
+        });
+
+        state.isGenerating = true;
+        state.abortController = typeof AbortController !== 'undefined' ? new AbortController() : null;
         updateSendButtonState();
         renderChatList();
-        renderActiveChat();
-      }
-    }
+        renderMessages();
 
-    // =========================================================================
-    // 15. SETTINGS MODAL LOGIC
-    // =========================================================================
-    const settingsModal = document.getElementById('settings-modal');
-    const apiKeyInput = document.getElementById('setting-gemini-api-key');
-    const toggleApiKeyVisBtn = document.getElementById('btn-toggle-api-key-vis');
-    const toggleEnterBtn = document.getElementById('toggle-enter-to-send');
-    const toggleEnterKnob = document.getElementById('toggle-enter-knob');
-    const systemPromptInput = document.getElementById('setting-system-prompt');
-
-    toggleApiKeyVisBtn.addEventListener('click', () => {
-      const isPassword = apiKeyInput.type === 'password';
-      apiKeyInput.type = isPassword ? 'text' : 'password';
-      toggleApiKeyVisBtn.textContent = isPassword ? 'Hide' : 'Show';
-    });
-
-    function updateSettingsUI() {
-      apiKeyInput.value = state.settings.apiKey || '';
-
-      const enabled = state.settings.enterToSend;
-      toggleEnterBtn.setAttribute('aria-checked', String(enabled));
-      if (enabled) {
-        toggleEnterBtn.classList.remove('bg-zinc-200', 'dark:bg-zinc-700');
-        toggleEnterBtn.classList.add('bg-zinc-900', 'dark:bg-sky-500');
-        toggleEnterKnob.classList.remove('translate-x-0');
-        toggleEnterKnob.classList.add('translate-x-5');
-      } else {
-        toggleEnterBtn.classList.add('bg-zinc-200', 'dark:bg-zinc-700');
-        toggleEnterBtn.classList.remove('bg-zinc-900', 'dark:bg-sky-500');
-        toggleEnterKnob.classList.add('translate-x-0');
-        toggleEnterKnob.classList.remove('translate-x-5');
-      }
-
-      systemPromptInput.value = state.settings.systemPrompt || '';
-      applyTheme(state.settings.theme);
-    }
-
-    function openSettings() {
-      closeSidebar();
-      updateSettingsUI();
-      settingsModal.classList.remove('overlay-inactive');
-      settingsModal.classList.add('overlay-active', 'flex');
-    }
-
-    function closeSettings() {
-      state.settings.apiKey = apiKeyInput.value.trim();
-      state.settings.systemPrompt = systemPromptInput.value.trim();
-      saveSettingsToStorage();
-      settingsModal.classList.add('overlay-inactive');
-      settingsModal.classList.remove('overlay-active', 'flex');
-    }
-
-    apiKeyInput.addEventListener('change', () => {
-      state.settings.apiKey = apiKeyInput.value.trim();
-      saveSettingsToStorage();
-    });
-
-    document.getElementById('btn-open-settings').addEventListener('click', openSettings);
-    document.getElementById('header-settings-btn').addEventListener('click', openSettings);
-    document.getElementById('btn-close-settings').addEventListener('click', closeSettings);
-    settingsModal.addEventListener('click', (e) => {
-      if (e.target === settingsModal) closeSettings();
-    });
-
-    toggleEnterBtn.addEventListener('click', () => {
-      state.settings.enterToSend = !state.settings.enterToSend;
-      updateSettingsUI();
-      saveSettingsToStorage();
-    });
-
-    document.querySelectorAll('.theme-choice-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        applyTheme(btn.dataset.themeChoice);
-        saveSettingsToStorage();
-      });
-    });
-
-    document.getElementById('btn-clear-all-chats').addEventListener('click', () => {
-      openConfirmModal(
-        'Clear all conversations?',
-        state.mode === 'guest'
-          ? 'This will wipe your temporary session messages.'
-          : 'This will permanently delete all saved chats from your account.',
-        async () => {
-          const toDelete = [...state.chats];
-          state.chats = [];
-          state.activeChatId = null;
-          renderChatList();
-          renderActiveChat();
-          closeSettings();
-
-          if (state.mode === 'user' && state.user && db) {
-            for (const c of toDelete) {
-              await deleteChatFromStorage(c.id);
-            }
+        try {
+          var replyText = await requestGeminiReply(
+            chat,
+            state.abortController ? state.abortController.signal : undefined
+          );
+          if (chat.messages.length > 0 && chat.messages[chat.messages.length - 1].isThinking) {
+            chat.messages.pop();
           }
-          showToast('All chats cleared');
+          streamReplyIntoChat(chat, replyText);
+        } catch (err) {
+          if (chat.messages.length > 0 && chat.messages[chat.messages.length - 1].isThinking) {
+            chat.messages.pop();
+          }
+          state.isGenerating = false;
+          updateSendButtonState();
+          renderMessages();
         }
-      );
-    });
+      }
 
-    updateSettingsUI();
+      // =======================================================================
+      // 16. SETTINGS MODAL
+      // =======================================================================
+      var settingsModalEl = document.getElementById('settings-modal');
+      var toggleEnterBtn = document.getElementById('toggle-enter-send');
+      var apiKeyInput = document.getElementById('input-api-key');
+      var toggleKeyVisBtn = document.getElementById('btn-toggle-key-vis');
+      var sysPromptInput = document.getElementById('input-system-prompt');
+
+      function updateSettingsUI() {
+        toggleEnterBtn.setAttribute('aria-checked', String(Boolean(state.settings.enterToSend)));
+        apiKeyInput.value = state.settings.apiKey || '';
+        sysPromptInput.value = state.settings.systemPrompt || '';
+        applyTheme(state.settings.theme);
+
+        var clearDesc = document.getElementById('clear-chats-desc');
+        if (clearDesc) {
+          clearDesc.textContent = state.mode === 'guest'
+            ? 'Clear temporary messages from this guest session'
+            : 'Remove all saved chats from your account';
+        }
+      }
+
+      function openSettingsModal() {
+        closeSidebar();
+        updateSettingsUI();
+        settingsModalEl.classList.remove('hidden');
+      }
+
+      function closeSettingsModal() {
+        state.settings.apiKey = apiKeyInput.value.trim();
+        state.settings.systemPrompt = sysPromptInput.value.trim();
+        syncStateToStorage();
+        settingsModalEl.classList.add('hidden');
+      }
+
+      document.getElementById('btn-sidebar-settings').addEventListener('click', openSettingsModal);
+      document.getElementById('btn-header-settings').addEventListener('click', openSettingsModal);
+      document.getElementById('btn-close-settings').addEventListener('click', closeSettingsModal);
+
+      settingsModalEl.addEventListener('click', function (e) {
+        if (e.target === settingsModalEl) {
+          closeSettingsModal();
+        }
+      });
+
+      toggleEnterBtn.addEventListener('click', function () {
+        state.settings.enterToSend = !state.settings.enterToSend;
+        updateSettingsUI();
+        syncStateToStorage();
+        showToast(state.settings.enterToSend ? 'Enter sends message' : 'Enter adds a new line');
+      });
+
+      var themeOptBtns = document.querySelectorAll('.seg-btn');
+      for (var t = 0; t < themeOptBtns.length; t++) {
+        (function (btn) {
+          btn.addEventListener('click', function () {
+            applyTheme(btn.getAttribute('data-theme-opt'));
+            syncStateToStorage();
+          });
+        })(themeOptBtns[t]);
+      }
+
+      toggleKeyVisBtn.addEventListener('click', function () {
+        var hidden = apiKeyInput.type === 'password';
+        apiKeyInput.type = hidden ? 'text' : 'password';
+        toggleKeyVisBtn.textContent = hidden ? 'Hide' : 'Show';
+      });
+
+      document.getElementById('btn-clear-chats').addEventListener('click', function () {
+        stopGeneration();
+        state.chats = [];
+        state.activeChatId = null;
+        syncStateToStorage();
+        renderChatList();
+        renderMessages();
+        closeSettingsModal();
+        showToast('All chats cleared');
+      });
+
+      // =======================================================================
+      // 17. INITIAL BOOTSTRAP
+      // =======================================================================
+      applyTheme(state.settings.theme);
+      renderSavedAccounts();
+      prefillLastSavedCredentials();
+      updateSendButtonState();
+    })();
   </script>
 </body>
 </html>

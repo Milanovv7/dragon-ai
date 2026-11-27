@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="DragonAI" />
@@ -77,6 +78,7 @@
       --amber-text: #b45309;
       --amber-bg: rgba(245, 158, 11, 0.12);
       --amber-border: rgba(245, 158, 11, 0.25);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     html.dark {
@@ -104,6 +106,12 @@
       --amber-text: #fbbf24;
       --amber-bg: rgba(245, 158, 11, 0.12);
       --amber-border: rgba(245, 158, 11, 0.24);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Apply 34px bottom safe area only on Face ID (non-home-button) iPhones with top browser toolbar */
+    html.faceid-iphone-top-bar {
+      --safe-bottom: max(34px, env(safe-area-inset-bottom, 34px));
     }
 
     /* =========================================================================
@@ -250,7 +258,7 @@
       align-items: center;
       justify-content: space-between;
       background-color: var(--bg-app);
-      padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+      padding: max(20px, env(safe-area-inset-top)) 20px var(--safe-bottom);
       overflow-y: auto;
     }
 
@@ -305,6 +313,49 @@
       border: 1px solid var(--border-subtle);
       text-align: left;
       box-shadow: var(--shadow-sm);
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      padding: 4px;
+      border-radius: 14px;
+      background-color: var(--bg-elevated);
+      margin-bottom: 16px;
+    }
+
+    .auth-tab-btn {
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: background-color 0.18s ease, color 0.18s ease;
+    }
+
+    .auth-tab-btn.is-active {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-get-api-key {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 14px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--accent-blue);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      text-decoration: none;
+      margin-bottom: 10px;
     }
 
     .saved-accounts-wrap {
@@ -395,6 +446,28 @@
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.16);
     }
 
+    .password-field-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-field-wrap .form-input {
+      padding-right: 44px;
+    }
+
+    .password-eye-btn {
+      position: absolute;
+      right: 8px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+    }
+
     .checkbox-row {
       display: flex;
       align-items: center;
@@ -478,7 +551,12 @@
     }
 
     /* Sidebar Drawer */
+    /* Sidebar Drawer (Closed by default on both desktop and mobile) */
     .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
       width: 280px;
       height: 100%;
       background-color: var(--bg-sidebar);
@@ -487,19 +565,22 @@
       flex-direction: column;
       flex-shrink: 0;
       z-index: 30;
+      transform: translateX(-102%);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @media (max-width: 768px) {
-      .sidebar {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        transform: translateX(-102%);
-      }
-      .sidebar.is-open {
+    .sidebar.is-open {
+      transform: translateX(0);
+    }
+
+    @media (min-width: 769px) {
+      .app-shell.desktop-sidebar-open .sidebar {
+        position: relative;
         transform: translateX(0);
+      }
+      .app-shell.desktop-sidebar-open .sidebar-backdrop {
+        opacity: 0;
+        pointer-events: none;
       }
     }
 
@@ -525,55 +606,86 @@
       box-shadow: var(--shadow-sm);
     }
 
-    .mobile-only-btn {
-      display: none;
-    }
-    @media (max-width: 768px) {
-      .mobile-only-btn {
-        display: inline-flex;
-      }
+    .sidebar-search-wrap {
+      padding: 0 12px 10px;
+      position: relative;
     }
 
-    .guest-banner {
-      margin: 0 12px 10px;
-      padding: 12px;
-      border-radius: 16px;
-      background-color: var(--amber-bg);
-      border: 1px solid var(--amber-border);
-      color: var(--amber-text);
-      font-size: 12px;
+    .sidebar-search-input {
+      width: 100%;
+      padding: 9px 32px 9px 34px;
+      border-radius: 9999px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
     }
 
-    .guest-banner-title {
-      font-weight: 600;
-      display: flex;
+    .sidebar-search-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .sidebar-search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .sidebar-search-icon {
+      position: absolute;
+      left: 23px;
+      top: 50%;
+      transform: translateY(-50%);
+      margin-top: -5px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .sidebar-search-clear {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      margin-top: -5px;
+      width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      background-color: var(--bg-elevated);
+      color: var(--text-secondary);
+      font-size: 13px;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 4px;
+      justify-content: center;
     }
 
-    .pulse-dot {
+    .chat-row-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-row-snippet {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .sync-status-dot {
       width: 7px;
       height: 7px;
       border-radius: 9999px;
-      background-color: currentColor;
-      animation: pulseDot 1.8s infinite ease-in-out;
+      background-color: #22c55e;
+      display: inline-block;
+      margin-right: 5px;
+      flex-shrink: 0;
     }
 
-    .guest-banner p {
-      line-height: 1.4;
-      opacity: 0.9;
-    }
-
-    .guest-banner-btn {
-      margin-top: 8px;
-      width: 100%;
-      padding: 7px 10px;
-      border-radius: 10px;
-      background-color: rgba(245, 158, 11, 0.2);
-      font-size: 12px;
-      font-weight: 600;
-      color: inherit;
+    .sync-status-dot.is-local {
+      background-color: #38bdf8;
     }
 
     .chat-list {
@@ -635,7 +747,7 @@
     }
 
     .sidebar-footer {
-      padding: 10px 12px max(12px, env(safe-area-inset-bottom));
+      padding: 10px 12px max(12px, var(--safe-bottom));
       border-top: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
@@ -766,7 +878,7 @@
     .messages-viewport {
       flex: 1;
       overflow-y: auto;
-      padding: 16px 16px 124px;
+      padding: 16px 16px calc(92px + var(--safe-bottom));
       scroll-behavior: smooth;
     }
 
@@ -824,6 +936,9 @@
       background-color: var(--bg-sidebar);
       border: 1px solid var(--border-subtle);
       text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
 
     .suggestion-card-title {
@@ -835,7 +950,6 @@
     .suggestion-card-desc {
       font-size: 12px;
       color: var(--text-muted);
-      margin-top: 3px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1019,10 +1133,10 @@
       right: 0;
       bottom: 0;
       z-index: 20;
-      padding: 10px 14px max(12px, env(safe-area-inset-bottom));
+      padding: 10px 14px max(12px, var(--safe-bottom));
       background-color: var(--bg-dock);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border-subtle);
     }
 
@@ -1303,6 +1417,32 @@
       flex-shrink: 0;
     }
 
+    .confirm-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-modal-cancel {
+      padding: 9px 16px;
+      border-radius: 9999px;
+      background-color: var(--bg-elevated);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .btn-modal-danger {
+      padding: 9px 16px;
+      border-radius: 9999px;
+      background-color: var(--danger);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
     /* Toast Notification */
     .toast-stack {
       position: fixed;
@@ -1341,7 +1481,7 @@
   <div id="toast-stack" class="toast-stack"></div>
 
   <!-- ===================================================================== -->
-  <!-- 1. SIGN-IN & GUEST LANDING SCREEN (NO LOGO IN UI)                     -->
+  <!-- 1. SIGN-IN & CREATE ACCOUNT SCREEN (NO LOGO, NO GUEST MODE)           -->
   <!-- ===================================================================== -->
   <section id="auth-screen" class="screen-layer auth-screen">
     <div class="auth-top-bar anim-fade-in">
@@ -1355,23 +1495,45 @@
     <div class="auth-center">
       <h1 class="brand-title anim-fade-up">DragonAI</h1>
       <p class="brand-subtitle anim-fade-up" style="animation-delay: 60ms;">
-        Minimalist intelligence powered by Google Gemini. Clean, fast, and distraction-free.
+        Minimalist intelligence powered by Google Gemini. Synced seamlessly across all your devices.
       </p>
 
       <div class="auth-card anim-fade-up" style="animation-delay: 120ms;">
+        <!-- Sign In / Create Account Mode Tabs -->
+        <div class="auth-tabs" role="tablist">
+          <button id="tab-signin" type="button" role="tab" aria-selected="true" onclick="window.DragonApp && window.DragonApp.switchAuthTab('signin')" class="auth-tab-btn is-active">
+            Sign In
+          </button>
+          <button id="tab-signup" type="button" role="tab" aria-selected="false" onclick="window.DragonApp && window.DragonApp.switchAuthTab('signup')" class="auth-tab-btn">
+            Create Account
+          </button>
+        </div>
+
         <!-- Saved Accounts Quick One-Tap Login -->
         <div id="saved-accounts-wrap" class="saved-accounts-wrap hidden">
           <div class="section-eyebrow">Saved Accounts</div>
           <div id="saved-accounts-list" class="saved-accounts-list"></div>
         </div>
 
-        <form id="signin-form" onsubmit="if(window.DragonApp){window.DragonApp.handleSignIn(event);}return false;" novalidate>
-          <div class="form-group">
-            <label for="login-identity" class="form-label">Email or Username</label>
+        <form id="auth-form" onsubmit="if(window.DragonApp){window.DragonApp.handleAuthSubmit(event);}return false;" novalidate>
+          <!-- Name field (Create Account only) -->
+          <div id="signup-name-group" class="form-group hidden">
+            <label for="auth-name" class="form-label">Name</label>
             <input
-              id="login-identity"
+              id="auth-name"
               type="text"
-              autocomplete="username"
+              autocomplete="name"
+              placeholder="Your name"
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="auth-email" class="form-label">Email</label>
+            <input
+              id="auth-email"
+              type="email"
+              autocomplete="email"
               placeholder="you@example.com"
               class="form-input"
               required
@@ -1379,38 +1541,75 @@
           </div>
 
           <div class="form-group">
-            <label for="login-password" class="form-label">Password</label>
+            <label for="auth-password" class="form-label">Password</label>
+            <div class="password-field-wrap">
+              <input
+                id="auth-password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                class="form-input"
+                required
+              />
+              <button
+                id="btn-toggle-auth-password"
+                type="button"
+                onclick="window.DragonApp && window.DragonApp.toggleAuthPasswordVisibility()"
+                aria-label="Show password"
+                title="Show password"
+                class="password-eye-btn btn-spring hover-elevate"
+              >
+                <svg id="icon-auth-eye" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <svg id="icon-auth-eye-off" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24" class="hidden">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Gemini API Key Setup (Create Account only) -->
+          <div id="signup-api-group" class="form-group hidden">
+            <label for="auth-gemini-key" class="form-label">Google Gemini API Key</label>
+            <a
+              id="btn-get-api-key"
+              href="https://aistudio.google.com/docs/api-key"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-get-api-key btn-spring hover-elevate"
+            >
+              <span>Get Gemini API Key</span>
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+              </svg>
+            </a>
             <input
-              id="login-password"
-              type="password"
-              autocomplete="current-password"
-              placeholder="••••••••"
+              id="auth-gemini-key"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Paste your Gemini API key (AIzaSy...)"
               class="form-input"
-              required
+              style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px;"
             />
           </div>
 
           <label class="checkbox-row">
             <input id="remember-login-checkbox" type="checkbox" checked />
-            <span>Save login details on this device</span>
+            <span>Save login details &amp; auto sign in</span>
           </label>
 
-          <button id="btn-signin-submit" type="submit" class="btn-pill-primary btn-spring hover-primary">
-            <span>Sign In / Continue</span>
+          <button id="btn-auth-submit" type="submit" class="btn-pill-primary btn-spring hover-primary">
+            <span id="btn-auth-submit-text">Sign In</span>
           </button>
         </form>
-
-        <button id="btn-guest-continue" type="button" onclick="window.DragonApp && window.DragonApp.enterGuestMode()" class="btn-pill-secondary btn-spring hover-elevate">
-          <span>Continue as Guest</span>
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
-          </svg>
-        </button>
       </div>
     </div>
 
     <p class="auth-footer-note anim-fade-in">
-      Guest mode keeps nothing when you close DragonAI. Signing in saves your chats, settings, and login details privately.
+      Your chats, API key, and preferences sync automatically across all devices signed into your account.
     </p>
   </section>
 
@@ -1432,23 +1631,27 @@
           </svg>
         </button>
 
-        <button id="btn-close-sidebar" type="button" onclick="window.DragonApp && window.DragonApp.closeSidebar()" aria-label="Close sidebar" class="icon-btn btn-spring mobile-only-btn">
+        <button id="btn-close-sidebar" type="button" onclick="window.DragonApp && window.DragonApp.closeSidebar()" aria-label="Close sidebar" class="icon-btn btn-spring hover-elevate">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
       </div>
 
-      <!-- Guest Mode Notice -->
-      <div id="sidebar-guest-banner" class="guest-banner hidden">
-        <div class="guest-banner-title">
-          <span class="pulse-dot"></span>
-          <span>Guest Mode</span>
-        </div>
-        <p>Nothing is saved when you close DragonAI.</p>
-        <button id="btn-guest-to-signin" type="button" onclick="window.DragonApp && window.DragonApp.logout()" class="guest-banner-btn btn-spring">
-          Sign In to Save Chats
-        </button>
+      <!-- Search Chats Input -->
+      <div class="sidebar-search-wrap">
+        <svg class="sidebar-search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7"/>
+          <path stroke-linecap="round" d="M20 20l-3.5-3.5"/>
+        </svg>
+        <input
+          id="sidebar-search-input"
+          type="search"
+          autocomplete="off"
+          placeholder="Search chats..."
+          class="sidebar-search-input"
+        />
+        <button id="btn-clear-search" type="button" onclick="window.DragonApp && window.DragonApp.clearSearch()" aria-label="Clear search" class="sidebar-search-clear hidden">×</button>
       </div>
 
       <!-- Chat List -->
@@ -1456,6 +1659,13 @@
 
       <!-- Sidebar Footer -->
       <div class="sidebar-footer">
+        <button id="btn-install-pwa" type="button" onclick="window.DragonApp && window.DragonApp.triggerPwaInstall()" class="sidebar-action-btn btn-spring hover-elevate hidden">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+          </svg>
+          <span>Install DragonAI App</span>
+        </button>
+
         <button id="btn-sidebar-settings" type="button" onclick="window.DragonApp && window.DragonApp.openSettings()" class="sidebar-action-btn btn-spring hover-elevate">
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -1466,10 +1676,10 @@
 
         <div class="account-pill">
           <div class="account-info">
-            <div id="user-avatar" class="avatar-circle">G</div>
+            <div id="user-avatar" class="avatar-circle">U</div>
             <div style="min-width:0;">
-              <div id="user-name-label" class="account-name">Guest</div>
-              <div id="user-sub-label" class="account-sub">Temporary session</div>
+              <div id="user-name-label" class="account-name">User</div>
+              <div id="user-sub-label" class="account-sub"><span id="sync-dot" class="sync-status-dot"></span><span id="sync-status-text">Synced</span></div>
             </div>
           </div>
           <button id="btn-logout" type="button" onclick="window.DragonApp && window.DragonApp.logout()" class="logout-btn btn-spring hover-danger" title="Log Out">
@@ -1484,13 +1694,12 @@
       <!-- Top Header (No logo) -->
       <header class="top-header">
         <div class="header-left">
-          <button id="btn-open-sidebar" type="button" onclick="window.DragonApp && window.DragonApp.openSidebar()" aria-label="Open menu" class="icon-btn btn-spring mobile-only-btn">
+          <button id="btn-open-sidebar" type="button" onclick="window.DragonApp && window.DragonApp.toggleSidebar()" aria-label="Toggle sidebar" title="Toggle sidebar" class="icon-btn btn-spring hover-elevate">
             <svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/>
             </svg>
           </button>
           <span class="header-title">DragonAI</span>
-          <span id="header-guest-chip" class="guest-chip hidden">Guest</span>
         </div>
 
         <div class="header-right">
@@ -1623,9 +1832,12 @@
 
         <!-- Setting 3: Google Gemini API Key -->
         <div>
-          <label for="input-api-key" class="setting-label">Google Gemini API Key</label>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <label for="input-api-key" class="setting-label">Google Gemini API Key</label>
+            <a href="https://aistudio.google.com/docs/api-key" target="_blank" rel="noopener noreferrer" style="font-size:12px;font-weight:600;color:var(--accent-blue);text-decoration:none;">Get API Key ↗</a>
+          </div>
           <div class="setting-desc">
-            Optional. Connect your Gemini API key for live cloud model responses, or leave empty to use the built-in assistant.
+            Saved to your account and synced across all your devices.
           </div>
           <div class="api-input-wrap">
             <input
@@ -1657,7 +1869,7 @@
         <div class="setting-row" style="padding-top: 14px; border-top: 1px solid var(--border-subtle); align-items: center;">
           <div>
             <div class="setting-label">Clear conversations</div>
-            <div id="clear-chats-desc" class="setting-desc">Delete all chats in this session</div>
+            <div id="clear-chats-desc" class="setting-desc">Delete all synced chats for this account</div>
           </div>
           <button id="btn-clear-chats" type="button" onclick="window.DragonApp && window.DragonApp.clearAllChats()" class="btn-danger-pill btn-spring">
             Clear All
@@ -1668,7 +1880,143 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- SELF-CONTAINED APPLICATION LOGIC (ZERO EXTERNAL BLOCKING SCRIPTS)     -->
+  <!-- 4. DELETE CHAT CONFIRMATION MODAL                                     -->
+  <!-- ===================================================================== -->
+  <div id="delete-confirm-modal" class="modal-overlay hidden anim-fade-in">
+    <div class="modal-card anim-scale-in" style="max-width: 380px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Delete chat?</h3>
+        <button type="button" onclick="window.DragonApp && window.DragonApp.cancelDeleteChat()" aria-label="Close" class="icon-btn btn-spring hover-elevate">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" style="gap: 16px;">
+        <p id="delete-confirm-text" class="setting-desc" style="font-size: 14px; color: var(--text-secondary);">
+          This will permanently delete this conversation from your account.
+        </p>
+        <div class="confirm-actions">
+          <button type="button" onclick="window.DragonApp && window.DragonApp.cancelDeleteChat()" class="btn-modal-cancel btn-spring hover-elevate">
+            Cancel
+          </button>
+          <button type="button" onclick="window.DragonApp && window.DragonApp.confirmDeleteChat()" class="btn-modal-danger btn-spring hover-primary">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- FIREBASE CLOUD SYNC BRIDGE (REAL-TIME CROSS-DEVICE FIRESTORE SYNC)    -->
+  <!-- ===================================================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    (async function initCloudSyncBridge() {
+      try {
+        if (typeof __firebase_config === 'undefined' || !__firebase_config) return;
+        const firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'dragonai-default';
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+
+        if (!auth.currentUser) return;
+
+        let activeUnsub = null;
+        let lastRemoteHash = '';
+
+        function accountDocRef(accountId) {
+          const safeId = encodeURIComponent(String(accountId || '').trim().toLowerCase());
+          return doc(db, 'artifacts', appId, 'public', 'data', 'dragonai_accounts', safeId);
+        }
+
+        window.DragonCloudSync = {
+          isReady: true,
+          async fetchAccount(accountId) {
+            if (!auth.currentUser || !accountId) return null;
+            try {
+              const snap = await getDoc(accountDocRef(accountId));
+              return snap.exists() ? snap.data() : null;
+            } catch (e) {
+              return null;
+            }
+          },
+          async pushAccount(accountId, payload) {
+            if (!auth.currentUser || !accountId) return false;
+            try {
+              const serialized = JSON.stringify({
+                chats: payload.chats || [],
+                settings: payload.settings || {},
+                displayName: payload.displayName || ''
+              });
+              lastRemoteHash = serialized;
+              await setDoc(accountDocRef(accountId), {
+                id: accountId,
+                identity: payload.identity || accountId,
+                displayName: payload.displayName || '',
+                passwordHash: payload.passwordHash || '',
+                chats: payload.chats || [],
+                settings: payload.settings || {},
+                updatedAt: Date.now()
+              }, { merge: true });
+              return true;
+            } catch (e) {
+              return false;
+            }
+          },
+          subscribeAccount(accountId, onRemoteUpdate) {
+            if (activeUnsub) {
+              try { activeUnsub(); } catch (e) {}
+              activeUnsub = null;
+            }
+            if (!auth.currentUser || !accountId) return;
+            activeUnsub = onSnapshot(accountDocRef(accountId), (snap) => {
+              if (!snap.exists()) return;
+              const data = snap.data();
+              const incomingHash = JSON.stringify({
+                chats: data.chats || [],
+                settings: data.settings || {},
+                displayName: data.displayName || ''
+              });
+              if (incomingHash === lastRemoteHash) return;
+              lastRemoteHash = incomingHash;
+              if (typeof onRemoteUpdate === 'function') {
+                onRemoteUpdate(data);
+              }
+            }, () => {});
+          },
+          unsubscribe() {
+            if (activeUnsub) {
+              try { activeUnsub(); } catch (e) {}
+              activeUnsub = null;
+            }
+            lastRemoteHash = '';
+          }
+        };
+
+        if (window.DragonApp && typeof window.DragonApp.onCloudBridgeReady === 'function') {
+          window.DragonApp.onCloudBridgeReady();
+        }
+      } catch (err) {
+        // Resilient fallback: local vault remains active if cloud config is unavailable
+      }
+    })();
+  </script>
+
+  <!-- ===================================================================== -->
+  <!-- SELF-CONTAINED APPLICATION LOGIC                                      -->
   <!-- ===================================================================== -->
   <script>
     (function () {
@@ -1677,10 +2025,10 @@
       // =======================================================================
       // 1. SAFE STORAGE & ACCOUNT VAULT HELPERS
       // =======================================================================
-      var VAULT_KEY = 'dragonai_vault_v3';
-      var LEGACY_VAULT_KEY = 'dragonai_vault_v2';
+      var VAULT_KEY = 'dragonai_vault_v4';
+      var LEGACY_VAULT_KEY = 'dragonai_vault_v3';
       var THEME_KEY = 'dragonai_theme';
-      var GLOBAL_KEY = 'dragonai_global_v3';
+      var GLOBAL_KEY = 'dragonai_global_v4';
 
       function readLS(key) {
         try {
@@ -1742,32 +2090,41 @@
         return String(str || '').trim().toLowerCase();
       }
 
+      function hashSecret(secret) {
+        var s = String(secret || '');
+        var h = 2166136261;
+        for (var i = 0; i < s.length; i++) {
+          h ^= s.charCodeAt(i);
+          h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+        }
+        return 'h_' + (h >>> 0).toString(16);
+      }
+
       function createId() {
         return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
       }
 
       // =======================================================================
-      // 2. APPLICATION STATE (VOLATILE GUEST RAM VS PERSISTENT USER VAULT)
+      // 2. APPLICATION STATE
       // =======================================================================
       var globalPrefs = loadGlobalPrefs();
 
-      // Ephemeral RAM-only store for Guest Mode (never written to localStorage)
-      var guestSession = {
-        chats: [],
-        activeChatId: null
-      };
-
       var state = {
-        mode: null, // 'user' | 'guest' | null
+        authTab: 'signin', // 'signin' | 'signup'
+        isAuthenticated: false,
         accountId: null,
         identity: '',
         displayName: '',
+        passwordHash: '',
         chats: [],
         activeChatId: null,
+        searchQuery: '',
         pendingAttachments: [],
         isGenerating: false,
         abortController: null,
         streamTimer: null,
+        deferredInstallPrompt: null,
+        pendingDeleteChatId: null,
         settings: {
           theme: globalPrefs.theme || 'system',
           enterToSend: Boolean(globalPrefs.enterToSend),
@@ -1781,21 +2138,33 @@
       // =======================================================================
       var authScreen = document.getElementById('auth-screen');
       var appShell = document.getElementById('app-shell');
+      var tabSigninBtn = document.getElementById('tab-signin');
+      var tabSignupBtn = document.getElementById('tab-signup');
+      var signupNameGroup = document.getElementById('signup-name-group');
+      var signupApiGroup = document.getElementById('signup-api-group');
+      var authNameInput = document.getElementById('auth-name');
+      var authEmailInput = document.getElementById('auth-email');
+      var authPasswordInput = document.getElementById('auth-password');
+      var btnToggleAuthPassword = document.getElementById('btn-toggle-auth-password');
+      var iconAuthEye = document.getElementById('icon-auth-eye');
+      var iconAuthEyeOff = document.getElementById('icon-auth-eye-off');
+      var authGeminiKeyInput = document.getElementById('auth-gemini-key');
+      var btnAuthSubmitText = document.getElementById('btn-auth-submit-text');
       var savedAccountsWrap = document.getElementById('saved-accounts-wrap');
       var savedAccountsList = document.getElementById('saved-accounts-list');
-      var loginIdentityInput = document.getElementById('login-identity');
-      var loginPasswordInput = document.getElementById('login-password');
       var rememberCheckbox = document.getElementById('remember-login-checkbox');
 
       var sidebar = document.getElementById('sidebar');
       var sidebarBackdrop = document.getElementById('sidebar-backdrop');
-      var sidebarGuestBanner = document.getElementById('sidebar-guest-banner');
-      var headerGuestChip = document.getElementById('header-guest-chip');
+      var sidebarSearchInput = document.getElementById('sidebar-search-input');
+      var btnClearSearch = document.getElementById('btn-clear-search');
       var chatListEl = document.getElementById('chat-list');
+      var btnInstallPwa = document.getElementById('btn-install-pwa');
 
       var userAvatarEl = document.getElementById('user-avatar');
       var userNameLabel = document.getElementById('user-name-label');
-      var userSubLabel = document.getElementById('user-sub-label');
+      var syncDotEl = document.getElementById('sync-dot');
+      var syncStatusTextEl = document.getElementById('sync-status-text');
 
       var messagesViewport = document.getElementById('messages-viewport');
       var emptyStateEl = document.getElementById('empty-state');
@@ -1810,12 +2179,65 @@
       var attachmentsBarEl = document.getElementById('attachments-bar');
 
       var settingsModalEl = document.getElementById('settings-modal');
+      var deleteConfirmModalEl = document.getElementById('delete-confirm-modal');
+      var deleteConfirmTextEl = document.getElementById('delete-confirm-text');
       var toggleEnterSendBtn = document.getElementById('toggle-enter-send');
       var inputApiKeyEl = document.getElementById('input-api-key');
       var btnToggleKeyVis = document.getElementById('btn-toggle-key-vis');
       var inputSystemPromptEl = document.getElementById('input-system-prompt');
-      var clearChatsDescEl = document.getElementById('clear-chats-desc');
       var toastStackEl = document.getElementById('toast-stack');
+
+      // =======================================================================
+      // 3B. FACE ID IPHONE + TOP BROWSER TOOLBAR DETECTION (34px SAFE AREA)
+      // =======================================================================
+      function detectFaceIdIphoneWithTopToolbar() {
+        try {
+          var ua = navigator.userAgent || '';
+          var isIphone = /iPhone/i.test(ua);
+          if (!isIphone) return false;
+
+          // Non-home-button (Face ID) iPhones have screen logical height >= 812pt (X, XS, 11 Pro, 12/13 mini, 12-17 series)
+          var screenMax = Math.max(window.screen.width || 0, window.screen.height || 0);
+          var isFaceIdIphone = screenMax >= 812;
+          if (!isFaceIdIphone) return false;
+
+          // Exclude standalone home-screen PWA mode
+          var isStandalone = Boolean(window.navigator.standalone) ||
+            (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+          if (isStandalone) return false;
+
+          // Probe env(safe-area-inset-top) vs env(safe-area-inset-bottom)
+          // When Safari uses a top address bar, the bottom bar is absent so safe-area-inset-bottom reports 0px
+          // even though the device is a Face ID iPhone (safe-area-inset-top >= 44px)
+          var probe = document.createElement('div');
+          probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);';
+          document.body.appendChild(probe);
+          var cs = window.getComputedStyle(probe);
+          var insetTop = parseFloat(cs.paddingTop) || 0;
+          var insetBottom = parseFloat(cs.paddingBottom) || 0;
+          document.body.removeChild(probe);
+
+          var hasTopToolbar = insetBottom < 20 && (insetTop >= 40 || (screenMax - window.innerHeight) >= 60);
+          return hasTopToolbar;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function updateIphoneSafeAreaClass() {
+        if (detectFaceIdIphoneWithTopToolbar()) {
+          document.documentElement.classList.add('faceid-iphone-top-bar');
+        } else {
+          document.documentElement.classList.remove('faceid-iphone-top-bar');
+        }
+      }
+
+      updateIphoneSafeAreaClass();
+      window.addEventListener('resize', updateIphoneSafeAreaClass);
+      window.addEventListener('orientationchange', updateIphoneSafeAreaClass);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateIphoneSafeAreaClass);
+      }
 
       // =======================================================================
       // 4. TOAST FEEDBACK
@@ -1837,20 +2259,24 @@
       }
 
       // =======================================================================
-      // 5. MOBILE HOME-SCREEN APP ICON (IMG_7732.png) & ZOOM PROTECTION
+      // 5. INSTALLABLE MOBILE PWA (MANIFEST + SERVICE WORKER + IMG_7732.png)
       // =======================================================================
-      function setupMobileAppIcon() {
+      function registerPwaManifestAndWorker(iconUrl) {
         try {
+          var resolvedIcon = iconUrl || 'IMG_7732.png';
           var manifest = {
             name: 'DragonAI',
             short_name: 'DragonAI',
-            start_url: '.',
+            description: 'Minimalist AI assistant powered by Google Gemini',
+            start_url: './',
+            scope: './',
             display: 'standalone',
+            orientation: 'portrait',
             background_color: '#0d0d0f',
             theme_color: '#0d0d0f',
             icons: [
-              { src: 'IMG_7732.png', sizes: '192x192', type: 'image/png' },
-              { src: 'IMG_7732.png', sizes: '512x512', type: 'image/png' }
+              { src: resolvedIcon, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+              { src: resolvedIcon, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
             ]
           };
           var blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
@@ -1859,6 +2285,25 @@
             manifestLink.href = URL.createObjectURL(blob);
           }
 
+          if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.protocol === 'http:')) {
+            var swCode = [
+              "const CACHE_NAME = 'dragonai-pwa-v1';",
+              "self.addEventListener('install', (e) => { self.skipWaiting(); });",
+              "self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });",
+              "self.addEventListener('fetch', (e) => {",
+              "  if (e.request.method !== 'GET') return;",
+              "  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));",
+              "});"
+            ].join('\n');
+            var swBlob = new Blob([swCode], { type: 'application/javascript' });
+            var swUrl = URL.createObjectURL(swBlob);
+            navigator.serviceWorker.register(swUrl).catch(function () {});
+          }
+        } catch (e) {}
+      }
+
+      function setupMobileAppIcon() {
+        try {
           var imgEl = document.getElementById('app-icon-source');
           if (imgEl && imgEl.complete && imgEl.naturalWidth > 0) {
             var canvas = document.createElement('canvas');
@@ -1871,8 +2316,11 @@
             var apple = document.getElementById('dynamic-apple-icon');
             if (fav) fav.href = dataUrl;
             if (apple) apple.href = dataUrl;
+            registerPwaManifestAndWorker(dataUrl);
+            return;
           }
         } catch (e) {}
+        registerPwaManifestAndWorker('IMG_7732.png');
       }
 
       var iconSource = document.getElementById('app-icon-source');
@@ -1882,6 +2330,32 @@
         } else {
           iconSource.addEventListener('load', setupMobileAppIcon);
           iconSource.addEventListener('error', setupMobileAppIcon);
+        }
+      } else {
+        registerPwaManifestAndWorker('IMG_7732.png');
+      }
+
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        state.deferredInstallPrompt = e;
+        if (btnInstallPwa) btnInstallPwa.classList.remove('hidden');
+      });
+
+      window.addEventListener('appinstalled', function () {
+        state.deferredInstallPrompt = null;
+        if (btnInstallPwa) btnInstallPwa.classList.add('hidden');
+        showToast('DragonAI installed to your device');
+      });
+
+      function triggerPwaInstall() {
+        if (state.deferredInstallPrompt) {
+          state.deferredInstallPrompt.prompt();
+          state.deferredInstallPrompt.userChoice.then(function () {
+            state.deferredInstallPrompt = null;
+            if (btnInstallPwa) btnInstallPwa.classList.add('hidden');
+          }).catch(function () {});
+        } else {
+          showToast('Tap Share → Add to Home Screen to install DragonAI');
         }
       }
 
@@ -1969,16 +2443,48 @@
       }
 
       // =======================================================================
-      // 7. PERSISTENCE SYNC (ONLY FOR SIGNED-IN USERS, NEVER GUESTS)
+      // 7. CROSS-DEVICE CLOUD & LOCAL ACCOUNT SYNC
       // =======================================================================
-      function syncStateToStorage() {
-        if (state.mode !== 'user' || !state.accountId) {
-          if (state.mode === 'guest') {
-            guestSession.chats = state.chats;
-            guestSession.activeChatId = state.activeChatId;
-          }
-          return;
+      function updateSyncIndicator(isCloud) {
+        if (!syncDotEl || !syncStatusTextEl) return;
+        if (isCloud) {
+          syncDotEl.classList.remove('is-local');
+          syncStatusTextEl.textContent = 'Cloud synced';
+        } else {
+          syncDotEl.classList.add('is-local');
+          syncStatusTextEl.textContent = state.identity || 'Account synced';
         }
+      }
+
+      function sanitizeChatsForSync(chats) {
+        return (chats || []).map(function (c) {
+          return {
+            id: c.id,
+            title: c.title || 'New Chat',
+            updatedAt: c.updatedAt || Date.now(),
+            messages: (c.messages || []).map(function (m) {
+              return {
+                id: m.id,
+                role: m.role,
+                text: m.text || '',
+                timestamp: m.timestamp || Date.now(),
+                attachments: (m.attachments || []).map(function (a) {
+                  return {
+                    id: a.id,
+                    name: a.name,
+                    mimeType: a.mimeType,
+                    isImage: Boolean(a.isImage),
+                    previewUrl: (a.previewUrl && a.previewUrl.length < 250000) ? a.previewUrl : null
+                  };
+                })
+              };
+            })
+          };
+        });
+      }
+
+      function syncStateToStorage() {
+        if (!state.isAuthenticated || !state.accountId) return;
 
         var vault = loadVault();
         var existing = vault.accounts[state.accountId] || {
@@ -1986,9 +2492,12 @@
           identity: state.identity,
           displayName: state.displayName,
           password: '',
+          passwordHash: state.passwordHash,
           saveCredentials: true
         };
 
+        existing.displayName = state.displayName;
+        existing.passwordHash = state.passwordHash || existing.passwordHash || '';
         existing.chats = state.chats;
         existing.settings = {
           theme: state.settings.theme,
@@ -2001,11 +2510,129 @@
         vault.accounts[state.accountId] = existing;
         vault.lastAccountId = state.accountId;
         saveVault(vault);
+
+        if (window.DragonCloudSync && window.DragonCloudSync.isReady) {
+          window.DragonCloudSync.pushAccount(state.accountId, {
+            identity: state.identity,
+            displayName: state.displayName,
+            passwordHash: existing.passwordHash,
+            chats: sanitizeChatsForSync(state.chats),
+            settings: existing.settings
+          }).then(function (ok) {
+            updateSyncIndicator(ok);
+          });
+        } else {
+          updateSyncIndicator(false);
+        }
+      }
+
+      function attachCloudRealtimeListener(accountId) {
+        if (!window.DragonCloudSync || !window.DragonCloudSync.isReady || !accountId) return;
+        updateSyncIndicator(true);
+        window.DragonCloudSync.subscribeAccount(accountId, function (remoteData) {
+          if (!state.isAuthenticated || state.accountId !== accountId) return;
+          if (state.isGenerating) return;
+
+          if (Array.isArray(remoteData.chats)) {
+            state.chats = remoteData.chats;
+            var stillExists = state.chats.some(function (c) { return c.id === state.activeChatId; });
+            if (!stillExists) {
+              state.activeChatId = state.chats.length > 0 ? state.chats[0].id : null;
+            }
+          }
+          if (remoteData.settings) {
+            if (typeof remoteData.settings.apiKey === 'string') {
+              state.settings.apiKey = remoteData.settings.apiKey;
+              inputApiKeyEl.value = state.settings.apiKey;
+            }
+            if (typeof remoteData.settings.systemPrompt === 'string') {
+              state.settings.systemPrompt = remoteData.settings.systemPrompt;
+              inputSystemPromptEl.value = state.settings.systemPrompt;
+            }
+            if (typeof remoteData.settings.enterToSend === 'boolean') {
+              state.settings.enterToSend = remoteData.settings.enterToSend;
+              toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
+            }
+            if (remoteData.settings.theme) {
+              applyTheme(remoteData.settings.theme);
+            }
+          }
+          if (remoteData.displayName) {
+            state.displayName = remoteData.displayName;
+            userNameLabel.textContent = state.displayName;
+            userAvatarEl.textContent = state.displayName.charAt(0).toUpperCase();
+          }
+
+          var vault = loadVault();
+          if (vault.accounts[accountId]) {
+            vault.accounts[accountId].chats = state.chats;
+            vault.accounts[accountId].settings = state.settings;
+            saveVault(vault);
+          }
+
+          renderSidebarChats();
+          renderActiveChat();
+        });
+      }
+
+      function onCloudBridgeReady() {
+        if (state.isAuthenticated && state.accountId) {
+          attachCloudRealtimeListener(state.accountId);
+          syncStateToStorage();
+        }
       }
 
       // =======================================================================
-      // 8. SAVED ACCOUNTS & SIGN-IN / AUTO-LOGIN / GUEST MODE FLOWS
+      // 8. AUTHENTICATION (SIGN IN, CREATE ACCOUNT, AUTO-LOGIN, LOG OUT)
       // =======================================================================
+      function toggleAuthPasswordVisibility() {
+        if (!authPasswordInput) return;
+        var showing = authPasswordInput.type === 'text';
+        if (showing) {
+          authPasswordInput.type = 'password';
+          if (iconAuthEye) iconAuthEye.classList.remove('hidden');
+          if (iconAuthEyeOff) iconAuthEyeOff.classList.add('hidden');
+          if (btnToggleAuthPassword) {
+            btnToggleAuthPassword.setAttribute('aria-label', 'Show password');
+            btnToggleAuthPassword.setAttribute('title', 'Show password');
+          }
+        } else {
+          authPasswordInput.type = 'text';
+          if (iconAuthEye) iconAuthEye.classList.add('hidden');
+          if (iconAuthEyeOff) iconAuthEyeOff.classList.remove('hidden');
+          if (btnToggleAuthPassword) {
+            btnToggleAuthPassword.setAttribute('aria-label', 'Hide password');
+            btnToggleAuthPassword.setAttribute('title', 'Hide password');
+          }
+        }
+      }
+
+      function switchAuthTab(tabName) {
+        state.authTab = tabName === 'signup' ? 'signup' : 'signin';
+        if (authPasswordInput && authPasswordInput.type === 'text') {
+          toggleAuthPasswordVisibility();
+        }
+        if (state.authTab === 'signup') {
+          tabSignupBtn.classList.add('is-active');
+          tabSignupBtn.setAttribute('aria-selected', 'true');
+          tabSigninBtn.classList.remove('is-active');
+          tabSigninBtn.setAttribute('aria-selected', 'false');
+          signupNameGroup.classList.remove('hidden');
+          signupApiGroup.classList.remove('hidden');
+          authPasswordInput.setAttribute('autocomplete', 'new-password');
+          btnAuthSubmitText.textContent = 'Create Account';
+        } else {
+          tabSigninBtn.classList.add('is-active');
+          tabSigninBtn.setAttribute('aria-selected', 'true');
+          tabSignupBtn.classList.remove('is-active');
+          tabSignupBtn.setAttribute('aria-selected', 'false');
+          signupNameGroup.classList.add('hidden');
+          signupApiGroup.classList.add('hidden');
+          authPasswordInput.setAttribute('autocomplete', 'current-password');
+          btnAuthSubmitText.textContent = 'Sign In';
+        }
+      }
+
       function renderSavedAccounts() {
         var vault = loadVault();
         var accountKeys = Object.keys(vault.accounts || {});
@@ -2065,32 +2692,22 @@
         if (vault.lastAccountId && vault.accounts[vault.lastAccountId]) {
           var lastAcc = vault.accounts[vault.lastAccountId];
           if (lastAcc.saveCredentials !== false) {
-            loginIdentityInput.value = lastAcc.identity || '';
-            loginPasswordInput.value = lastAcc.password || '';
+            authEmailInput.value = lastAcc.identity || '';
+            authPasswordInput.value = lastAcc.password || '';
             rememberCheckbox.checked = true;
             return;
           }
         }
-        loginIdentityInput.value = '';
-        loginPasswordInput.value = '';
+        authEmailInput.value = '';
+        authPasswordInput.value = '';
       }
 
-      function enterWorkspace(mode, displayName, subLabel) {
-        state.mode = mode;
-
-        if (mode === 'guest') {
-          sidebarGuestBanner.classList.remove('hidden');
-          headerGuestChip.classList.remove('hidden');
-          clearChatsDescEl.textContent = 'Delete temporary guest chats';
-        } else {
-          sidebarGuestBanner.classList.add('hidden');
-          headerGuestChip.classList.add('hidden');
-          clearChatsDescEl.textContent = 'Delete all saved chats for this account';
-        }
+      function enterWorkspace(displayName) {
+        state.isAuthenticated = true;
 
         userAvatarEl.textContent = (displayName || 'U').charAt(0).toUpperCase();
         userNameLabel.textContent = displayName || 'User';
-        userSubLabel.textContent = subLabel || '';
+        updateSyncIndicator(Boolean(window.DragonCloudSync && window.DragonCloudSync.isReady));
 
         toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
         inputApiKeyEl.value = state.settings.apiKey || '';
@@ -2104,13 +2721,14 @@
         updateSendButtonState();
       }
 
-      function loginWithVaultAccount(acc, options) {
+      async function loginWithVaultAccount(acc, options) {
         var opts = options || {};
         state.accountId = acc.id;
         state.identity = acc.identity;
         state.displayName = acc.displayName || acc.identity.split('@')[0] || 'User';
+        state.passwordHash = acc.passwordHash || (acc.password ? hashSecret(acc.password) : '');
         state.chats = Array.isArray(acc.chats) ? JSON.parse(JSON.stringify(acc.chats)) : [];
-        state.activeChatId = state.chats.length > 0 ? state.chats[0].id : null;
+        state.activeChatId = null;
 
         if (acc.settings) {
           state.settings.enterToSend = Boolean(acc.settings.enterToSend);
@@ -2123,61 +2741,136 @@
           }
         }
 
-        var vault = loadVault();
-        vault.lastAccountId = acc.id;
-        if (acc.saveCredentials !== false) {
-          vault.autoLoginEmail = acc.id;
-        } else {
-          vault.autoLoginEmail = null;
+        // Pull latest cross-device cloud data if available
+        if (window.DragonCloudSync && window.DragonCloudSync.isReady) {
+          var remote = await window.DragonCloudSync.fetchAccount(acc.id);
+          if (remote) {
+            if (Array.isArray(remote.chats) && (remote.updatedAt || 0) >= (acc.updatedAt || 0)) {
+              state.chats = remote.chats;
+              state.activeChatId = null;
+            }
+            if (remote.settings && remote.settings.apiKey) {
+              state.settings.apiKey = remote.settings.apiKey;
+            }
+            if (remote.displayName) {
+              state.displayName = remote.displayName;
+            }
+          }
         }
+
+        var vault = loadVault();
+        acc.chats = state.chats;
+        acc.displayName = state.displayName;
+        acc.settings = {
+          theme: state.settings.theme,
+          enterToSend: state.settings.enterToSend,
+          apiKey: state.settings.apiKey,
+          systemPrompt: state.settings.systemPrompt
+        };
+        vault.accounts[acc.id] = acc;
+        vault.lastAccountId = acc.id;
+        vault.autoLoginEmail = acc.saveCredentials !== false ? acc.id : null;
         saveVault(vault);
 
-        enterWorkspace('user', state.displayName, state.identity);
+        enterWorkspace(state.displayName);
+        syncStateToStorage();
+        attachCloudRealtimeListener(acc.id);
+
         if (!opts.silent) {
           showToast(opts.auto ? ('Welcome back, ' + state.displayName) : ('Signed in as ' + state.displayName));
         }
       }
 
-      function handleSignIn(e) {
+      async function handleAuthSubmit(e) {
         if (e && e.preventDefault) e.preventDefault();
-        var identity = loginIdentityInput.value.trim();
-        var password = loginPasswordInput.value;
+        var email = authEmailInput.value.trim();
+        var password = authPasswordInput.value;
         var saveCreds = rememberCheckbox.checked;
 
-        if (!identity) {
-          showToast('Please enter an email or username');
-          loginIdentityInput.focus();
+        if (!email) {
+          showToast('Please enter your email');
+          authEmailInput.focus();
           return;
         }
         if (!password) {
-          showToast('Please enter a password');
-          loginPasswordInput.focus();
+          showToast('Please enter your password');
+          authPasswordInput.focus();
           return;
         }
 
-        var accId = normalizeId(identity);
+        var accId = normalizeId(email);
         var vault = loadVault();
         var existing = vault.accounts[accId];
+        var remoteAcc = null;
 
-        if (existing && existing.password && existing.password !== password) {
-          showToast('Incorrect password for this saved account');
-          loginPasswordInput.focus();
+        if (!existing && window.DragonCloudSync && window.DragonCloudSync.isReady) {
+          remoteAcc = await window.DragonCloudSync.fetchAccount(accId);
+        }
+
+        var knownRecord = existing || remoteAcc;
+
+        if (state.authTab === 'signup') {
+          var pastedKey = authGeminiKeyInput.value.trim();
+          var enteredName = authNameInput.value.trim();
+          if (!pastedKey) {
+            showToast('Please paste your Gemini API key');
+            authGeminiKeyInput.focus();
+            return;
+          }
+
+          var newDisplayName = enteredName || (email.indexOf('@') > -1 ? email.split('@')[0] : email);
+          var newRecord = {
+            id: accId,
+            identity: email,
+            displayName: newDisplayName,
+            password: saveCreds ? password : '',
+            passwordHash: hashSecret(password),
+            saveCredentials: saveCreds,
+            updatedAt: Date.now(),
+            chats: knownRecord && Array.isArray(knownRecord.chats) ? knownRecord.chats : [],
+            settings: {
+              theme: state.settings.theme,
+              enterToSend: state.settings.enterToSend,
+              apiKey: pastedKey,
+              systemPrompt: state.settings.systemPrompt
+            }
+          };
+
+          vault.accounts[accId] = newRecord;
+          vault.lastAccountId = accId;
+          vault.autoLoginEmail = saveCreds ? accId : null;
+          saveVault(vault);
+
+          await loginWithVaultAccount(newRecord);
+          showToast('Account created & synced');
           return;
         }
 
-        var displayName = existing && existing.displayName
-          ? existing.displayName
-          : (identity.indexOf('@') > -1 ? identity.split('@')[0] : identity);
+        // Sign In flow
+        if (knownRecord) {
+          var validLocal = knownRecord.password && knownRecord.password === password;
+          var validHash = knownRecord.passwordHash && knownRecord.passwordHash === hashSecret(password);
+          if ((knownRecord.password || knownRecord.passwordHash) && !validLocal && !validHash) {
+            showToast('Incorrect password for this account');
+            authPasswordInput.focus();
+            return;
+          }
+        }
 
-        var accountRecord = {
+        var displayName = knownRecord && knownRecord.displayName
+          ? knownRecord.displayName
+          : (email.indexOf('@') > -1 ? email.split('@')[0] : email);
+
+        var signInRecord = {
           id: accId,
-          identity: identity,
+          identity: email,
           displayName: displayName,
           password: saveCreds ? password : '',
+          passwordHash: hashSecret(password),
           saveCredentials: saveCreds,
           updatedAt: Date.now(),
-          chats: existing && Array.isArray(existing.chats) ? existing.chats : [],
-          settings: (existing && existing.settings) ? existing.settings : {
+          chats: knownRecord && Array.isArray(knownRecord.chats) ? knownRecord.chats : [],
+          settings: (knownRecord && knownRecord.settings) ? knownRecord.settings : {
             theme: state.settings.theme,
             enterToSend: state.settings.enterToSend,
             apiKey: state.settings.apiKey,
@@ -2185,54 +2878,44 @@
           }
         };
 
-        vault.accounts[accId] = accountRecord;
+        vault.accounts[accId] = signInRecord;
         vault.lastAccountId = accId;
         vault.autoLoginEmail = saveCreds ? accId : null;
         saveVault(vault);
 
-        loginWithVaultAccount(accountRecord);
-      }
-
-      function enterGuestMode() {
-        guestSession = { chats: [], activeChatId: null };
-        state.accountId = null;
-        state.identity = '';
-        state.displayName = 'Guest';
-        state.chats = guestSession.chats;
-        state.activeChatId = null;
-        state.pendingAttachments = [];
-        renderAttachments();
-
-        enterWorkspace('guest', 'Guest', 'Not saved');
-        showToast('Guest mode: nothing is saved on exit');
+        await loginWithVaultAccount(signInRecord);
       }
 
       function logoutToAuthScreen() {
         stopGeneration();
+        syncStateToStorage();
 
-        if (state.mode === 'user') {
-          syncStateToStorage();
-          var vault = loadVault();
-          vault.autoLoginEmail = null;
-          saveVault(vault);
-        } else if (state.mode === 'guest') {
-          guestSession = { chats: [], activeChatId: null };
+        if (window.DragonCloudSync) {
+          window.DragonCloudSync.unsubscribe();
         }
 
-        state.mode = null;
+        var vault = loadVault();
+        vault.autoLoginEmail = null;
+        saveVault(vault);
+
+        state.isAuthenticated = false;
         state.accountId = null;
         state.chats = [];
         state.activeChatId = null;
+        state.searchQuery = '';
+        if (sidebarSearchInput) sidebarSearchInput.value = '';
+        if (btnClearSearch) btnClearSearch.classList.add('hidden');
         state.pendingAttachments = [];
         renderAttachments();
         closeSidebar();
 
+        switchAuthTab('signin');
         renderSavedAccounts();
         prefillLastSavedCredentials();
 
         appShell.classList.add('hidden');
         authScreen.classList.remove('hidden');
-        showToast('Logged out — your chats are safely saved');
+        showToast('Logged out — your chats are synced');
       }
 
       // =======================================================================
@@ -2240,12 +2923,26 @@
       // =======================================================================
       function openSidebar() {
         sidebar.classList.add('is-open');
-        sidebarBackdrop.classList.add('is-open');
+        if (window.innerWidth > 768) {
+          appShell.classList.add('desktop-sidebar-open');
+          sidebarBackdrop.classList.remove('is-open');
+        } else {
+          sidebarBackdrop.classList.add('is-open');
+        }
       }
 
       function closeSidebar() {
         sidebar.classList.remove('is-open');
         sidebarBackdrop.classList.remove('is-open');
+        appShell.classList.remove('desktop-sidebar-open');
+      }
+
+      function toggleSidebar() {
+        if (sidebar.classList.contains('is-open')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
       }
 
       var touchStartX = 0;
@@ -2281,8 +2978,32 @@
       }, { passive: true });
 
       // =======================================================================
-      // 10. CHAT CRUD OPERATIONS
+      // 10. SEARCH CHATS & CHAT CRUD OPERATIONS
       // =======================================================================
+      if (sidebarSearchInput) {
+        sidebarSearchInput.addEventListener('input', function () {
+          state.searchQuery = sidebarSearchInput.value;
+          if (btnClearSearch) {
+            if (state.searchQuery.trim().length > 0) {
+              btnClearSearch.classList.remove('hidden');
+            } else {
+              btnClearSearch.classList.add('hidden');
+            }
+          }
+          renderSidebarChats();
+        });
+      }
+
+      function clearSearch() {
+        state.searchQuery = '';
+        if (sidebarSearchInput) {
+          sidebarSearchInput.value = '';
+          sidebarSearchInput.focus();
+        }
+        if (btnClearSearch) btnClearSearch.classList.add('hidden');
+        renderSidebarChats();
+      }
+
       function getActiveChat() {
         for (var i = 0; i < state.chats.length; i++) {
           if (state.chats[i].id === state.activeChatId) return state.chats[i];
@@ -2297,7 +3018,9 @@
         renderAttachments();
         renderSidebarChats();
         renderActiveChat();
-        closeSidebar();
+        if (window.innerWidth <= 768) {
+          closeSidebar();
+        }
         chatInputEl.focus();
       }
 
@@ -2319,6 +3042,39 @@
         return chat;
       }
 
+      function requestDeleteChat(chatId) {
+        var target = null;
+        for (var i = 0; i < state.chats.length; i++) {
+          if (state.chats[i].id === chatId) {
+            target = state.chats[i];
+            break;
+          }
+        }
+        if (!target) return;
+        state.pendingDeleteChatId = chatId;
+        if (deleteConfirmTextEl) {
+          deleteConfirmTextEl.textContent = 'Are you sure you want to permanently delete "' + (target.title || 'New Chat') + '"?';
+        }
+        if (deleteConfirmModalEl) {
+          deleteConfirmModalEl.classList.remove('hidden');
+        }
+      }
+
+      function cancelDeleteChat() {
+        state.pendingDeleteChatId = null;
+        if (deleteConfirmModalEl) {
+          deleteConfirmModalEl.classList.add('hidden');
+        }
+      }
+
+      function confirmDeleteChat() {
+        var chatId = state.pendingDeleteChatId;
+        cancelDeleteChat();
+        if (chatId) {
+          deleteChatById(chatId);
+        }
+      }
+
       function deleteChatById(chatId) {
         if (state.isGenerating && state.activeChatId === chatId) {
           stopGeneration();
@@ -2333,24 +3089,70 @@
         showToast('Chat deleted');
       }
 
+      if (deleteConfirmModalEl) {
+        deleteConfirmModalEl.addEventListener('click', function (e) {
+          if (e.target === deleteConfirmModalEl) cancelDeleteChat();
+        });
+      }
+
       function renderSidebarChats() {
         chatListEl.innerHTML = '';
-        if (state.chats.length === 0) {
+        var q = String(state.searchQuery || '').trim().toLowerCase();
+
+        var filtered = [];
+        for (var i = 0; i < state.chats.length; i++) {
+          var c = state.chats[i];
+          if (!q) {
+            filtered.push({ chat: c, snippet: '' });
+            continue;
+          }
+          var titleMatch = (c.title || '').toLowerCase().indexOf(q) > -1;
+          var matchedSnippet = '';
+          if (Array.isArray(c.messages)) {
+            for (var m = 0; m < c.messages.length; m++) {
+              var msgText = String(c.messages[m].text || '');
+              var idx = msgText.toLowerCase().indexOf(q);
+              if (idx > -1) {
+                var start = Math.max(0, idx - 18);
+                var end = Math.min(msgText.length, idx + q.length + 32);
+                matchedSnippet = (start > 0 ? '…' : '') + msgText.slice(start, end).replace(/\s+/g, ' ') + (end < msgText.length ? '…' : '');
+                break;
+              }
+            }
+          }
+          if (titleMatch || matchedSnippet) {
+            filtered.push({ chat: c, snippet: matchedSnippet });
+          }
+        }
+
+        if (filtered.length === 0) {
           var emptyDiv = document.createElement('div');
           emptyDiv.className = 'chat-list-empty';
-          emptyDiv.textContent = 'No conversations yet';
+          emptyDiv.textContent = q ? 'No matching chats found' : 'No conversations yet';
           chatListEl.appendChild(emptyDiv);
           return;
         }
 
-        for (var i = 0; i < state.chats.length; i++) {
-          (function (chat) {
+        for (var j = 0; j < filtered.length; j++) {
+          (function (entry) {
+            var chat = entry.chat;
             var row = document.createElement('div');
             row.className = 'chat-row' + (chat.id === state.activeChatId ? ' is-active' : '');
+
+            var contentCol = document.createElement('div');
+            contentCol.className = 'chat-row-content';
 
             var titleSpan = document.createElement('span');
             titleSpan.className = 'chat-row-title';
             titleSpan.textContent = chat.title || 'New Chat';
+            contentCol.appendChild(titleSpan);
+
+            if (entry.snippet) {
+              var snipSpan = document.createElement('span');
+              snipSpan.className = 'chat-row-snippet';
+              snipSpan.textContent = entry.snippet;
+              contentCol.appendChild(snipSpan);
+            }
 
             var delBtn = document.createElement('button');
             delBtn.type = 'button';
@@ -2363,18 +3165,20 @@
               state.activeChatId = chat.id;
               renderSidebarChats();
               renderActiveChat();
-              closeSidebar();
+              if (window.innerWidth <= 768) {
+                closeSidebar();
+              }
             });
 
             delBtn.addEventListener('click', function (e) {
               e.stopPropagation();
-              deleteChatById(chat.id);
+              requestDeleteChat(chat.id);
             });
 
-            row.appendChild(titleSpan);
+            row.appendChild(contentCol);
             row.appendChild(delBtn);
             chatListEl.appendChild(row);
-          })(state.chats[i]);
+          })(filtered[j]);
         }
       }
 
@@ -3027,11 +3831,7 @@
         stopGeneration();
         state.chats = [];
         state.activeChatId = null;
-        if (state.mode === 'guest') {
-          guestSession = { chats: [], activeChatId: null };
-        } else {
-          syncStateToStorage();
-        }
+        syncStateToStorage();
         renderSidebarChats();
         renderActiveChat();
         closeSettings();
@@ -3075,29 +3875,37 @@
         })(suggestionCards[s]);
       }
 
-      // Expose global API for inline onclick/onsubmit fallbacks
+      // Expose global API for inline onclick/onsubmit handlers
       window.DragonApp = {
+        switchAuthTab: switchAuthTab,
+        toggleAuthPasswordVisibility: toggleAuthPasswordVisibility,
+        handleAuthSubmit: handleAuthSubmit,
         cycleTheme: cycleTheme,
         setTheme: applyTheme,
-        handleSignIn: handleSignIn,
-        enterGuestMode: enterGuestMode,
         logout: logoutToAuthScreen,
         openSidebar: openSidebar,
         closeSidebar: closeSidebar,
+        toggleSidebar: toggleSidebar,
+        clearSearch: clearSearch,
         startNewChat: startNewChat,
+        cancelDeleteChat: cancelDeleteChat,
+        confirmDeleteChat: confirmDeleteChat,
         openSettings: openSettings,
         closeSettings: closeSettings,
         toggleEnterToSend: toggleEnterToSend,
         toggleKeyVisibility: toggleKeyVisibility,
         clearAllChats: clearAllChats,
         triggerFilePicker: triggerFilePicker,
-        handleSendOrStop: handleSendOrStop
+        handleSendOrStop: handleSendOrStop,
+        triggerPwaInstall: triggerPwaInstall,
+        onCloudBridgeReady: onCloudBridgeReady
       };
 
       // =======================================================================
       // 17. INITIAL BOOTSTRAP & AUTO-LOGIN RESTORATION
       // =======================================================================
       applyTheme(state.settings.theme);
+      switchAuthTab('signin');
       renderSavedAccounts();
       prefillLastSavedCredentials();
       updateSendButtonState();

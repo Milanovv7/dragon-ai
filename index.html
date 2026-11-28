@@ -682,6 +682,27 @@
       flex-direction: column;
     }
 
+    .chat-row-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .learn-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.16), rgba(99, 102, 241, 0.18));
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      flex-shrink: 0;
+    }
+
     .chat-row-snippet {
       font-size: 11px;
       color: var(--text-muted);
@@ -689,20 +710,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       margin-top: 2px;
-    }
-
-    .sync-status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 9999px;
-      background-color: #22c55e;
-      display: inline-block;
-      margin-right: 5px;
-      flex-shrink: 0;
-    }
-
-    .sync-status-dot.is-local {
-      background-color: #38bdf8;
     }
 
     .chat-list {
@@ -875,11 +882,306 @@
       gap: 6px;
     }
 
-    .header-title {
+    .mode-switcher-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .mode-trigger-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: 12px;
       font-size: 16px;
       font-weight: 600;
       letter-spacing: -0.01em;
-      padding-left: 4px;
+      color: var(--text-primary);
+    }
+
+    .mode-trigger-pill {
+      padding: 2px 7px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.16), rgba(99, 102, 241, 0.2));
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+    }
+
+    .mode-chevron {
+      color: var(--text-secondary);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .mode-switcher-wrap.is-open .mode-chevron {
+      transform: rotate(180deg);
+    }
+
+    .mode-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      width: 268px;
+      padding: 6px;
+      border-radius: 18px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-lg);
+      z-index: 45;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mode-option-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 13px;
+      text-align: left;
+    }
+
+    .mode-option-btn.is-active {
+      background-color: var(--bg-elevated);
+    }
+
+    .mode-option-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode-option-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    .mode-check {
+      color: var(--accent-blue);
+      flex-shrink: 0;
+    }
+
+    /* DragonAI Learn Interactive Study Cards & Quizzes */
+    .learn-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.14), rgba(99, 102, 241, 0.16));
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .learn-stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 16px;
+      background-color: var(--bg-sidebar);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 14px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .learn-stat-chips {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .learn-stat-chip {
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+    }
+
+    .quiz-deck {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .quiz-card {
+      padding: 16px;
+      border-radius: 20px;
+      background-color: var(--bg-sidebar);
+      border: 1px solid var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quiz-q-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-q-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-blue);
+    }
+
+    .quiz-q-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-opt-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 14px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      text-align: left;
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.4;
+      transition: transform 0.14s ease, border-color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .quiz-opt-letter {
+      width: 24px;
+      height: 24px;
+      border-radius: 9999px;
+      background-color: var(--bg-elevated);
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .quiz-opt-btn.is-correct {
+      background-color: rgba(34, 197, 94, 0.14);
+      border-color: #22c55e;
+      color: var(--text-primary);
+    }
+
+    .quiz-opt-btn.is-correct .quiz-opt-letter {
+      background-color: #22c55e;
+      color: #ffffff;
+    }
+
+    .quiz-opt-btn.is-wrong {
+      background-color: var(--danger-bg);
+      border-color: var(--danger);
+    }
+
+    .quiz-opt-btn.is-wrong .quiz-opt-letter {
+      background-color: var(--danger);
+      color: #ffffff;
+    }
+
+    .quiz-explanation {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      animation: fadeUp 0.24s ease both;
+    }
+
+    .quiz-explanation.is-wrong-box {
+      background-color: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      color: var(--text-primary);
+    }
+
+    .quiz-explanation.is-correct-box {
+      background-color: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.28);
+      color: var(--text-primary);
+    }
+
+    .quiz-quick-actions {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quiz-action-chip {
+      padding: 8px 13px;
+      border-radius: 9999px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .flashcard-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .flashcard-item {
+      padding: 15px;
+      border-radius: 18px;
+      background-color: var(--bg-sidebar);
+      border: 1px solid var(--border-strong);
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 122px;
+      gap: 8px;
+    }
+
+    .flashcard-side-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-blue);
+    }
+
+    .flashcard-body {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.45;
     }
 
     .guest-chip {
@@ -1696,11 +1998,11 @@
             <div id="user-avatar" class="avatar-circle">U</div>
             <div style="min-width:0;">
               <div id="user-name-label" class="account-name">User</div>
-              <div id="user-sub-label" class="account-sub"><span id="sync-dot" class="sync-status-dot"></span><span id="sync-status-text">Synced</span></div>
+              <div id="user-sub-label" class="account-sub"></div>
             </div>
           </div>
-          <button id="btn-logout" type="button" onclick="window.DragonApp && window.DragonApp.logout()" class="logout-btn btn-spring hover-danger" title="Log Out">
-            <span>Log Out</span>
+          <button id="btn-logout" type="button" onclick="window.DragonApp && window.DragonApp.requestLogout()" class="logout-btn btn-spring hover-danger" title="Log Out">
+            <span id="logout-btn-text">Log Out</span>
           </button>
         </div>
       </div>
@@ -1708,7 +2010,7 @@
 
     <!-- Main Chat Area -->
     <main class="main-column">
-      <!-- Top Header (No logo) -->
+      <!-- Top Header (No logo, interactive DragonAI / DragonAI Learn mode dropdown) -->
       <header class="top-header">
         <div class="header-left">
           <button id="btn-open-sidebar" type="button" onclick="window.DragonApp && window.DragonApp.toggleSidebar()" aria-label="Toggle sidebar" title="Toggle sidebar" class="icon-btn btn-spring hover-elevate">
@@ -1716,20 +2018,41 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/>
             </svg>
           </button>
-          <span class="header-title">DragonAI</span>
-        </div>
 
-        <div class="header-right">
-          <button id="btn-header-new" type="button" onclick="window.DragonApp && window.DragonApp.startNewChat()" aria-label="New chat" title="New chat" class="icon-btn btn-spring hover-elevate">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-            </svg>
-          </button>
-          <button id="btn-header-settings" type="button" onclick="window.DragonApp && window.DragonApp.openSettings()" aria-label="Settings" title="Settings" class="icon-btn btn-spring hover-elevate">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
-            </svg>
-          </button>
+          <div id="mode-switcher-wrap" class="mode-switcher-wrap">
+            <button id="btn-mode-switcher" type="button" onclick="window.DragonApp && window.DragonApp.toggleModeMenu(event)" aria-haspopup="true" aria-expanded="false" class="mode-trigger-btn btn-spring hover-elevate">
+              <span id="header-mode-title">DragonAI</span>
+              <span id="header-learn-pill" class="mode-trigger-pill hidden">Learn</span>
+              <svg class="mode-chevron" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+              </svg>
+            </button>
+
+            <div id="mode-dropdown" class="mode-dropdown hidden anim-scale-in" role="menu">
+              <button id="mode-opt-standard" type="button" role="menuitem" onclick="window.DragonApp && window.DragonApp.selectMode('standard')" class="mode-option-btn is-active hover-elevate">
+                <div>
+                  <div class="mode-option-title">DragonAI</div>
+                  <div id="mode-desc-standard" class="mode-option-desc">Everyday minimalist AI chat &amp; coding</div>
+                </div>
+                <svg id="mode-check-standard" class="mode-check" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                </svg>
+              </button>
+
+              <button id="mode-opt-learn" type="button" role="menuitem" onclick="window.DragonApp && window.DragonApp.selectMode('learn')" class="mode-option-btn hover-elevate">
+                <div>
+                  <div class="mode-option-title">
+                    <span>DragonAI</span>
+                    <span id="mode-opt-learn-badge" class="learn-badge">Learn</span>
+                  </div>
+                  <div id="mode-desc-learn" class="mode-option-desc">Upload notes, take interactive quizzes &amp; flashcards</div>
+                </div>
+                <svg id="mode-check-learn" class="mode-check hidden" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -1739,12 +2062,15 @@
 
           <!-- Empty State (No logo) -->
           <div id="empty-state" class="empty-state anim-fade-up">
-            <h2 class="empty-title">How can DragonAI help today?</h2>
-            <p class="empty-subtitle">
+            <div id="learn-empty-banner" class="learn-banner hidden">
+              <span id="learn-banner-text">DragonAI Learn · Interactive Study Mode</span>
+            </div>
+            <h2 id="empty-title" class="empty-title">How can DragonAI help today?</h2>
+            <p id="empty-subtitle" class="empty-subtitle">
               Ask anything, upload files or images, or brainstorm ideas.
             </p>
 
-            <div class="suggestions-grid">
+            <div id="suggestions-grid" class="suggestions-grid">
               <button type="button" class="suggestion-card btn-spring hover-elevate" data-prompt="Explain quantum computing in simple, intuitive terms.">
                 <div class="suggestion-card-title">Explain a concept</div>
                 <div class="suggestion-card-desc">Quantum computing in simple terms</div>
@@ -1769,20 +2095,14 @@
         </div>
       </div>
 
-      <!-- Frosted Transparency Blur Bottom Composer Dock (NO text below message bar) -->
+      <!-- Frosted Glass Bottom Dock & Pill Composer (No text below) -->
       <div class="composer-dock">
         <div class="composer-inner">
           <div id="attachments-bar" class="attachments-bar hidden"></div>
+          <input id="file-input" type="file" multiple accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py,.html,.css" class="hidden" />
 
           <div id="pill-bar" class="pill-bar">
-            <input
-              id="file-input"
-              type="file"
-              multiple
-              accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py,.html,.css"
-              class="hidden"
-            />
-            <button id="btn-attach" type="button" onclick="window.DragonApp && window.DragonApp.triggerFilePicker()" aria-label="Attach files" title="Upload files" class="attach-btn btn-spring hover-elevate">
+            <button id="btn-attach" type="button" onclick="window.DragonApp && window.DragonApp.triggerFilePicker()" aria-label="Attach files" title="Attach files" class="attach-btn btn-spring hover-elevate">
               <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
               </svg>
@@ -1795,12 +2115,12 @@
               class="chat-input"
             ></textarea>
 
-            <button id="btn-send" type="button" onclick="window.DragonApp && window.DragonApp.handleSendOrStop()" disabled aria-label="Send message" class="send-btn btn-spring hover-primary">
-              <svg id="icon-send" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+            <button id="btn-send" type="button" onclick="window.DragonApp && window.DragonApp.handleSendOrStop()" aria-label="Send message" title="Send" disabled class="send-btn btn-spring hover-primary">
+              <svg id="icon-send" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/>
               </svg>
               <svg id="icon-stop" width="16" height="16" fill="currentColor" viewBox="0 0 24 24" class="hidden">
-                <rect x="6" y="6" width="12" height="12" rx="2"/>
+                <rect x="6" y="6" width="12" height="12" rx="2.5"/>
               </svg>
             </button>
           </div>
@@ -1815,7 +2135,7 @@
   <div id="settings-modal" class="modal-overlay hidden anim-fade-in">
     <div class="modal-card anim-scale-in">
       <div class="modal-header">
-        <h3 class="modal-title">Settings</h3>
+        <h3 id="settings-modal-title" class="modal-title">Settings</h3>
         <button id="btn-close-settings" type="button" onclick="window.DragonApp && window.DragonApp.closeSettings()" aria-label="Close settings" class="icon-btn btn-spring hover-elevate">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -1827,8 +2147,8 @@
         <!-- Setting 1: Press Enter to Send (Default OFF) -->
         <div class="setting-row">
           <div>
-            <div class="setting-label">Press Enter to send message</div>
-            <div class="setting-desc">
+            <div id="lbl-enter-send" class="setting-label">Press Enter to send message</div>
+            <div id="desc-enter-send" class="setting-desc">
               Off by default so Enter inserts a new line and you click Send to submit.
             </div>
           </div>
@@ -1837,23 +2157,32 @@
           </button>
         </div>
 
-        <!-- Setting 2: Appearance (Default System) -->
+        <!-- Setting 2: Language (English / Macedonian) -->
         <div>
-          <div class="setting-label">Appearance</div>
-          <div class="segmented-group">
-            <button type="button" class="seg-btn" data-theme-opt="system" onclick="window.DragonApp && window.DragonApp.setTheme('system')">System</button>
-            <button type="button" class="seg-btn" data-theme-opt="light" onclick="window.DragonApp && window.DragonApp.setTheme('light')">Light</button>
-            <button type="button" class="seg-btn" data-theme-opt="dark" onclick="window.DragonApp && window.DragonApp.setTheme('dark')">Dark</button>
+          <div id="lbl-language" class="setting-label">Language</div>
+          <div class="segmented-group" style="grid-template-columns: repeat(2, 1fr);">
+            <button type="button" class="seg-btn" data-lang-opt="en" onclick="window.DragonApp && window.DragonApp.setLanguage('en')">English</button>
+            <button type="button" class="seg-btn" data-lang-opt="mk" onclick="window.DragonApp && window.DragonApp.setLanguage('mk')">Македонски</button>
           </div>
         </div>
 
-        <!-- Setting 3: Google Gemini API Key -->
+        <!-- Setting 3: Appearance (Default System) -->
+        <div>
+          <div id="lbl-appearance" class="setting-label">Appearance</div>
+          <div class="segmented-group">
+            <button id="seg-theme-system" type="button" class="seg-btn" data-theme-opt="system" onclick="window.DragonApp && window.DragonApp.setTheme('system')">System</button>
+            <button id="seg-theme-light" type="button" class="seg-btn" data-theme-opt="light" onclick="window.DragonApp && window.DragonApp.setTheme('light')">Light</button>
+            <button id="seg-theme-dark" type="button" class="seg-btn" data-theme-opt="dark" onclick="window.DragonApp && window.DragonApp.setTheme('dark')">Dark</button>
+          </div>
+        </div>
+
+        <!-- Setting 4: Google Gemini API Key -->
         <div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-            <label for="input-api-key" class="setting-label">Google Gemini API Key</label>
-            <a href="https://aistudio.google.com/docs/api-key" target="_blank" rel="noopener noreferrer" style="font-size:12px;font-weight:600;color:var(--accent-blue);text-decoration:none;">Get API Key ↗</a>
+            <label id="lbl-api-key" for="input-api-key" class="setting-label">Google Gemini API Key</label>
+            <a id="link-get-api-key" href="https://aistudio.google.com/docs/api-key" target="_blank" rel="noopener noreferrer" style="font-size:12px;font-weight:600;color:var(--accent-blue);text-decoration:none;">Get API Key ↗</a>
           </div>
-          <div class="setting-desc">
+          <div id="desc-api-key" class="setting-desc">
             Saved to your account and synced across all your devices.
           </div>
           <div class="api-input-wrap">
@@ -1869,10 +2198,10 @@
           </div>
         </div>
 
-        <!-- Setting 4: Custom Instructions -->
+        <!-- Setting 5: Custom Instructions -->
         <div>
-          <label for="input-system-prompt" class="setting-label">Custom instructions</label>
-          <div class="setting-desc">Optional guidance for DragonAI's tone and style.</div>
+          <label id="lbl-custom-instructions" for="input-system-prompt" class="setting-label">Custom instructions</label>
+          <div id="desc-custom-instructions" class="setting-desc">Optional guidance for DragonAI's tone and style.</div>
           <textarea
             id="input-system-prompt"
             rows="3"
@@ -1882,10 +2211,27 @@
           ></textarea>
         </div>
 
-        <!-- Setting 5: Clear Conversations -->
+        <!-- Setting 6: Export & Import Chats and Account Data -->
         <div class="setting-row" style="padding-top: 14px; border-top: 1px solid var(--border-subtle); align-items: center;">
           <div>
-            <div class="setting-label">Clear conversations</div>
+            <div id="lbl-backup-data" class="setting-label">Backup &amp; transfer data</div>
+            <div id="desc-backup-data" class="setting-desc">Export or import your chats, settings, and API key as a JSON file.</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+            <input id="import-data-input" type="file" accept=".json,application/json" class="hidden" />
+            <button id="btn-export-data" type="button" onclick="window.DragonApp && window.DragonApp.exportAccountData()" class="btn-modal-cancel btn-spring hover-elevate" style="padding: 8px 12px; font-size: 12px;">
+              Export
+            </button>
+            <button id="btn-import-data" type="button" onclick="window.DragonApp && window.DragonApp.triggerImportData()" class="btn-modal-cancel btn-spring hover-elevate" style="padding: 8px 12px; font-size: 12px;">
+              Import
+            </button>
+          </div>
+        </div>
+
+        <!-- Setting 7: Clear Conversations -->
+        <div class="setting-row" style="padding-top: 14px; border-top: 1px solid var(--border-subtle); align-items: center;">
+          <div>
+            <div id="lbl-clear-chats" class="setting-label">Clear conversations</div>
             <div id="clear-chats-desc" class="setting-desc">Delete all synced chats for this account</div>
           </div>
           <button id="btn-clear-chats" type="button" onclick="window.DragonApp && window.DragonApp.clearAllChats()" class="btn-danger-pill btn-spring">
@@ -1911,7 +2257,7 @@
       </div>
       <div class="modal-body" style="gap: 16px;">
         <p id="delete-confirm-text" class="setting-desc" style="font-size: 14px; color: var(--text-secondary);">
-          This will permanently delete this conversation from your account.
+          Are you sure you want to permanently delete this conversation?
         </p>
         <div class="confirm-actions">
           <button type="button" onclick="window.DragonApp && window.DragonApp.cancelDeleteChat()" class="btn-modal-cancel btn-spring hover-elevate">
@@ -1919,6 +2265,35 @@
           </button>
           <button type="button" onclick="window.DragonApp && window.DragonApp.confirmDeleteChat()" class="btn-modal-danger btn-spring hover-primary">
             Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 5. LOG OUT CONFIRMATION MODAL                                         -->
+  <!-- ===================================================================== -->
+  <div id="logout-confirm-modal" class="modal-overlay hidden anim-fade-in">
+    <div class="modal-card anim-scale-in" style="max-width: 380px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Log out?</h3>
+        <button type="button" onclick="window.DragonApp && window.DragonApp.cancelLogout()" aria-label="Close" class="icon-btn btn-spring hover-elevate">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" style="gap: 16px;">
+        <p class="setting-desc" style="font-size: 14px; color: var(--text-secondary);">
+          Are you sure you want to log out of DragonAI? Your chats, settings, and API key remain safely synced to your account.
+        </p>
+        <div class="confirm-actions">
+          <button type="button" onclick="window.DragonApp && window.DragonApp.cancelLogout()" class="btn-modal-cancel btn-spring hover-elevate">
+            Cancel
+          </button>
+          <button type="button" onclick="window.DragonApp && window.DragonApp.confirmLogout()" class="btn-modal-danger btn-spring hover-primary">
+            Log Out
           </button>
         </div>
       </div>
@@ -2085,16 +2460,17 @@
       function loadGlobalPrefs() {
         try {
           var raw = readLS(GLOBAL_KEY);
-          if (!raw) return { theme: readLS(THEME_KEY) || 'system', enterToSend: false, apiKey: '', systemPrompt: '' };
+          if (!raw) return { theme: readLS(THEME_KEY) || 'system', language: 'en', enterToSend: false, apiKey: '', systemPrompt: '' };
           var parsed = JSON.parse(raw);
           return {
             theme: parsed.theme || readLS(THEME_KEY) || 'system',
+            language: parsed.language === 'mk' ? 'mk' : 'en',
             enterToSend: Boolean(parsed.enterToSend),
             apiKey: parsed.apiKey || '',
             systemPrompt: parsed.systemPrompt || ''
           };
         } catch (e) {
-          return { theme: 'system', enterToSend: false, apiKey: '', systemPrompt: '' };
+          return { theme: 'system', language: 'en', enterToSend: false, apiKey: '', systemPrompt: '' };
         }
       }
 
@@ -2128,6 +2504,7 @@
 
       var state = {
         authTab: 'signin', // 'signin' | 'signup'
+        mode: 'standard', // 'standard' | 'learn'
         isAuthenticated: false,
         accountId: null,
         identity: '',
@@ -2144,11 +2521,151 @@
         pendingDeleteChatId: null,
         settings: {
           theme: globalPrefs.theme || 'system',
+          language: globalPrefs.language === 'mk' ? 'mk' : 'en',
           enterToSend: Boolean(globalPrefs.enterToSend),
           apiKey: globalPrefs.apiKey || '',
           systemPrompt: globalPrefs.systemPrompt || ''
         }
       };
+
+      // =======================================================================
+      // 2B. LOCALIZATION DICTIONARY (ENGLISH & MACEDONIAN)
+      // =======================================================================
+      var I18N = {
+        en: {
+          newChat: 'New chat',
+          searchChats: 'Search chats...',
+          settings: 'Settings',
+          logOut: 'Log Out',
+          installApp: 'Install DragonAI App',
+          noConversations: 'No conversations yet',
+          noMatchingChats: 'No matching chats found',
+          learnBadge: 'Learn',
+          modeStandardDesc: 'Everyday minimalist AI chat & coding',
+          modeLearnDesc: 'Upload notes, take interactive quizzes & flashcards',
+          emptyTitle: 'How can DragonAI help today?',
+          emptySubtitle: 'Ask anything, upload files or images, or brainstorm ideas.',
+          learnBanner: 'DragonAI Learn · Interactive Study Mode',
+          learnEmptyTitle: 'Ready to master your study material?',
+          learnEmptySubtitle: 'Upload your notes, PDFs, or paste any topic to generate fun quizzes, flashcards, and instant explanations.',
+          messagePlaceholder: 'Message DragonAI...',
+          learnPlaceholder: 'Upload notes or type a topic to quiz & study...',
+          settingsTitle: 'Settings',
+          enterSendLabel: 'Press Enter to send message',
+          enterSendDesc: 'Off by default so Enter inserts a new line and you click Send to submit.',
+          languageLabel: 'Language',
+          appearanceLabel: 'Appearance',
+          themeSystem: 'System',
+          themeLight: 'Light',
+          themeDark: 'Dark',
+          apiKeyLabel: 'Google Gemini API Key',
+          getApiKey: 'Get API Key ↗',
+          apiKeyDesc: 'Saved to your account and synced across all your devices.',
+          customInstructionsLabel: 'Custom instructions',
+          customInstructionsDesc: "Optional guidance for DragonAI's tone and style.",
+          backupLabel: 'Backup & transfer data',
+          backupDesc: 'Export or import your chats, settings, and API key as a JSON file.',
+          exportBtn: 'Export',
+          importBtn: 'Import',
+          clearChatsLabel: 'Clear conversations',
+          clearChatsDesc: 'Delete all synced chats for this account',
+          clearAllBtn: 'Clear All',
+          show: 'Show',
+          hide: 'Hide',
+          copy: 'Copy',
+          copied: 'Copied',
+          quizScore: 'Score',
+          quizStreak: 'Streak',
+          correctLabel: 'Correct!',
+          incorrectLabel: 'Not quite — Explanation:',
+          moreQuestionsBtn: 'More Quiz Questions',
+          flashcardsBtn: 'Generate Flashcards',
+          flipCardHint: 'Tap card to flip',
+          questionSide: 'Question',
+          answerSide: 'Answer',
+          suggestionsStandard: [
+            { title: 'Explain a concept', desc: 'Quantum computing in simple terms', prompt: 'Explain quantum computing in simple, intuitive terms.' },
+            { title: 'Write clean code', desc: 'Python script to organize files', prompt: 'Write a clean Python script to organize files in a folder by file extension.' },
+            { title: 'Draft an email', desc: 'Polite post-interview follow-up', prompt: 'Help me draft a concise, polite follow-up email after a job interview.' },
+            { title: 'Brainstorm ideas', desc: 'Practical habits for deep focus', prompt: 'Give me 5 practical habits for deep focus and productivity.' }
+          ],
+          suggestionsLearn: [
+            { title: 'Create a 5-question quiz', desc: 'Test yourself on World History or any topic', prompt: 'Create a fun 5-question multiple choice quiz on World History with clear explanations.' },
+            { title: 'Quiz from study notes', desc: 'Upload a file (+) or paste notes to practice', prompt: 'Create a multiple choice quiz and key takeaways from my study material.' },
+            { title: 'Make study flashcards', desc: 'Interactive Q&A cards for active recall', prompt: 'Create 6 interactive study flashcards on Human Biology and Cell Structure.' },
+            { title: 'Explain & test me', desc: 'Learn Photosynthesis step-by-step + quiz', prompt: 'Explain Photosynthesis clearly and give me a 4-question multiple choice quiz to check my understanding.' }
+          ]
+        },
+        mk: {
+          newChat: 'Нов разговор',
+          searchChats: 'Пребарај разговори...',
+          settings: 'Поставки',
+          logOut: 'Одјави се',
+          installApp: 'Инсталирај DragonAI',
+          noConversations: 'Сè уште нема разговори',
+          noMatchingChats: 'Нема пронајдени разговори',
+          learnBadge: 'Учење',
+          modeStandardDesc: 'Минималистички AI разговор и програмирање',
+          modeLearnDesc: 'Прикачи материјали, решавај квизови и флеш-картички',
+          emptyTitle: 'Како може DragonAI да помогне денес?',
+          emptySubtitle: 'Прашај што било, прикачи датотеки или слики, или развивај идеи.',
+          learnBanner: 'DragonAI Learn · Интерактивен режим за учење',
+          learnEmptyTitle: 'Подготвени сте да го совладате материјалот?',
+          learnEmptySubtitle: 'Прикачете белешки или внесете тема за забавни квизови, прашања со повеќе избори и објаснувања.',
+          messagePlaceholder: 'Порака до DragonAI...',
+          learnPlaceholder: 'Прикачи материјал или внеси тема за квиз...',
+          settingsTitle: 'Поставки',
+          enterSendLabel: 'Притисни Enter за испраќање порака',
+          enterSendDesc: 'Исклучено стандардно за Enter да додава нов ред, а испраќањето да оди преку копчето.',
+          languageLabel: 'Јазик',
+          appearanceLabel: 'Изглед',
+          themeSystem: 'Системски',
+          themeLight: 'Светол',
+          themeDark: 'Темен',
+          apiKeyLabel: 'Google Gemini API клуч',
+          getApiKey: 'Земи API клуч ↗',
+          apiKeyDesc: 'Се зачувува на вашата сметка и се синхронизира на сите ваши уреди.',
+          customInstructionsLabel: 'Прилагодени инструкции',
+          customInstructionsDesc: 'Дополнителни насоки за стилот и одговорите на DragonAI.',
+          backupLabel: 'Резервна копија и пренос',
+          backupDesc: 'Извезете или увезете ги вашите разговори, поставки и API клуч како JSON.',
+          exportBtn: 'Извези',
+          importBtn: 'Увези',
+          clearChatsLabel: 'Избриши ги сите разговори',
+          clearChatsDesc: 'Ги брише сите разговори од оваа сметка',
+          clearAllBtn: 'Избриши сè',
+          show: 'Прикажи',
+          hide: 'Сокриј',
+          copy: 'Копирај',
+          copied: 'Копирано',
+          quizScore: 'Резултат',
+          quizStreak: 'Низа',
+          correctLabel: 'Точно!',
+          incorrectLabel: 'Неточно — Објаснување:',
+          moreQuestionsBtn: 'Уште прашања за квиз',
+          flashcardsBtn: 'Направи флеш-картички',
+          flipCardHint: 'Допри за превртување',
+          questionSide: 'Прашање',
+          answerSide: 'Одговор',
+          suggestionsStandard: [
+            { title: 'Објасни концепт', desc: 'Квантно компјутерство на едноставен начин', prompt: 'Објасни го квантното компјутерство на едноставен и разбирлив начин.' },
+            { title: 'Напиши чист код', desc: 'Python скрипта за организирање датотеки', prompt: 'Напиши чиста Python скрипта што организира датотеки во папка според нивната екстензија.' },
+            { title: 'Напиши е-пошта', desc: 'Учтива порака по интервју за работа', prompt: 'Помогни ми да напишам кратка и учтива е-пошта по интервју за работа.' },
+            { title: 'Идеи за фокус', desc: 'Практични навики за длабока концентрација', prompt: 'Дај ми 5 практични навики за длабока концентрација и продуктивност.' }
+          ],
+          suggestionsLearn: [
+            { title: 'Направи квиз со 5 прашања', desc: 'Тестирај го знаењето по историја или друга тема', prompt: 'Направи забавен квиз со 5 прашања со повеќе избори по Светска историја со јасни објаснувања.' },
+            { title: 'Квиз од твои белешки', desc: 'Прикачи датотека (+) или залепи лекција', prompt: 'Направи квиз со повеќе избори и клучни точки од мојот материјал за учење.' },
+            { title: 'Направи флеш-картички', desc: 'Интерактивни картички за активно учење', prompt: 'Направи 6 интерактивни флеш-картички за учење на тема Биологија и градба на клетката.' },
+            { title: 'Објасни и тестирај ме', desc: 'Научи Фотосинтеза чекор по чекор + квиз', prompt: 'Објасни ја фотосинтезата јасно и дај ми квиз од 4 прашања со повеќе избори.' }
+          ]
+        }
+      };
+
+      function t(key) {
+        var lang = state.settings.language === 'mk' ? 'mk' : 'en';
+        return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+      }
 
       // =======================================================================
       // 3. DOM ELEMENT REFERENCES
@@ -2180,11 +2697,22 @@
 
       var userAvatarEl = document.getElementById('user-avatar');
       var userNameLabel = document.getElementById('user-name-label');
-      var syncDotEl = document.getElementById('sync-dot');
-      var syncStatusTextEl = document.getElementById('sync-status-text');
+      var userSubLabel = document.getElementById('user-sub-label');
+      var modeSwitcherWrap = document.getElementById('mode-switcher-wrap');
+      var modeDropdown = document.getElementById('mode-dropdown');
+      var btnModeSwitcher = document.getElementById('btn-mode-switcher');
+      var headerLearnPill = document.getElementById('header-learn-pill');
+      var modeOptStandard = document.getElementById('mode-opt-standard');
+      var modeOptLearn = document.getElementById('mode-opt-learn');
+      var modeCheckStandard = document.getElementById('mode-check-standard');
+      var modeCheckLearn = document.getElementById('mode-check-learn');
 
       var messagesViewport = document.getElementById('messages-viewport');
       var emptyStateEl = document.getElementById('empty-state');
+      var learnEmptyBanner = document.getElementById('learn-empty-banner');
+      var emptyTitleEl = document.getElementById('empty-title');
+      var emptySubtitleEl = document.getElementById('empty-subtitle');
+      var suggestionsGridEl = document.getElementById('suggestions-grid');
       var messagesListEl = document.getElementById('messages-list');
 
       var pillBarEl = document.getElementById('pill-bar');
@@ -2198,6 +2726,8 @@
       var settingsModalEl = document.getElementById('settings-modal');
       var deleteConfirmModalEl = document.getElementById('delete-confirm-modal');
       var deleteConfirmTextEl = document.getElementById('delete-confirm-text');
+      var logoutConfirmModalEl = document.getElementById('logout-confirm-modal');
+      var importDataInputEl = document.getElementById('import-data-input');
       var toggleEnterSendBtn = document.getElementById('toggle-enter-send');
       var inputApiKeyEl = document.getElementById('input-api-key');
       var btnToggleKeyVis = document.getElementById('btn-toggle-key-vis');
@@ -2448,6 +2978,7 @@
 
         saveGlobalPrefs({
           theme: state.settings.theme,
+          language: state.settings.language,
           enterToSend: state.settings.enterToSend,
           apiKey: state.settings.apiKey,
           systemPrompt: state.settings.systemPrompt
@@ -2472,30 +3003,184 @@
       }
 
       // =======================================================================
-      // 7. CROSS-DEVICE CLOUD & LOCAL ACCOUNT SYNC
+      // 6B. LANGUAGE SWITCHER (ENGLISH / MACEDONIAN) & MODE SWITCHER
       // =======================================================================
-      function updateSyncIndicator(isCloud) {
-        if (!syncDotEl || !syncStatusTextEl) return;
-        if (isCloud) {
-          syncDotEl.classList.remove('is-local');
-          syncStatusTextEl.textContent = 'Cloud synced';
-        } else {
-          syncDotEl.classList.add('is-local');
-          syncStatusTextEl.textContent = state.identity || 'Account synced';
+      function applyLanguageUI() {
+        var lang = state.settings.language === 'mk' ? 'mk' : 'en';
+        document.documentElement.lang = lang;
+
+        var langButtons = document.querySelectorAll('[data-lang-opt]');
+        for (var i = 0; i < langButtons.length; i++) {
+          langButtons[i].classList.toggle('is-selected', langButtons[i].getAttribute('data-lang-opt') === lang);
+        }
+
+        var setText = function (id, val) {
+          var el = document.getElementById(id);
+          if (el) el.textContent = val;
+        };
+
+        var newChatSpan = document.querySelector('#btn-new-chat span');
+        if (newChatSpan) newChatSpan.textContent = t('newChat');
+        if (sidebarSearchInput) sidebarSearchInput.placeholder = t('searchChats');
+        var installSpan = document.querySelector('#btn-install-pwa span');
+        if (installSpan) installSpan.textContent = t('installApp');
+        var sideSettingsSpan = document.querySelector('#btn-sidebar-settings span');
+        if (sideSettingsSpan) sideSettingsSpan.textContent = t('settings');
+        setText('logout-btn-text', t('logOut'));
+
+        setText('mode-desc-standard', t('modeStandardDesc'));
+        setText('mode-desc-learn', t('modeLearnDesc'));
+        setText('mode-opt-learn-badge', t('learnBadge'));
+        setText('learn-banner-text', t('learnBanner'));
+
+        setText('settings-modal-title', t('settingsTitle'));
+        setText('lbl-enter-send', t('enterSendLabel'));
+        setText('desc-enter-send', t('enterSendDesc'));
+        setText('lbl-language', t('languageLabel'));
+        setText('lbl-appearance', t('appearanceLabel'));
+        setText('seg-theme-system', t('themeSystem'));
+        setText('seg-theme-light', t('themeLight'));
+        setText('seg-theme-dark', t('themeDark'));
+        setText('lbl-api-key', t('apiKeyLabel'));
+        setText('link-get-api-key', t('getApiKey'));
+        setText('desc-api-key', t('apiKeyDesc'));
+        setText('lbl-custom-instructions', t('customInstructionsLabel'));
+        setText('desc-custom-instructions', t('customInstructionsDesc'));
+        setText('lbl-backup-data', t('backupLabel'));
+        setText('desc-backup-data', t('backupDesc'));
+        setText('btn-export-data', t('exportBtn'));
+        setText('btn-import-data', t('importBtn'));
+        setText('lbl-clear-chats', t('clearChatsLabel'));
+        setText('clear-chats-desc', t('clearChatsDesc'));
+        setText('btn-clear-chats', t('clearAllBtn'));
+        if (btnToggleKeyVis && inputApiKeyEl) {
+          btnToggleKeyVis.textContent = inputApiKeyEl.type === 'password' ? t('show') : t('hide');
+        }
+
+        updateModeUI();
+        renderSidebarChats();
+        renderActiveChat();
+      }
+
+      function setLanguage(langOpt) {
+        state.settings.language = langOpt === 'mk' ? 'mk' : 'en';
+        applyLanguageUI();
+        saveGlobalPrefs({
+          theme: state.settings.theme,
+          language: state.settings.language,
+          enterToSend: state.settings.enterToSend,
+          apiKey: state.settings.apiKey,
+          systemPrompt: state.settings.systemPrompt
+        });
+        syncStateToStorage();
+        showToast(state.settings.language === 'mk' ? 'Јазик: Македонски' : 'Language: English');
+      }
+
+      function updateModeUI() {
+        var isLearn = state.mode === 'learn';
+        if (headerLearnPill) {
+          headerLearnPill.textContent = t('learnBadge');
+          headerLearnPill.classList.toggle('hidden', !isLearn);
+        }
+        if (modeOptStandard) modeOptStandard.classList.toggle('is-active', !isLearn);
+        if (modeOptLearn) modeOptLearn.classList.toggle('is-active', isLearn);
+        if (modeCheckStandard) modeCheckStandard.classList.toggle('hidden', isLearn);
+        if (modeCheckLearn) modeCheckLearn.classList.toggle('hidden', !isLearn);
+
+        if (learnEmptyBanner) learnEmptyBanner.classList.toggle('hidden', !isLearn);
+        if (emptyTitleEl) emptyTitleEl.textContent = isLearn ? t('learnEmptyTitle') : t('emptyTitle');
+        if (emptySubtitleEl) emptySubtitleEl.textContent = isLearn ? t('learnEmptySubtitle') : t('emptySubtitle');
+        if (chatInputEl) chatInputEl.placeholder = isLearn ? t('learnPlaceholder') : t('messagePlaceholder');
+
+        renderSuggestionsGrid();
+      }
+
+      function renderSuggestionsGrid() {
+        if (!suggestionsGridEl) return;
+        var list = state.mode === 'learn' ? t('suggestionsLearn') : t('suggestionsStandard');
+        suggestionsGridEl.innerHTML = '';
+        for (var i = 0; i < list.length; i++) {
+          (function (item) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'suggestion-card btn-spring hover-elevate';
+
+            var tDiv = document.createElement('div');
+            tDiv.className = 'suggestion-card-title';
+            tDiv.textContent = item.title;
+
+            var dDiv = document.createElement('div');
+            dDiv.className = 'suggestion-card-desc';
+            dDiv.textContent = item.desc;
+
+            btn.appendChild(tDiv);
+            btn.appendChild(dDiv);
+            btn.addEventListener('click', function () {
+              sendMessage(item.prompt);
+            });
+            suggestionsGridEl.appendChild(btn);
+          })(list[i]);
         }
       }
 
+      function toggleModeMenu(e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        if (!modeDropdown || !modeSwitcherWrap) return;
+        var isOpen = !modeDropdown.classList.contains('hidden');
+        if (isOpen) {
+          closeModeMenu();
+        } else {
+          modeDropdown.classList.remove('hidden');
+          modeSwitcherWrap.classList.add('is-open');
+          if (btnModeSwitcher) btnModeSwitcher.setAttribute('aria-expanded', 'true');
+        }
+      }
+
+      function closeModeMenu() {
+        if (modeDropdown) modeDropdown.classList.add('hidden');
+        if (modeSwitcherWrap) modeSwitcherWrap.classList.remove('is-open');
+        if (btnModeSwitcher) btnModeSwitcher.setAttribute('aria-expanded', 'false');
+      }
+
+      function selectMode(nextMode) {
+        var normalized = nextMode === 'learn' ? 'learn' : 'standard';
+        closeModeMenu();
+        if (state.mode === normalized) return;
+        state.mode = normalized;
+
+        var activeChat = getActiveChat();
+        if (activeChat && (activeChat.mode || 'standard') !== normalized) {
+          state.activeChatId = null;
+          renderSidebarChats();
+          renderActiveChat();
+        } else {
+          updateModeUI();
+        }
+        showToast(normalized === 'learn' ? 'DragonAI Learn' : 'DragonAI');
+      }
+
+      document.addEventListener('click', function (e) {
+        if (modeSwitcherWrap && !modeSwitcherWrap.contains(e.target)) {
+          closeModeMenu();
+        }
+      });
+
+      // =======================================================================
+      // 7. CROSS-DEVICE CLOUD & LOCAL ACCOUNT SYNC
+      // =======================================================================
       function sanitizeChatsForSync(chats) {
         return (chats || []).map(function (c) {
           return {
             id: c.id,
             title: c.title || 'New Chat',
+            mode: c.mode === 'learn' ? 'learn' : 'standard',
             updatedAt: c.updatedAt || Date.now(),
             messages: (c.messages || []).map(function (m) {
               return {
                 id: m.id,
                 role: m.role,
                 text: m.text || '',
+                studyData: m.studyData || null,
                 timestamp: m.timestamp || Date.now(),
                 attachments: (m.attachments || []).map(function (a) {
                   return {
@@ -2530,6 +3215,7 @@
         existing.chats = state.chats;
         existing.settings = {
           theme: state.settings.theme,
+          language: state.settings.language,
           enterToSend: state.settings.enterToSend,
           apiKey: state.settings.apiKey,
           systemPrompt: state.settings.systemPrompt
@@ -2547,17 +3233,12 @@
             passwordHash: existing.passwordHash,
             chats: sanitizeChatsForSync(state.chats),
             settings: existing.settings
-          }).then(function (ok) {
-            updateSyncIndicator(ok);
           });
-        } else {
-          updateSyncIndicator(false);
         }
       }
 
       function attachCloudRealtimeListener(accountId) {
         if (!window.DragonCloudSync || !window.DragonCloudSync.isReady || !accountId) return;
-        updateSyncIndicator(true);
         window.DragonCloudSync.subscribeAccount(accountId, function (remoteData) {
           if (!state.isAuthenticated || state.accountId !== accountId) return;
           if (state.isGenerating) return;
@@ -2582,9 +3263,29 @@
               state.settings.enterToSend = remoteData.settings.enterToSend;
               toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
             }
-            if (remoteData.settings.theme) {
-              applyTheme(remoteData.settings.theme);
+            if (remoteData.settings.language === 'mk' || remoteData.settings.language === 'en') {
+              state.settings.language = remoteData.settings.language;
             }
+            if (remoteData.settings.theme) {
+              state.settings.theme = remoteData.settings.theme;
+              var prefersDark = systemDarkQuery ? systemDarkQuery.matches : false;
+              var isDark = state.settings.theme === 'dark' || (state.settings.theme === 'system' && prefersDark);
+              document.documentElement.classList.toggle('dark', isDark);
+              document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+              document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+              var segButtons = document.querySelectorAll('[data-theme-opt]');
+              for (var i = 0; i < segButtons.length; i++) {
+                segButtons[i].classList.toggle('is-selected', segButtons[i].getAttribute('data-theme-opt') === state.settings.theme);
+              }
+            }
+            saveGlobalPrefs({
+              theme: state.settings.theme,
+              language: state.settings.language,
+              enterToSend: state.settings.enterToSend,
+              apiKey: state.settings.apiKey,
+              systemPrompt: state.settings.systemPrompt
+            });
+            applyLanguageUI();
           }
           if (remoteData.displayName) {
             state.displayName = remoteData.displayName;
@@ -2604,10 +3305,57 @@
         });
       }
 
+      async function pullLatestFromCloud() {
+        if (!state.isAuthenticated || !state.accountId) return;
+        if (!window.DragonCloudSync || !window.DragonCloudSync.isReady) return;
+        var remote = await window.DragonCloudSync.fetchAccount(state.accountId);
+        if (!remote || state.isGenerating) return;
+
+        var vault = loadVault();
+        var localAcc = vault.accounts[state.accountId];
+        var localUpdated = localAcc ? (localAcc.updatedAt || 0) : 0;
+
+        if ((remote.updatedAt || 0) > localUpdated) {
+          if (Array.isArray(remote.chats)) {
+            state.chats = remote.chats;
+          }
+          if (remote.settings) {
+            state.settings.apiKey = typeof remote.settings.apiKey === 'string' ? remote.settings.apiKey : state.settings.apiKey;
+            state.settings.systemPrompt = typeof remote.settings.systemPrompt === 'string' ? remote.settings.systemPrompt : state.settings.systemPrompt;
+            state.settings.enterToSend = typeof remote.settings.enterToSend === 'boolean' ? remote.settings.enterToSend : state.settings.enterToSend;
+            if (remote.settings.language === 'mk' || remote.settings.language === 'en') {
+              state.settings.language = remote.settings.language;
+            }
+            if (remote.settings.theme) applyTheme(remote.settings.theme);
+            inputApiKeyEl.value = state.settings.apiKey;
+            inputSystemPromptEl.value = state.settings.systemPrompt;
+            toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
+            applyLanguageUI();
+          }
+          if (localAcc) {
+            localAcc.chats = state.chats;
+            localAcc.settings = state.settings;
+            localAcc.updatedAt = remote.updatedAt;
+            vault.accounts[state.accountId] = localAcc;
+            saveVault(vault);
+          }
+          renderSidebarChats();
+          renderActiveChat();
+        }
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+          pullLatestFromCloud();
+        }
+      });
+
       function onCloudBridgeReady() {
         if (state.isAuthenticated && state.accountId) {
-          attachCloudRealtimeListener(state.accountId);
-          syncStateToStorage();
+          pullLatestFromCloud().then(function () {
+            attachCloudRealtimeListener(state.accountId);
+            syncStateToStorage();
+          });
         }
       }
 
@@ -2736,7 +3484,7 @@
 
         userAvatarEl.textContent = (displayName || 'U').charAt(0).toUpperCase();
         userNameLabel.textContent = displayName || 'User';
-        updateSyncIndicator(Boolean(window.DragonCloudSync && window.DragonCloudSync.isReady));
+        if (userSubLabel) userSubLabel.textContent = state.identity || '';
 
         toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
         inputApiKeyEl.value = state.settings.apiKey || '';
@@ -2745,6 +3493,7 @@
         authScreen.classList.add('hidden');
         appShell.classList.remove('hidden');
 
+        applyLanguageUI();
         renderSidebarChats();
         renderActiveChat();
         updateSendButtonState();
@@ -2762,6 +3511,9 @@
         if (acc.settings) {
           state.settings.enterToSend = Boolean(acc.settings.enterToSend);
           state.settings.systemPrompt = acc.settings.systemPrompt || '';
+          if (acc.settings.language === 'mk' || acc.settings.language === 'en') {
+            state.settings.language = acc.settings.language;
+          }
           if (acc.settings.apiKey) {
             state.settings.apiKey = acc.settings.apiKey;
           }
@@ -2774,12 +3526,26 @@
         if (window.DragonCloudSync && window.DragonCloudSync.isReady) {
           var remote = await window.DragonCloudSync.fetchAccount(acc.id);
           if (remote) {
-            if (Array.isArray(remote.chats) && (remote.updatedAt || 0) >= (acc.updatedAt || 0)) {
+            if (Array.isArray(remote.chats)) {
               state.chats = remote.chats;
               state.activeChatId = null;
             }
-            if (remote.settings && remote.settings.apiKey) {
-              state.settings.apiKey = remote.settings.apiKey;
+            if (remote.settings) {
+              if (typeof remote.settings.apiKey === 'string') {
+                state.settings.apiKey = remote.settings.apiKey;
+              }
+              if (typeof remote.settings.systemPrompt === 'string') {
+                state.settings.systemPrompt = remote.settings.systemPrompt;
+              }
+              if (typeof remote.settings.enterToSend === 'boolean') {
+                state.settings.enterToSend = remote.settings.enterToSend;
+              }
+              if (remote.settings.language === 'mk' || remote.settings.language === 'en') {
+                state.settings.language = remote.settings.language;
+              }
+              if (remote.settings.theme) {
+                applyTheme(remote.settings.theme);
+              }
             }
             if (remote.displayName) {
               state.displayName = remote.displayName;
@@ -2792,6 +3558,7 @@
         acc.displayName = state.displayName;
         acc.settings = {
           theme: state.settings.theme,
+          language: state.settings.language,
           enterToSend: state.settings.enterToSend,
           apiKey: state.settings.apiKey,
           systemPrompt: state.settings.systemPrompt
@@ -2913,6 +3680,31 @@
         saveVault(vault);
 
         await loginWithVaultAccount(signInRecord);
+      }
+
+      function requestLogout() {
+        if (logoutConfirmModalEl) {
+          logoutConfirmModalEl.classList.remove('hidden');
+        } else {
+          logoutToAuthScreen();
+        }
+      }
+
+      function cancelLogout() {
+        if (logoutConfirmModalEl) {
+          logoutConfirmModalEl.classList.add('hidden');
+        }
+      }
+
+      function confirmLogout() {
+        cancelLogout();
+        logoutToAuthScreen();
+      }
+
+      if (logoutConfirmModalEl) {
+        logoutConfirmModalEl.addEventListener('click', function (e) {
+          if (e.target === logoutConfirmModalEl) cancelLogout();
+        });
       }
 
       function logoutToAuthScreen() {
@@ -3061,6 +3853,7 @@
         var chat = {
           id: createId(),
           title: cleanTitle || 'New Chat',
+          mode: state.mode === 'learn' ? 'learn' : 'standard',
           updatedAt: Date.now(),
           messages: []
         };
@@ -3157,7 +3950,7 @@
         if (filtered.length === 0) {
           var emptyDiv = document.createElement('div');
           emptyDiv.className = 'chat-list-empty';
-          emptyDiv.textContent = q ? 'No matching chats found' : 'No conversations yet';
+          emptyDiv.textContent = q ? t('noMatchingChats') : t('noConversations');
           chatListEl.appendChild(emptyDiv);
           return;
         }
@@ -3171,10 +3964,22 @@
             var contentCol = document.createElement('div');
             contentCol.className = 'chat-row-content';
 
+            var rowHeader = document.createElement('div');
+            rowHeader.className = 'chat-row-header';
+
             var titleSpan = document.createElement('span');
             titleSpan.className = 'chat-row-title';
             titleSpan.textContent = chat.title || 'New Chat';
-            contentCol.appendChild(titleSpan);
+            rowHeader.appendChild(titleSpan);
+
+            if (chat.mode === 'learn') {
+              var badge = document.createElement('span');
+              badge.className = 'learn-badge';
+              badge.textContent = t('learnBadge');
+              rowHeader.appendChild(badge);
+            }
+
+            contentCol.appendChild(rowHeader);
 
             if (entry.snippet) {
               var snipSpan = document.createElement('span');
@@ -3192,6 +3997,8 @@
             row.addEventListener('click', function () {
               if (state.isGenerating) stopGeneration();
               state.activeChatId = chat.id;
+              state.mode = chat.mode === 'learn' ? 'learn' : 'standard';
+              updateModeUI();
               renderSidebarChats();
               renderActiveChat();
               if (window.innerWidth <= 768) {
@@ -3362,6 +4169,21 @@
         messagesListEl.classList.remove('hidden');
         messagesListEl.innerHTML = '';
 
+        if (chat.mode === 'learn') {
+          var stats = computeLearnChatStats(chat);
+          if (stats.totalQuestions > 0) {
+            var statsBar = document.createElement('div');
+            statsBar.className = 'learn-stats-bar anim-fade-in';
+            statsBar.innerHTML =
+              '<span style="color:var(--accent-blue);">' + escapeHtml(t('learnBanner')) + '</span>' +
+              '<div class="learn-stat-chips">' +
+                '<span class="learn-stat-chip">' + escapeHtml(t('quizScore')) + ': ' + stats.correctCount + '/' + stats.answeredCount + ' (' + stats.totalQuestions + ')</span>' +
+                '<span class="learn-stat-chip">🔥 ' + escapeHtml(t('quizStreak')) + ': ' + stats.streak + '</span>' +
+              '</div>';
+            messagesListEl.appendChild(statsBar);
+          }
+        }
+
         for (var i = 0; i < chat.messages.length; i++) {
           var msg = chat.messages[i];
           var isLast = i === chat.messages.length - 1;
@@ -3369,6 +4191,188 @@
         }
 
         scrollToBottom();
+      }
+
+      function computeLearnChatStats(chat) {
+        var totalQuestions = 0;
+        var answeredCount = 0;
+        var correctCount = 0;
+        var streak = 0;
+        if (!chat || !Array.isArray(chat.messages)) {
+          return { totalQuestions: 0, answeredCount: 0, correctCount: 0, streak: 0 };
+        }
+        for (var i = 0; i < chat.messages.length; i++) {
+          var sd = chat.messages[i].studyData;
+          if (!sd || !Array.isArray(sd.questions)) continue;
+          for (var q = 0; q < sd.questions.length; q++) {
+            var item = sd.questions[q];
+            totalQuestions++;
+            if (typeof item.selectedIndex === 'number') {
+              answeredCount++;
+              if (item.selectedIndex === item.correctIndex) {
+                correctCount++;
+                streak++;
+              } else {
+                streak = 0;
+              }
+            }
+          }
+        }
+        return {
+          totalQuestions: totalQuestions,
+          answeredCount: answeredCount,
+          correctCount: correctCount,
+          streak: streak
+        };
+      }
+
+      function renderStudyDeckNode(msg) {
+        var sd = msg.studyData;
+        if (!sd) return null;
+        var wrap = document.createElement('div');
+        wrap.className = 'quiz-deck';
+
+        if (Array.isArray(sd.questions) && sd.questions.length > 0) {
+          var letters = ['A', 'B', 'C', 'D', 'E'];
+          for (var qIdx = 0; qIdx < sd.questions.length; qIdx++) {
+            (function (qItem, index) {
+              var card = document.createElement('div');
+              card.className = 'quiz-card';
+
+              var qHead = document.createElement('div');
+              qHead.className = 'quiz-q-header';
+              var tag = document.createElement('span');
+              tag.className = 'quiz-q-tag';
+              tag.textContent = (state.settings.language === 'mk' ? 'Прашање ' : 'Question ') + (index + 1) + ' / ' + sd.questions.length;
+              qHead.appendChild(tag);
+              card.appendChild(qHead);
+
+              var qText = document.createElement('div');
+              qText.className = 'quiz-q-text';
+              qText.textContent = qItem.question || '';
+              card.appendChild(qText);
+
+              var optsWrap = document.createElement('div');
+              optsWrap.className = 'quiz-options';
+              var answered = typeof qItem.selectedIndex === 'number';
+
+              for (var o = 0; o < (qItem.options || []).length; o++) {
+                (function (optText, optIdx) {
+                  var btn = document.createElement('button');
+                  btn.type = 'button';
+                  btn.className = 'quiz-opt-btn btn-spring hover-elevate';
+                  if (answered) {
+                    btn.disabled = true;
+                    if (optIdx === qItem.correctIndex) {
+                      btn.classList.add('is-correct');
+                    } else if (optIdx === qItem.selectedIndex) {
+                      btn.classList.add('is-wrong');
+                    }
+                  }
+
+                  var badge = document.createElement('span');
+                  badge.className = 'quiz-opt-letter';
+                  badge.textContent = letters[optIdx] || String(optIdx + 1);
+
+                  var label = document.createElement('span');
+                  label.textContent = optText;
+
+                  btn.appendChild(badge);
+                  btn.appendChild(label);
+
+                  btn.addEventListener('click', function () {
+                    if (typeof qItem.selectedIndex === 'number') return;
+                    qItem.selectedIndex = optIdx;
+                    syncStateToStorage();
+                    renderActiveChat();
+                  });
+
+                  optsWrap.appendChild(btn);
+                })(qItem.options[o], o);
+              }
+              card.appendChild(optsWrap);
+
+              if (answered) {
+                var isRight = qItem.selectedIndex === qItem.correctIndex;
+                var expBox = document.createElement('div');
+                expBox.className = 'quiz-explanation ' + (isRight ? 'is-correct-box' : 'is-wrong-box');
+                var heading = isRight ? t('correctLabel') : t('incorrectLabel');
+                expBox.innerHTML = '<strong>' + escapeHtml(heading) + '</strong> ' + escapeHtml(qItem.explanation || '');
+                card.appendChild(expBox);
+              }
+
+              wrap.appendChild(card);
+            })(sd.questions[qIdx], qIdx);
+          }
+        }
+
+        if (Array.isArray(sd.flashcards) && sd.flashcards.length > 0) {
+          var fcGrid = document.createElement('div');
+          fcGrid.className = 'flashcard-grid';
+          for (var f = 0; f < sd.flashcards.length; f++) {
+            (function (fc) {
+              var cardBtn = document.createElement('button');
+              cardBtn.type = 'button';
+              cardBtn.className = 'flashcard-item btn-spring hover-elevate';
+              var flipped = Boolean(fc.flipped);
+
+              var sideTag = document.createElement('div');
+              sideTag.className = 'flashcard-side-tag';
+              sideTag.textContent = flipped ? t('answerSide') : t('questionSide');
+
+              var bodyDiv = document.createElement('div');
+              bodyDiv.className = 'flashcard-body';
+              bodyDiv.textContent = flipped ? (fc.back || '') : (fc.front || '');
+
+              var hintDiv = document.createElement('div');
+              hintDiv.style.fontSize = '11px';
+              hintDiv.style.color = 'var(--text-muted)';
+              hintDiv.textContent = t('flipCardHint');
+
+              cardBtn.appendChild(sideTag);
+              cardBtn.appendChild(bodyDiv);
+              cardBtn.appendChild(hintDiv);
+
+              cardBtn.addEventListener('click', function () {
+                fc.flipped = !fc.flipped;
+                syncStateToStorage();
+                renderActiveChat();
+              });
+
+              fcGrid.appendChild(cardBtn);
+            })(sd.flashcards[f]);
+          }
+          wrap.appendChild(fcGrid);
+        }
+
+        var quickBar = document.createElement('div');
+        quickBar.className = 'quiz-quick-actions';
+
+        var moreBtn = document.createElement('button');
+        moreBtn.type = 'button';
+        moreBtn.className = 'quiz-action-chip btn-spring hover-elevate';
+        moreBtn.textContent = '+ ' + t('moreQuestionsBtn');
+        moreBtn.addEventListener('click', function () {
+          sendMessage(state.settings.language === 'mk'
+            ? 'Дај ми уште 4 нови прашања за квиз со повеќе избори на истата тема.'
+            : 'Give me 4 more multiple choice quiz questions on the same topic.');
+        });
+
+        var fcBtn = document.createElement('button');
+        fcBtn.type = 'button';
+        fcBtn.className = 'quiz-action-chip btn-spring hover-elevate';
+        fcBtn.textContent = t('flashcardsBtn');
+        fcBtn.addEventListener('click', function () {
+          sendMessage(state.settings.language === 'mk'
+            ? 'Направи 5 флеш-картички за учење од овој материјал.'
+            : 'Create 5 study flashcards from this material.');
+        });
+
+        quickBar.appendChild(moreBtn);
+        quickBar.appendChild(fcBtn);
+        wrap.appendChild(quickBar);
+
+        return wrap;
       }
 
       function buildMessageNode(msg, isLast) {
@@ -3411,20 +4415,26 @@
 
           if (msg.text) {
             body.appendChild(renderMarkdownToFragment(msg.text));
-          } else if (state.isGenerating && isLast) {
+          } else if (state.isGenerating && isLast && !msg.studyData) {
             body.innerHTML = '<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
           }
+
+          if (msg.studyData && !(state.isGenerating && isLast)) {
+            var deckNode = renderStudyDeckNode(msg);
+            if (deckNode) body.appendChild(deckNode);
+          }
+
           row.appendChild(body);
 
-          if (msg.text && !(state.isGenerating && isLast)) {
+          if ((msg.text || msg.studyData) && !(state.isGenerating && isLast)) {
             var actions = document.createElement('div');
             actions.className = 'model-actions';
             var copyBtn = document.createElement('button');
             copyBtn.type = 'button';
             copyBtn.className = 'copy-msg-btn hover-elevate';
-            copyBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg><span>Copy</span>';
+            copyBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg><span>' + escapeHtml(t('copy')) + '</span>';
             copyBtn.addEventListener('click', function () {
-              copyTextSafe(msg.text);
+              copyTextSafe(msg.text || '');
             });
             actions.appendChild(copyBtn);
             row.appendChild(actions);
@@ -3452,16 +4462,29 @@
               return;
             }
             var isImage = file.type && file.type.indexOf('image/') === 0;
+            var isTextLike = !isImage && (
+              (file.type && (file.type.indexOf('text/') === 0 || file.type === 'application/json')) ||
+              /\.(txt|md|csv|json|js|ts|py|html|css)$/i.test(file.name)
+            );
             var reader = new FileReader();
             reader.onload = function (ev) {
               var result = String(ev.target.result || '');
               var base64 = result.indexOf(',') > -1 ? result.split(',')[1] : '';
+              var extractedText = '';
+              if (isTextLike && base64) {
+                try {
+                  extractedText = decodeURIComponent(escape(atob(base64))).slice(0, 12000);
+                } catch (e) {
+                  try { extractedText = atob(base64).slice(0, 12000); } catch (e2) {}
+                }
+              }
               state.pendingAttachments.push({
                 id: createId(),
                 name: file.name,
                 mimeType: file.type || 'text/plain',
                 isImage: isImage,
                 base64: base64,
+                extractedText: extractedText,
                 previewUrl: isImage ? result : null
               });
               renderAttachments();
@@ -3517,13 +4540,310 @@
       }
 
       // =======================================================================
-      // 14. PILL COMPOSER INPUT, CUSTOM ENTER BEHAVIOR & SEND / STOP
+      // 15. GEMINI API + DRAGONAI LEARN STUDY ENGINE + ASSISTANT FALLBACK
       // =======================================================================
+      function parseLearnResponsePayload(rawResponseText) {
+        var text = String(rawResponseText || '').trim();
+        var jsonCandidate = null;
+        var fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+        if (fenceMatch && fenceMatch[1]) {
+          jsonCandidate = fenceMatch[1].trim();
+        } else if (text.charAt(0) === '{' && text.charAt(text.length - 1) === '}') {
+          jsonCandidate = text;
+        }
+
+        if (jsonCandidate) {
+          try {
+            var parsed = JSON.parse(jsonCandidate);
+            if (parsed && (Array.isArray(parsed.questions) || Array.isArray(parsed.flashcards))) {
+              return {
+                summary: String(parsed.summary || '').trim(),
+                studyData: {
+                  questions: Array.isArray(parsed.questions) ? parsed.questions.map(function (q) {
+                    return {
+                      question: String(q.question || ''),
+                      options: Array.isArray(q.options) ? q.options.map(String) : [],
+                      correctIndex: typeof q.correctIndex === 'number' ? q.correctIndex : 0,
+                      explanation: String(q.explanation || '')
+                    };
+                  }) : [],
+                  flashcards: Array.isArray(parsed.flashcards) ? parsed.flashcards.map(function (f) {
+                    return {
+                      front: String(f.front || ''),
+                      back: String(f.back || ''),
+                      flipped: false
+                    };
+                  }) : []
+                }
+              };
+            }
+          } catch (e) {}
+        }
+
+        return { summary: text, studyData: null };
+      }
+
+      function buildLocalLearnStudyPackage(promptText, attachments) {
+        var isMk = state.settings.language === 'mk';
+        var p = String(promptText || '').trim();
+        var lower = p.toLowerCase();
+        var sourceText = '';
+        var fileNames = [];
+
+        if (attachments && attachments.length > 0) {
+          for (var a = 0; a < attachments.length; a++) {
+            fileNames.push(attachments[a].name);
+            if (attachments[a].extractedText) {
+              sourceText += '\n' + attachments[a].extractedText;
+            }
+          }
+        }
+        if (p.length > 60) {
+          sourceText += '\n' + p;
+        }
+
+        var wantsFlashcards = lower.indexOf('flashcard') > -1 || lower.indexOf('флеш') > -1 || lower.indexOf('картичк') > -1;
+
+        // If user uploaded study notes or pasted study text, build dynamic questions & flashcards from their text
+        if (sourceText.trim().length > 40) {
+          var sentences = sourceText
+            .replace(/\s+/g, ' ')
+            .split(/[.!?]+/)
+            .map(function (s) { return s.trim(); })
+            .filter(function (s) { return s.length >= 28 && s.length <= 220; });
+
+          if (sentences.length >= 2) {
+            var questions = [];
+            var flashcards = [];
+            var maxItems = Math.min(4, sentences.length);
+
+            for (var i = 0; i < maxItems; i++) {
+              var sent = sentences[i];
+              var words = sent.split(/\s+/);
+              var targetIdx = -1;
+              for (var w = 1; w < words.length; w++) {
+                var cleanW = words[w].replace(/[^a-zA-Zа-шА-ШѓѕјљњќџЃЅЈЉЊЌЏ0-9-]/g, '');
+                if (cleanW.length >= 5) {
+                  targetIdx = w;
+                  break;
+                }
+              }
+
+              if (targetIdx > -1) {
+                var answerWord = words[targetIdx].replace(/[.,;:!?()"]/g, '');
+                var maskedWords = words.slice();
+                maskedWords[targetIdx] = '______';
+                var promptQ = (isMk ? 'Дополни го клучниот поим од материјалот: ' : 'Complete this key concept from your study material: ') + '"' + maskedWords.join(' ') + '"';
+
+                var distractors = [];
+                for (var other = 0; other < sentences.length; other++) {
+                  if (other === i) continue;
+                  var oWords = sentences[other].split(/\s+/);
+                  for (var ow = 0; ow < oWords.length; ow++) {
+                    var cand = oWords[ow].replace(/[.,;:!?()"]/g, '');
+                    if (cand.length >= 5 && cand.toLowerCase() !== answerWord.toLowerCase() && distractors.indexOf(cand) === -1) {
+                      distractors.push(cand);
+                      break;
+                    }
+                  }
+                  if (distractors.length >= 3) break;
+                }
+                while (distractors.length < 3) {
+                  distractors.push(isMk ? ('Поим ' + (distractors.length + 1)) : ('Concept ' + (distractors.length + 1)));
+                }
+
+                var correctPos = i % 4;
+                var opts = distractors.slice(0, 3);
+                opts.splice(correctPos, 0, answerWord);
+
+                questions.push({
+                  question: promptQ,
+                  options: opts,
+                  correctIndex: correctPos,
+                  explanation: (isMk ? 'Според твојот материјал: ' : 'According to your study material: ') + sent + '.'
+                });
+
+                flashcards.push({
+                  front: (isMk ? 'Што се однесува на: ' : 'Define / Recall: ') + maskedWords.join(' '),
+                  back: answerWord + ' — ' + sent,
+                  flipped: false
+                });
+              }
+            }
+
+            if (questions.length > 0) {
+              var fileBanner = fileNames.length > 0
+                ? (isMk ? ('**Материјал:** `' + fileNames.join(', ') + '`\n\n') : ('**Study Material:** `' + fileNames.join(', ') + '`\n\n'))
+                : '';
+              return {
+                summary: fileBanner + (isMk
+                  ? 'Подготвив интерактивен сет за вежбање од твојот материјал. Избери одговор за да провериш веднаш!'
+                  : 'I turned your study material into an interactive practice set. Tap an answer below to test yourself!'),
+                studyData: {
+                  questions: wantsFlashcards ? questions.slice(0, 2) : questions,
+                  flashcards: wantsFlashcards ? flashcards : []
+                }
+              };
+            }
+          }
+        }
+
+        // Topic-based interactive quizzes & flashcards
+        if (lower.indexOf('photosynthesis') > -1 || lower.indexOf('фотосинтез') > -1) {
+          return {
+            summary: isMk
+              ? '### Фотосинтеза — Брз преглед + Квиз\nФотосинтезата е процес при кој растенијата ја претвораат светлосната енергија во хемиска енергија (гликоза) користејќи јаглерод диоксид ($CO_2$) и вода ($H_2O$), ослободувајќи кислород ($O_2$).'
+              : '### Photosynthesis — Quick Overview + Quiz\nPhotosynthesis is the process by which plants convert light energy into chemical energy (glucose) from carbon dioxide ($CO_2$) and water ($H_2O$), releasing oxygen ($O_2$) as a byproduct.',
+            studyData: {
+              questions: isMk ? [
+                {
+                  question: 'Во која клеточна органела се одвива фотосинтезата?',
+                  options: ['Митохондрии', 'Хлоропласти', 'Рибозоми', 'Јадро'],
+                  correctIndex: 1,
+                  explanation: 'Хлоропластите содржат хлорофил, зелениот пигмент што ја апсорбира сончевата светлина за фотосинтеза.'
+                },
+                {
+                  question: 'Кој гас го ослободуваат растенијата за време на фотосинтезата?',
+                  options: ['Јаглерод диоксид', 'Азот', 'Кислород', 'Метан'],
+                  correctIndex: 2,
+                  explanation: 'При разложувањето на молекулите на водата во светлосната фаза се ослободува кислород (O₂).'
+                },
+                {
+                  question: 'Што е главен енергетски производ (шеќер) на фотосинтезата?',
+                  options: ['Гликоза', 'Целулоза', 'Скроб', 'Лактоза'],
+                  correctIndex: 0,
+                  explanation: 'Калвиновиот циклус создава гликоза (C₆H₁₂O₆), која растението ја користи за енергија и раст.'
+                }
+              ] : [
+                {
+                  question: 'In which plant cell organelle does photosynthesis take place?',
+                  options: ['Mitochondria', 'Chloroplast', 'Ribosome', 'Nucleus'],
+                  correctIndex: 1,
+                  explanation: 'Chloroplasts contain chlorophyll, the green pigment that captures sunlight to drive photosynthesis.'
+                },
+                {
+                  question: 'Which gas is released as a byproduct of photosynthesis?',
+                  options: ['Carbon dioxide', 'Nitrogen', 'Oxygen', 'Hydrogen'],
+                  correctIndex: 2,
+                  explanation: 'Splitting water molecules during the light-dependent reactions releases oxygen (O₂) into the air.'
+                },
+                {
+                  question: 'What is the primary sugar produced during the Calvin cycle?',
+                  options: ['Glucose', 'Fructose', 'Sucrose', 'Galactose'],
+                  correctIndex: 0,
+                  explanation: 'Plants synthesize glucose (C₆H₁₂O₆) from CO₂ to store chemical energy.'
+                }
+              ],
+              flashcards: []
+            }
+          };
+        }
+
+        if (wantsFlashcards || lower.indexOf('biology') > -1 || lower.indexOf('биологија') > -1) {
+          return {
+            summary: isMk
+              ? 'Еве интерактивни флеш-картички и квиз прашање за активно повторување. Допри картичка за да го видиш одговорот!'
+              : 'Here are interactive study flashcards and a quick check question. Tap any card to flip it!',
+            studyData: {
+              questions: isMk ? [
+                {
+                  question: 'Која органела е позната како „енергетска централа“ на клетката?',
+                  options: ['Голџиев систем', 'Митохондрија', 'Лизозом', 'Вакуола'],
+                  correctIndex: 1,
+                  explanation: 'Митохондриите произведуваат ATP (аденозин трифосфат) преку клеточно дишење.'
+                }
+              ] : [
+                {
+                  question: 'Which organelle is known as the powerhouse of the cell?',
+                  options: ['Golgi apparatus', 'Mitochondrion', 'Lysosome', 'Endoplasmic reticulum'],
+                  correctIndex: 1,
+                  explanation: 'Mitochondria generate most of the cell’s supply of ATP through cellular respiration.'
+                }
+              ],
+              flashcards: isMk ? [
+                { front: 'Митохондрија', back: 'Органела што произведува ATP енергија преку клеточно дишење.', flipped: false },
+                { front: 'Рибозом', back: 'Клеточна структура што синтетизира протеини од аминокиселини.', flipped: false },
+                { front: 'Клеточна мембрана', back: 'Полупропустлива обвивка што го контролира влезот и излезот на материи.', flipped: false },
+                { front: 'ДНК (DNA)', back: 'Молекула што ги носи генетските упатства за развој и функционирање на организмот.', flipped: false }
+              ] : [
+                { front: 'Mitochondrion', back: 'Organelle that produces ATP energy via cellular respiration.', flipped: false },
+                { front: 'Ribosome', back: 'Molecular machine that synthesizes proteins from amino acids.', flipped: false },
+                { front: 'Cell Membrane', back: 'Selectively permeable phospholipid bilayer regulating transport in and out of the cell.', flipped: false },
+                { front: 'DNA', back: 'Deoxyribonucleic acid — carries the genetic blueprint for all living organisms.', flipped: false }
+              ]
+            }
+          };
+        }
+
+        // Default fun interactive quiz on World History / General Knowledge or user's topic
+        var topicLabel = p || (isMk ? 'Општо знаење' : 'World History & Science');
+        return {
+          summary: isMk
+            ? ('Подготвив интерактивен квиз за **' + topicLabel + '**. Избери одговор — ако згрешиш, веднаш ќе добиеш детално објаснување!')
+            : ('I created an interactive practice quiz for **' + topicLabel + '**. Pick an answer below — if you miss one, you will get an instant explanation!'),
+          studyData: {
+            questions: isMk ? [
+              {
+                question: 'Која античка цивилизација го изградила градот Мачу Пикчу на Андите?',
+                options: ['Маите', 'Ацтеките', 'Инките', 'Олмеците'],
+                correctIndex: 2,
+                explanation: 'Мачу Пикчу е изграден во 15 век од цивилизацијата на Инките во денешно Перу.'
+              },
+              {
+                question: 'Во која година паднал Берлинскиот ѕид?',
+                options: ['1987', '1989', '1991', '1985'],
+                correctIndex: 1,
+                explanation: 'Берлинскиот ѕид падна на 9 ноември 1989 година, симболизирајќи го крајот на Студената војна.'
+              },
+              {
+                question: 'Кој научник ги формулирал законите за движење и универзалната гравитација?',
+                options: ['Алберт Ајнштајн', 'Галилео Галилеј', 'Исак Њутн', 'Никола Тесла'],
+                correctIndex: 2,
+                explanation: 'Исак Њутн ги објавил трите закони за движење и законот за гравитација во делото Principia (1687).'
+              },
+              {
+                question: 'Кој е најголемиот океан на Земјата?',
+                options: ['Атлантски Океан', 'Индиски Океан', 'Тихи Океан (Пацифик)', 'Северен Леден Океан'],
+                correctIndex: 2,
+                explanation: 'Тихиот Океан зафаќа повеќе од 30% од површината на Земјата и е најголем и најдлабок океан.'
+              }
+            ] : [
+              {
+                question: 'Which ancient civilization built the mountain citadel of Machu Picchu?',
+                options: ['The Maya', 'The Aztecs', 'The Inca', 'The Olmec'],
+                correctIndex: 2,
+                explanation: 'Machu Picchu was constructed in the 15th century by the Inca Empire high in the Peruvian Andes.'
+              },
+              {
+                question: 'In what year did the Berlin Wall fall?',
+                options: ['1987', '1989', '1991', '1985'],
+                correctIndex: 1,
+                explanation: 'The Berlin Wall fell on November 9, 1989, marking a pivotal moment toward the end of the Cold War.'
+              },
+              {
+                question: 'Who formulated the three laws of motion and universal gravitation?',
+                options: ['Albert Einstein', 'Galileo Galilei', 'Isaac Newton', 'Johannes Kepler'],
+                correctIndex: 2,
+                explanation: 'Sir Isaac Newton published the laws of motion and universal gravitation in his 1687 work Principia.'
+              },
+              {
+                question: 'Which is the largest and deepest ocean on Earth?',
+                options: ['Atlantic Ocean', 'Indian Ocean', 'Pacific Ocean', 'Arctic Ocean'],
+                correctIndex: 2,
+                explanation: 'The Pacific Ocean covers more than 30% of Earth’s surface, making it both the largest and deepest ocean.'
+              }
+            ],
+            flashcards: []
+          }
+        };
+      }
+
       function resizeComposer() {
+        if (!chatInputEl || !pillBarEl) return;
         chatInputEl.style.height = 'auto';
-        var nextH = Math.min(chatInputEl.scrollHeight, 150);
-        chatInputEl.style.height = nextH + 'px';
-        if (nextH > 42 || chatInputEl.value.indexOf('\n') > -1) {
+        var nextHeight = Math.min(chatInputEl.scrollHeight, 150);
+        chatInputEl.style.height = nextHeight + 'px';
+        if (nextHeight > 42 || chatInputEl.value.indexOf('\n') > -1) {
           pillBarEl.classList.add('is-multiline');
         } else {
           pillBarEl.classList.remove('is-multiline');
@@ -3716,11 +5036,27 @@
         }
 
         var payload = { contents: contents };
+        var isLearnChat = chat.mode === 'learn';
+        var langInstruction = state.settings.language === 'mk'
+          ? 'Respond in Macedonian (Македонски).'
+          : 'Respond in English.';
+
+        var sysParts = [langInstruction];
         if (state.settings.systemPrompt && state.settings.systemPrompt.trim()) {
-          payload.systemInstruction = {
-            parts: [{ text: state.settings.systemPrompt.trim() }]
-          };
+          sysParts.push(state.settings.systemPrompt.trim());
         }
+        if (isLearnChat) {
+          sysParts.push(
+            'You are DragonAI Learn, an engaging, encouraging interactive study tutor. ' +
+            'When the user wants a quiz, multiple-choice questions, practice test, or flashcards (or uploads study material), respond with a JSON code block in this exact schema: ' +
+            '```json\n{"summary":"Short encouraging intro","questions":[{"question":"...","options":["A","B","C","D"],"correctIndex":0,"explanation":"Clear explanation of why the right answer is correct"}],"flashcards":[{"front":"Term or question","back":"Concise answer"}]}\n``` ' +
+            'Provide 4 to 5 well-crafted multiple choice questions with 4 options each and clear explanations so if the student gets one wrong they understand why.'
+          );
+        }
+
+        payload.systemInstruction = {
+          parts: [{ text: sysParts.join('\n\n') }]
+        };
 
         state.abortController = new AbortController();
 
@@ -3795,17 +5131,43 @@
         renderActiveChat();
 
         var apiKey = (state.settings.apiKey || '').trim();
+        var isLearnChat = chat.mode === 'learn';
+
         if (apiKey) {
           try {
             var cloudReply = await queryGeminiCloud(chat, apiKey);
             if (!state.isGenerating) return;
             if (cloudReply) {
+              if (isLearnChat) {
+                var parsedLearn = parseLearnResponsePayload(cloudReply);
+                modelMsg.text = parsedLearn.summary;
+                modelMsg.studyData = parsedLearn.studyData;
+                state.isGenerating = false;
+                updateSendButtonState();
+                syncStateToStorage();
+                renderActiveChat();
+                return;
+              }
               streamTextIntoMessage(chat, modelMsg, cloudReply);
               return;
             }
           } catch (err) {
             if (err && err.name === 'AbortError') return;
           }
+        }
+
+        if (isLearnChat) {
+          var learnPkg = buildLocalLearnStudyPackage(text, atts);
+          setTimeout(function () {
+            if (!state.isGenerating) return;
+            modelMsg.text = learnPkg.summary;
+            modelMsg.studyData = learnPkg.studyData;
+            state.isGenerating = false;
+            updateSendButtonState();
+            syncStateToStorage();
+            renderActiveChat();
+          }, 360);
+          return;
         }
 
         // Built-in assistant fallback (works offline & without an API key)
@@ -3849,10 +5211,10 @@
       function toggleKeyVisibility() {
         if (inputApiKeyEl.type === 'password') {
           inputApiKeyEl.type = 'text';
-          btnToggleKeyVis.textContent = 'Hide';
+          btnToggleKeyVis.textContent = t('hide');
         } else {
           inputApiKeyEl.type = 'password';
-          btnToggleKeyVis.textContent = 'Show';
+          btnToggleKeyVis.textContent = t('show');
         }
       }
 
@@ -3865,6 +5227,121 @@
         renderActiveChat();
         closeSettings();
         showToast('All conversations cleared');
+      }
+
+      function exportAccountData() {
+        try {
+          var exportPayload = {
+            app: 'DragonAI',
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            account: {
+              identity: state.identity,
+              displayName: state.displayName
+            },
+            settings: {
+              theme: state.settings.theme,
+              enterToSend: state.settings.enterToSend,
+              apiKey: state.settings.apiKey,
+              systemPrompt: state.settings.systemPrompt
+            },
+            chats: sanitizeChatsForSync(state.chats)
+          };
+
+          var jsonStr = JSON.stringify(exportPayload, null, 2);
+          var blob = new Blob([jsonStr], { type: 'application/json' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          var dateTag = new Date().toISOString().slice(0, 10);
+          a.href = url;
+          a.download = 'dragonai-backup-' + dateTag + '.json';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+          showToast('Exported chats & settings');
+        } catch (err) {
+          showToast('Export failed');
+        }
+      }
+
+      function triggerImportData() {
+        if (importDataInputEl) {
+          importDataInputEl.click();
+        }
+      }
+
+      if (importDataInputEl) {
+        importDataInputEl.addEventListener('change', function (e) {
+          var file = e.target.files && e.target.files[0];
+          if (!file) return;
+
+          var reader = new FileReader();
+          reader.onload = function (ev) {
+            try {
+              var parsed = JSON.parse(String(ev.target.result || '{}'));
+              if (!parsed || typeof parsed !== 'object') {
+                throw new Error('Invalid format');
+              }
+
+              var importedCount = 0;
+              if (Array.isArray(parsed.chats)) {
+                var existingIds = {};
+                for (var i = 0; i < state.chats.length; i++) {
+                  existingIds[state.chats[i].id] = true;
+                }
+                for (var j = 0; j < parsed.chats.length; j++) {
+                  var incomingChat = parsed.chats[j];
+                  if (!incomingChat || !Array.isArray(incomingChat.messages)) continue;
+                  var chatCopy = {
+                    id: existingIds[incomingChat.id] ? createId() : (incomingChat.id || createId()),
+                    title: incomingChat.title || 'Imported Chat',
+                    updatedAt: incomingChat.updatedAt || Date.now(),
+                    messages: incomingChat.messages
+                  };
+                  state.chats.push(chatCopy);
+                  importedCount++;
+                }
+                state.chats.sort(function (a, b) {
+                  return (b.updatedAt || 0) - (a.updatedAt || 0);
+                });
+              }
+
+              if (parsed.settings && typeof parsed.settings === 'object') {
+                if (typeof parsed.settings.apiKey === 'string' && parsed.settings.apiKey.trim()) {
+                  state.settings.apiKey = parsed.settings.apiKey.trim();
+                  inputApiKeyEl.value = state.settings.apiKey;
+                }
+                if (typeof parsed.settings.systemPrompt === 'string') {
+                  state.settings.systemPrompt = parsed.settings.systemPrompt;
+                  inputSystemPromptEl.value = state.settings.systemPrompt;
+                }
+                if (typeof parsed.settings.enterToSend === 'boolean') {
+                  state.settings.enterToSend = parsed.settings.enterToSend;
+                  toggleEnterSendBtn.setAttribute('aria-checked', String(state.settings.enterToSend));
+                }
+                if (parsed.settings.theme) {
+                  applyTheme(parsed.settings.theme);
+                }
+                saveGlobalPrefs({
+                  theme: state.settings.theme,
+                  enterToSend: state.settings.enterToSend,
+                  apiKey: state.settings.apiKey,
+                  systemPrompt: state.settings.systemPrompt
+                });
+              }
+
+              syncStateToStorage();
+              renderSidebarChats();
+              renderActiveChat();
+              showToast('Imported ' + importedCount + (importedCount === 1 ? ' chat' : ' chats') + ' & settings');
+            } catch (err) {
+              showToast('Invalid DragonAI backup file');
+            }
+          };
+          reader.readAsText(file);
+          importDataInputEl.value = '';
+        });
       }
 
       settingsModalEl.addEventListener('click', function (e) {
@@ -3911,6 +5388,12 @@
         handleAuthSubmit: handleAuthSubmit,
         cycleTheme: cycleTheme,
         setTheme: applyTheme,
+        setLanguage: setLanguage,
+        toggleModeMenu: toggleModeMenu,
+        selectMode: selectMode,
+        requestLogout: requestLogout,
+        cancelLogout: cancelLogout,
+        confirmLogout: confirmLogout,
         logout: logoutToAuthScreen,
         openSidebar: openSidebar,
         closeSidebar: closeSidebar,
@@ -3923,6 +5406,8 @@
         closeSettings: closeSettings,
         toggleEnterToSend: toggleEnterToSend,
         toggleKeyVisibility: toggleKeyVisibility,
+        exportAccountData: exportAccountData,
+        triggerImportData: triggerImportData,
         clearAllChats: clearAllChats,
         triggerFilePicker: triggerFilePicker,
         handleSendOrStop: handleSendOrStop,
@@ -3934,6 +5419,7 @@
       // 17. INITIAL BOOTSTRAP & AUTO-LOGIN RESTORATION
       // =======================================================================
       applyTheme(state.settings.theme);
+      applyLanguageUI();
       switchAuthTab('signin');
       renderSavedAccounts();
       prefillLastSavedCredentials();
